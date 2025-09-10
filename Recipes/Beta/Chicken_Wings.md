@@ -1,4 +1,6 @@
 # Chicken Wings
+[Version 1.0]: #
+[Author: Jonathan Petz | JPEGtheDev]: #
 
 A simple recipe that has been perfected over decades of experimentation
 

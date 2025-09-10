@@ -1,4 +1,6 @@
 # Grilled / Baked Chicken Shawarma Meat
+[Version 1.0]: #
+[Author: Jonathan Petz | JPEGtheDev]: #
 
 While not real Chicken Shawarma, it's kind of close to the real deal and is good in a pinch or when serving a large number of people.
 
@@ -32,8 +34,7 @@ While not real Chicken Shawarma, it's kind of close to the real deal and is good
 * Add enough buttermilk to make sure the chicken is covered and mix again
 * Cover the bowl and let sit in the fridge for 8 - 72 Hours
 
-### Note
-The longer you leave your chicken in the buttermilk, the better it will taste. The more past due on the expiration date your buttermilk is, the tangier it will taste. While not advice from a medical professional, as long as it stays under a certain temperature and no other cultures are introduced, buttermilk should not go bad for a very long time and can be consumed as long as it is cooked in a dish. Please do not use buttermilk if it is moldy, off color, or no longer looks like buttermilk. Use your own judgement on this if it is past the expiration date.
+> Note: The longer you leave your chicken in the buttermilk, the better it will taste. The more past due on the expiration date your buttermilk is, the tangier it will taste. While not advice from a medical professional, as long as it stays under a certain temperature and no other cultures are introduced, buttermilk should not go bad for a very long time and can be consumed as long as it is cooked in a dish. Please do not use buttermilk if it is moldy, off color, or no longer looks like buttermilk. Use your own judgement on this if it is past the expiration date.
 
 ### Grilled
 * Preheat Grill to 425 Degrees Fahrenheit and make sure the grates are heated properly
