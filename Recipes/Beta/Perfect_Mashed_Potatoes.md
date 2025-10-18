@@ -1,5 +1,5 @@
 # Perfect Mashed Potatoes
-[Version 1.0]: #
+[Version 1.1]: #
 [Author: Jonathan Petz | JPEGtheDev]: #
 
 This is hands down one of the best mashed potato recipes out there. There is going to be a simple and "fancy" option on this recipe. This recipe also does not use butter, which may be weird for people who love mashed potatoes, but overall it comes out much better.
@@ -7,14 +7,14 @@ This is hands down one of the best mashed potato recipes out there. There is goi
 
 ## Ingredients
 * 2400g Yellow Potatoes
-* 1 1/2 tsp. black pepper
-* 2 tsp. fine sea salt 
-* 1 tbsp. fine sea salt for the water
+* 1 1/2 tsp. Black Pepper
+* 2 tsp. Fine Sea Salt 
+* 1 tbsp. Fine Sea Salt for the water
 * 300g Heavy Whipping Cream
 ### Fancy Additions
 * 2 Garlic Cloves
-* 3 sprigs of fresh thyme
-* 1 sprig of fresh rosemary
+* 3 Sprigs of fresh thyme
+* 1/2 Sprig of Fresh Rosemary
 
 ## Recommended Utensils
 * Large Pot
@@ -22,8 +22,8 @@ This is hands down one of the best mashed potato recipes out there. There is goi
 * Strainer / Colander
 
 ### Fancy Additions
-* Sauce pan
-* Fine mesh strainer / sieve
+* Sauce Pan
+* Fine Mesh Strainer / Sieve
 
 
 ## Instructions

@@ -1,13 +1,13 @@
 # Kebab Meat
-[Version 1.0]: #
+[Version 1.1]: #
 [Author: Jonathan Petz | JPEGtheDev]: #
 
 This is a general purpose recipe for beef Kebab meat. This is a variation for simplicity's sake but the overall flavor is the same. Texture wise, it's completely different.
 
 ## Ingredients
 * 2 pounds 88/12 Ground Beef
-* 1 1/2 tsp. Paprika
-* 1 1/2 tsp. Sumac
+* 1 tbsp. Paprika
+* 1 tbsp. Sumac
 * 1/2 tsp. Garlic Powder
 * 1/4 tsp. Black Pepper
 * 1/2 tsp. Red Pepper Flakes
@@ -21,6 +21,7 @@ This is a general purpose recipe for beef Kebab meat. This is a variation for si
 
 ## Instructions
 * Grate Onion and squeeze as much juice as you can out of it
+> Note: you can use the Onion Juice in a sauce
 * Combine all ingredients and mix thoroughly
 
 > Note: If you want a more kebab like consistency, you need to blend the mixture in a food processor or meat grinder until you get a meat paste. If you are just looking for the kebab flavor without putting it on a skewer, you can skip this step.

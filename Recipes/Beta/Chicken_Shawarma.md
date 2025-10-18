@@ -1,22 +1,22 @@
 # Grilled / Baked Chicken Shawarma Meat
-[Version 1.0]: #
+[Version 1.1]: #
 [Author: Jonathan Petz | JPEGtheDev]: #
 
 While not real Chicken Shawarma, it's kind of close to the real deal and is good in a pinch or when serving a large number of people.
 
 ## Ingredients
-* 1300g boneless skinless chicken thighs
-* 3/4 tsp. black pepper
-* 1/4 tsp. garlic powder
-* 3/4 tsp. onion powder
-* 1 tsp. paprika
-* 1/2 tsp. ground cardamom
-* 1 1/2 tsp. fine sea salt
-* 1/2 tsp. cayenne pepper
-* 1/4 tsp. red pepper flakes
+* 1300g Boneless Skinless Chicken Thighs
+* 3/4 tsp. Black Pepper
+* 1/4 tsp. Garlic Powder
+* 3/4 tsp. Onion Powder
+* 1/2 tsp. Cumin
+* 1 tsp. Paprika
 * 1/8 tsp. ground coriander
-* 55g lemon juice
-* 250g buttermilk 
+* 1 1/2 tsp. Fine Sea Salt
+* 1/2 tsp. Cayenne Pepper
+* 1/4 tsp. Red Pepper Flakes
+* 55g Lemon Juice
+* 250g Buttermilk 
 
 ## Recommended Utensils
 * Tongs (Grilled)
