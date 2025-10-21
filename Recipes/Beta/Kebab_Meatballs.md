@@ -13,9 +13,7 @@ This is a continuation of the Kebab Meat recipe to make the meat into meatballs 
 * Baking Sheet
 
 ## Instructions
-* Preheat Oven to 400 Degrees Fahrenheit
-* Blend / Grind Panko until you have an ultra-fine breadcrumb powder
-  > Note: You can probably use regular breadcrumbs here, or unblended panko, but that has not been tested yet
+* Preheat Oven to 400 Degrees Fahrenheittested yet
 * Mix breadcrumbs into Kebab Meat
 * Form into 24 Equal sized meatballs
 * Space meatballs evenly on cooking sheet

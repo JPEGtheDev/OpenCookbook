@@ -1,5 +1,5 @@
 # Kebab Meat
-[Version 1.1]: #
+[Version 1.2]: #
 [Author: Jonathan Petz | JPEGtheDev]: #
 
 This is a general purpose recipe for beef Kebab meat. This is a variation for simplicity's sake but the overall flavor is the same. Texture wise, it's completely different.
@@ -12,7 +12,7 @@ This is a general purpose recipe for beef Kebab meat. This is a variation for si
 * 1/4 tsp. Black Pepper
 * 1/2 tsp. Red Pepper Flakes
 * 1/4 tsp. Caraway Seed Powder
-* 1 tsp. Fine Sea Salt
+* 1 1/2 tsp. Fine Sea Salt
 * 1 Yellow Onion
 > Note: If you are looking for a fattier Kebab, go for a fattier mix of ground beef. 80/20 or 70/30 should work out depending on how you want to cook it up.
 ## Recommended Utensils:
@@ -23,6 +23,7 @@ This is a general purpose recipe for beef Kebab meat. This is a variation for si
 * Grate Onion and squeeze as much juice as you can out of it
 > Note: you can use the Onion Juice in a sauce
 * Combine all ingredients and mix thoroughly
+> Note: using a stand mixer with a paddle works really well to combine and give it more of a kebab texture.
 
 > Note: If you want a more kebab like consistency, you need to blend the mixture in a food processor or meat grinder until you get a meat paste. If you are just looking for the kebab flavor without putting it on a skewer, you can skip this step.
 
