@@ -1,0 +1,48 @@
+name: Kebab Meatballs
+version: "1.2"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A continuation of the Kebab Meat recipe. Forms the kebab mixture into meatballs
+  that can be made in bulk to eat now or freeze for later.
+status: beta
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 907
+        unit: g
+        name: 88/12 Ground Beef (or 1× Kebab Meat Recipe)
+      - quantity: 40
+        unit: g
+        name: Panko Bread Crumbs
+
+utensils:
+  - heading: null
+    items:
+      - Mixing Bowl
+      - Baking Sheet
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Preheat oven to 204°C (400°F)
+      - text: Mix breadcrumbs into kebab meat
+      - text: Form into 24 equal-sized meatballs
+      - text: Space meatballs evenly on a baking sheet
+      - text: Bake for 18–20 minutes
+
+  - heading: Freezing
+    type: sequence
+    optional: true
+    steps:
+      - text: Allow meatballs to cool fully after baking
+      - text: Place uncovered on a baking tray in the freezer, ensuring pieces are not touching
+      - text: Freeze until pieces no longer stick together (approximately 1–2 hours)
+      - text: Transfer to a sealed plastic freezer bag or vacuum-sealed bag
+        notes:
+          - Stores for up to 3 months without losing flavor.
+
+related:
+  - label: Kebab Meat Recipe
+    path: ./Kebab_Meat.yaml

@@ -1,0 +1,276 @@
+---
+name: recipe-documentation
+description: >
+  How to format and structure a recipe YAML file in the OpenCookbook repository.
+  Use this skill when writing, editing, or reviewing any recipe file.
+  Covers every field, unit rule, and file convention.
+license: CC0-1.0
+metadata:
+  author: JPEGtheDev
+  version: "1.0"
+---
+
+# Recipe Documentation
+
+This skill tells you the **exact format** for recipe files. Follow every rule below.
+
+---
+
+## When to Use This Skill
+
+Use this when you are:
+- Writing a new recipe file
+- Editing an existing recipe file
+- Checking if a recipe follows the correct format
+- Converting recipe data between formats
+
+---
+
+## Required File Format
+
+All recipes are YAML files with the `.yaml` extension.
+
+**NEVER** create a recipe as a Markdown (`.md`) file.
+**NEVER** create a recipe as JSON, TOML, or any other format.
+
+---
+
+## Required Top-Level Fields
+
+Every recipe file **must** have ALL of these fields:
+
+| Field | Type | Example | Notes |
+|---|---|---|---|
+| `name` | string | `Chicken Shawarma` | Descriptive name of the dish |
+| `version` | string | `"1.0"` | **Must be quoted** — `"1.0"` not `1.0` |
+| `author` | string | `Jonathan Petz \| JPEGtheDev` | Format: `Full Name \| Handle` |
+| `description` | string | `A spiced buttermilk...` | 1–3 sentences. Use `>` for multiline. |
+| `status` | string | `beta` | One of: `stable`, `beta`, `draft` |
+| `ingredients` | list | (see below) | At least one group with at least one item |
+| `instructions` | list | (see below) | At least one section (unless `status: draft`) |
+
+## Optional Top-Level Fields
+
+| Field | Type | When to Use |
+|---|---|---|
+| `utensils` | list | Equipment needed for the recipe |
+| `related` | list | Cross-links to other recipe files |
+| `notes` | list of strings | Open questions — **only for `beta` or `draft`** |
+
+**NEVER** include a `notes` field on a `stable` recipe. Remove it before promoting.
+
+---
+
+## Ingredients
+
+### Structure
+
+```yaml
+ingredients:
+  - heading: null        # null = default/main group
+    items:
+      - quantity: 907
+        unit: g
+        name: Ground Beef
+  - heading: "Optional Toppings"    # string = named sub-group
+    items:
+      - quantity: 50
+        unit: g
+        name: Shredded Cheese
+```
+
+### Unit Rules
+
+**ALWAYS use these units:**
+
+| Unit | When to Use |
+|---|---|
+| `g` (grams) | All solid ingredients — meat, vegetables, spices, flour, etc. |
+| `ml` (milliliters) | Liquids where volume is standard — buttermilk, lemon juice, etc. |
+| Count words (`cloves`, `sprigs`, `whole`) | Items counted, not weighed |
+
+**NEVER use these units:**
+
+| ❌ Banned Unit | Use Instead |
+|---|---|
+| `lbs.` or `lb` | Convert to `g` |
+| `oz.` or `oz` | Convert to `g` |
+| `cups` or `cup` | Convert to `g` or `ml` |
+| `tsp.` or `tbsp.` | Convert to `g` (use `volume_alt` for the fallback) |
+
+### The volume_alt Rule
+
+**If a spice ingredient has `quantity` less than 10 AND `unit` is `g`, you MUST add a `volume_alt` field.**
+
+This is NOT optional. Many kitchen scales cannot read below 1g accurately.
+Look up the conversion in [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md).
+
+✅ **CORRECT:**
+```yaml
+- quantity: 3
+  unit: g
+  name: Black Pepper
+  volume_alt: "3/4 tsp."
+```
+
+❌ **WRONG — missing volume_alt:**
+```yaml
+- quantity: 3
+  unit: g
+  name: Black Pepper
+```
+
+❌ **WRONG — tsp as primary unit:**
+```yaml
+- quantity: 0.75
+  unit: tsp.
+  name: Black Pepper
+```
+
+### Ingredient Notes
+
+Use the optional `note` field for substitution tips or context:
+
+```yaml
+- quantity: 907
+  unit: g
+  name: 88/12 Ground Beef
+  note: "For a fattier result, use 80/20 or 70/30."
+```
+
+---
+
+## Instructions
+
+### Structure
+
+```yaml
+instructions:
+  - heading: null           # null = main steps
+    type: sequence          # ALWAYS runs in order
+    steps:
+      - text: "Step one"
+      - text: "Step two"
+        notes:
+          - "A tip or clarification"
+```
+
+### type Field
+
+Every instruction section MUST have a `type` field:
+
+| `type` | Meaning | When to Use |
+|---|---|---|
+| `sequence` | Steps always run in order | Default for most sections |
+| `branch` | One of several options — cook picks one | For variations (Grilled vs. Baked) |
+
+### Branching Paths
+
+When a recipe has multiple cooking methods, use `type: branch` with a `branch_group`:
+
+```yaml
+  - heading: Grilled
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: "Preheat grill to 218°C (425°F)"
+
+  - heading: Baked
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: "Preheat oven to 218°C (425°F)"
+```
+
+**RULE:** Sections with the same `branch_group` are mutually exclusive. The cook picks ONE.
+**RULE:** Each branch must be complete on its own. Do not assume steps from another branch.
+
+### Optional Sections
+
+Serving and Freezing sections use `optional: true`:
+
+```yaml
+  - heading: Freezing
+    type: sequence
+    optional: true
+    steps:
+      - text: "Flash freeze on a baking sheet for 2 hours"
+```
+
+### Temperature Format
+
+**ALWAYS** write temperatures as `°C (°F)`.
+
+✅ `218°C (425°F)`
+✅ `74°C (165°F)`
+❌ `425°F`
+❌ `218°C`
+❌ `425 degrees`
+
+### Food Safety Temperatures
+
+**ALWAYS** state the minimum safe internal temperature for meat:
+
+| Meat Type | Minimum Temperature |
+|---|---|
+| Poultry (chicken, turkey) | 74°C (165°F) |
+| Ground meat (beef, pork, lamb) | 71°C (160°F) |
+| Whole cuts (beef, pork, lamb) | 63°C (145°F) |
+
+---
+
+## Cross-Linking
+
+Use the `related` field to link to other recipe files:
+
+```yaml
+related:
+  - label: Kebab Meat Recipe
+    path: ./Kebab_Meat.yaml
+```
+
+**RULES:**
+- Use `./` for same-directory files
+- Use `../` for parent-directory files
+- Use `../<Folder>/File.yaml` for sibling-directory files
+- **ALWAYS** use `.yaml` extension, never `.md`
+- **ALWAYS** use relative paths, never absolute paths
+
+---
+
+## File Placement
+
+| Recipe Status | Folder | Meaning |
+|---|---|---|
+| `stable` | `Recipes/` | Tested and finalized |
+| `beta` | `Recipes/Beta/` | Works but needs refinement |
+| `draft` | `Recipes/Beta/` | Incomplete — missing steps or unvalidated quantities |
+| Any (grouped) | `Recipes/<Topic>/` | Two or more related recipes (e.g. `Brisket/`) |
+
+**Filename:** `Title_Case_With_Underscores.yaml`
+
+✅ `Chicken_Shawarma.yaml`
+❌ `chicken-shawarma.yaml`
+❌ `chicken_shawarma.md`
+
+---
+
+## References
+
+- [STRUCTURED_FORMAT.md](../references/STRUCTURED_FORMAT.md) — Full YAML schema with complete examples
+- [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md) — Gram-to-volume conversion table for all spices
+
+---
+
+## Quick Self-Check (Run After Every Edit)
+
+Before saving any recipe file, answer every question below. If any answer is "no", fix it.
+
+1. Is the file extension `.yaml`? (Not `.md`, not `.json`)
+2. Are ALL 5 required fields present? (`name`, `version`, `author`, `description`, `status`)
+3. Is `version` a quoted string? (`"1.0"` not `1.0`)
+4. Are all units `g`, `ml`, or count words? (No cups, lbs, oz, tsp, tbsp)
+5. Does every spice under 10g have a `volume_alt` field?
+6. Are all temperatures written as `°C (°F)`?
+7. Does every instruction section have a `type` field?
+8. Is the filename `Title_Case_With_Underscores.yaml`?

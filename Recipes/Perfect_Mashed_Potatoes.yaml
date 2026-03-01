@@ -1,0 +1,102 @@
+name: Perfect Mashed Potatoes
+version: "1.1"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  One of the best mashed potato recipes around, with a simple and fancy variation.
+  Notably does not use butter — the result is better without it. The fancy version
+  uses cream infused with garlic, thyme, and rosemary.
+status: stable
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 2400
+        unit: g
+        name: Yellow Potatoes
+      - quantity: 3.5
+        unit: g
+        name: Black Pepper
+        volume_alt: "1 1/2 tsp."
+      - quantity: 12
+        unit: g
+        name: Fine Sea Salt
+        volume_alt: "2 tsp."
+      - quantity: 18
+        unit: g
+        name: Fine Sea Salt (for the water)
+        volume_alt: "1 tbsp."
+      - quantity: 300
+        unit: g
+        name: Heavy Whipping Cream
+
+  - heading: Fancy Additions
+    items:
+      - quantity: 2
+        unit: cloves
+        name: Garlic
+      - quantity: 3
+        unit: sprigs
+        name: Fresh Thyme
+      - quantity: 0.5
+        unit: sprig
+        name: Fresh Rosemary
+
+utensils:
+  - heading: null
+    items:
+      - Large Pot
+      - Potato Masher or Handheld Mixer
+      - Strainer / Colander
+
+  - heading: Fancy Additions
+    items:
+      - Sauce Pan
+      - Fine Mesh Strainer / Sieve
+
+instructions:
+  - heading: Preparing the Potatoes
+    type: sequence
+    steps:
+      - text: Wash potatoes
+        notes:
+          - You can peel the potatoes at this point — entirely personal preference.
+      - text: Cut potatoes into cubes
+      - text: Add potatoes to the pot and cover with water — you want about 2.5cm (1 inch) of water over the potatoes
+      - text: Salt the water
+      - text: Bring to a boil, then reduce heat to a simmer
+      - text: Cover with a lid and cook for 15–25 minutes, or until potatoes fall apart when pierced with a fork
+        notes:
+          - If you are making the fancy version, start the cream infusion now so it is ready when the potatoes are done.
+      - text: Strain potatoes and return to the pot
+
+  - heading: Fancy Cream
+    type: branch
+    branch_group: cream-prep
+    steps:
+      - text: Add heavy cream, thyme, and rosemary to a sauce pan
+      - text: Crush garlic cloves and add to the pan
+      - text: Heat over medium-low for a few minutes to infuse the flavor
+      - text: Strain through a fine mesh strainer and set aside
+        notes:
+          - If the potatoes are already done, strain the infused cream directly into the pot — no need to set it aside first.
+
+  - heading: Regular Cream
+    type: branch
+    branch_group: cream-prep
+    steps:
+      - text: Use heavy cream as-is — no additional preparation needed
+
+  - heading: Mashing
+    type: sequence
+    steps:
+      - text: Pour the salt, pepper, and heavy cream (plain or infused) into the pot
+      - text: Mash until you reach the consistency you are looking for
+
+  - heading: Freezing
+    type: sequence
+    optional: true
+    steps:
+      - text: Portion into desired serving sizes and freeze individually
+        notes:
+          - A silicone muffin tin works extremely well — produces clean 120ml (1/2 cup) portions.
+          - 240ml (1 cup) and 120ml (1/2 cup) portions are both practical freezer sizes.

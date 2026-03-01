@@ -1,0 +1,38 @@
+name: Guajillo Brisket Binder
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A binder to use alongside the Guajillo Brisket Rub. Combines coconut aminos,
+  Worcestershire, and molasses into a rich, savory-sweet paste that helps the
+  rub adhere to the brisket.
+status: stable
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 100
+        unit: g
+        name: Coconut Aminos
+      - quantity: 100
+        unit: g
+        name: Worcestershire Sauce
+      - quantity: 250
+        unit: g
+        name: Molasses
+
+utensils:
+  - heading: null
+    items:
+      - Bowl large enough to fit your ingredients
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Combine all ingredients and mix thoroughly
+        notes:
+          - This recipe makes approximately 1.5× to 2× the amount needed for a single brisket, depending on its size.
+
+related:
+  - label: Guajillo Brisket Rub
+    path: ./Guajillo_Brisket_Rub.yaml

@@ -1,0 +1,120 @@
+name: Grilled / Baked Chicken Shawarma Meat
+version: "1.1"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  While not real chicken shawarma, it comes close to the real deal and is practical
+  when serving a large number of people. Marinated in a spiced buttermilk brine
+  and cooked on the grill or in the oven.
+status: beta
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 1300
+        unit: g
+        name: Boneless Skinless Chicken Thighs
+      - quantity: 1.7
+        unit: g
+        name: Black Pepper
+        volume_alt: "3/4 tsp."
+      - quantity: 0.8
+        unit: g
+        name: Garlic Powder
+        volume_alt: "1/4 tsp."
+      - quantity: 1.9
+        unit: g
+        name: Onion Powder
+        volume_alt: "3/4 tsp."
+      - quantity: 1.1
+        unit: g
+        name: Cumin
+        volume_alt: "1/2 tsp."
+      - quantity: 2.3
+        unit: g
+        name: Paprika
+        volume_alt: "1 tsp."
+      - quantity: 0.3
+        unit: g
+        name: Ground Coriander
+        volume_alt: "1/8 tsp."
+      - quantity: 9
+        unit: g
+        name: Fine Sea Salt
+        volume_alt: "1 1/2 tsp."
+      - quantity: 1.2
+        unit: g
+        name: Cayenne Pepper
+        volume_alt: "1/2 tsp."
+      - quantity: 0.5
+        unit: g
+        name: Red Pepper Flakes
+        volume_alt: "1/4 tsp."
+      - quantity: 55
+        unit: ml
+        name: Lemon Juice
+      - quantity: 250
+        unit: ml
+        name: Buttermilk
+
+utensils:
+  - heading: null
+    items:
+      - Mixing Bowl
+      - Temperature Probe / Thermometer
+  - heading: Grilled
+    items:
+      - Tongs
+  - heading: Baked
+    items:
+      - Baking Sheet
+      - Wire Rack
+
+instructions:
+  - heading: Marinating the Chicken
+    type: sequence
+    steps:
+      - text: Combine all spices in your bowl
+      - text: Add half the buttermilk and all the lemon juice, stir to combine
+      - text: Add chicken thighs and mix to coat
+      - text: Add enough remaining buttermilk to fully cover the chicken and mix again
+      - text: Cover and refrigerate for 8 to 72 hours
+        notes:
+          - The longer you marinate, the better the flavor.
+          - The more past the expiration date your buttermilk is, the tangier it will taste. As long as it stays cold and no other cultures are introduced, buttermilk can remain safe to cook with well past its printed date.
+          - Do not use buttermilk that is moldy, off-color, or no longer resembles buttermilk.
+
+  - heading: Grilled
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: Preheat grill to 218°C (425°F) and ensure grates are fully heated
+      - text: Place chicken skin side down and cook for 8 minutes
+      - text: Flip and cook for another 8 minutes
+      - text: Check internal temperature — chicken must reach 74°C (165°F). If not, cook in 3-minute increments and check again until it does.
+
+  - heading: Baked
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: Preheat oven to 218°C (425°F)
+      - text: Place chicken skin side down on a wire rack over a baking sheet and bake for 8 minutes
+      - text: Flip and bake for another 8 minutes
+      - text: Check internal temperature — chicken must reach 74°C (165°F). If not, bake in 3-minute increments and check again until it does.
+
+  - heading: Serving
+    type: sequence
+    steps:
+      - text: Let chicken rest for 8 minutes before slicing
+        notes:
+          - Resting allows the juices to redistribute and stay in the meat when cut.
+      - text: Slice into cubes and serve
+
+  - heading: Freezing
+    type: sequence
+    optional: true
+    steps:
+      - text: Flash freeze individual cubes on a baking sheet, ensuring pieces do not touch
+      - text: Freeze for approximately 3 hours or until pieces no longer stick together
+      - text: Transfer to a sealed freezer bag or vacuum-sealed bag
+        notes:
+          - Stores up to 3 months in a standard freezer bag; longer in a vacuum-sealed bag.

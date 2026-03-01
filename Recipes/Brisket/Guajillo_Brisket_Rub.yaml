@@ -1,0 +1,54 @@
+name: Guajillo Brisket Rub
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A proven brisket rub that is a bit spicy and sweet. While it isn't a traditional
+  brisket rub, it is amazing.
+status: stable
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 100
+        unit: g
+        name: Guajillo Chiles
+      - quantity: 50
+        unit: g
+        name: Pasilla Chiles
+      - quantity: 300
+        unit: g
+        name: Fine Sea Salt
+      - quantity: 300
+        unit: g
+        name: Brown Sugar
+      - quantity: 20
+        unit: g
+        name: Garlic Powder
+      - quantity: 35
+        unit: g
+        name: Onion Powder
+      - quantity: 100
+        unit: g
+        name: Black Pepper
+      - quantity: 55
+        unit: g
+        name: Mustard Seed
+
+utensils:
+  - heading: null
+    items:
+      - Bowl large enough to fit your ingredients
+      - Blender or Food Processor
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Remove the stems from the chiles and grind until a fine powder
+        notes:
+          - If you do not have pre-ground mustard seed powder, grind the mustard seeds at this step as well.
+      - text: Combine all remaining ingredients and mix thoroughly
+
+related:
+  - label: Guajillo Brisket Binder
+    path: ./Guajillo_Brisket_Binder.yaml

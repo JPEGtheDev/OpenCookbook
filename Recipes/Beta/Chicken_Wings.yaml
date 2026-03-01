@@ -1,0 +1,50 @@
+name: Chicken Wings
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A simple recipe perfected over decades of experimentation. Cooking instructions
+  are pending — this recipe is currently in draft while the spice mix and
+  cooking method are being finalized.
+status: draft
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 4000
+        unit: g
+        name: Party Wings
+      - quantity: 54
+        unit: g
+        name: Paprika
+      - quantity: 54
+        unit: g
+        name: Fine Sea Salt
+      - quantity: 28
+        unit: g
+        name: Garlic Powder
+      - quantity: 23
+        unit: g
+        name: Onion Powder
+      - quantity: 21
+        unit: g
+        name: Cayenne Pepper
+      - quantity: 28
+        unit: g
+        name: Black Pepper
+      - quantity: 680
+        unit: ml
+        name: Franks Red Hot
+      - quantity: 680
+        unit: ml
+        name: Water
+      - quantity: 240
+        unit: ml
+        name: Lemon Juice
+
+instructions: []
+
+notes:
+  - Cooking instructions needed for smoke, bake, and sous vide methods.
+  - Spice quantities may need to be halved, or the wing quantity doubled to 8000g. Tested at current quantities but results need further validation.
+  - Original recipe used a custom spice mix. Switched to a Creole-style blend, but that contains silicone dioxide. Current mix is close to the target flavor but still being refined.
+  - Exact quantities of Franks Red Hot and Water need to be confirmed — they depend on cooking method and the size of the marination container.

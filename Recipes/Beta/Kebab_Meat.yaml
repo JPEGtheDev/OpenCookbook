@@ -1,0 +1,72 @@
+name: Kebab Meat
+version: "1.2"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A general purpose recipe for beef kebab meat. This is a variation for simplicity's
+  sake but the overall flavor is the same. Texture wise it is completely different
+  from traditional kebab.
+status: beta
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 907
+        unit: g
+        name: 88/12 Ground Beef
+      - quantity: 7
+        unit: g
+        name: Paprika
+        volume_alt: "1 tbsp."
+      - quantity: 9
+        unit: g
+        name: Sumac
+        volume_alt: "1 tbsp."
+      - quantity: 1.6
+        unit: g
+        name: Garlic Powder
+        volume_alt: "1/2 tsp."
+      - quantity: 0.6
+        unit: g
+        name: Black Pepper
+        volume_alt: "1/4 tsp."
+      - quantity: 1
+        unit: g
+        name: Red Pepper Flakes
+        volume_alt: "1/2 tsp."
+      - quantity: 0.5
+        unit: g
+        name: Caraway Seed Powder
+        volume_alt: "1/4 tsp."
+      - quantity: 9
+        unit: g
+        name: Fine Sea Salt
+        volume_alt: "1 1/2 tsp."
+      - quantity: 1.2
+        unit: g
+        name: Cayenne Pepper
+        volume_alt: "1/2 tsp."
+      - quantity: 1
+        unit: whole
+        name: Yellow Onion
+
+utensils:
+  - heading: null
+    items:
+      - Cheese Grater
+      - Mixing Bowl
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Grate onion and squeeze out as much juice as possible
+        notes:
+          - The onion juice can be reserved and used in a sauce.
+      - text: Combine all ingredients and mix thoroughly
+        notes:
+          - A stand mixer with a paddle attachment works very well and gives the mixture a more kebab-like texture.
+          - For a traditional kebab consistency, blend the mixture in a food processor or meat grinder until you have a meat paste. Skip this step if you just want the flavor without skewering.
+          - If prepping ahead, leave the salt out until approximately 30 minutes before cooking. Adding salt too early significantly increases meat density, which may or may not be desirable depending on your preparation method.
+
+notes:
+  - For a fattier kebab, use 80/20 or 70/30 ground beef instead of 88/12.
