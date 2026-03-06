@@ -5,7 +5,7 @@ description: >
   While not real chicken shawarma, it comes close to the real deal and is practical
   when serving a large number of people. Marinated in a spiced buttermilk brine
   and cooked on the grill or in the oven.
-status: beta
+status: stable
 
 ingredients:
   - heading: null
@@ -36,6 +36,10 @@ ingredients:
       - quantity: 0.3
         unit: g
         name: Ground Coriander
+        volume_alt: "1/8 tsp."
+      - quantity: 0.3
+        unit: g
+        name: Caraway Seed (ground)
         volume_alt: "1/8 tsp."
       - quantity: 9
         unit: g
