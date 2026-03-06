@@ -24,6 +24,7 @@ The author is Jonathan Petz (JPEGtheDev). The license is CC0 (public domain).
 | Writing a spice under 10g without `volume_alt` | Add `volume_alt` on the same ingredient — look it up in SPICE_CONVERSIONS.md |
 | Writing `425°F` or `218°C` alone | Write `218°C (425°F)` — always both |
 | Making up a quantity the user didn't provide | Ask the user. Say "I don't have this information" |
+| Writing a vague or implicit instruction step | Every step must be explicit enough for a novice or robot — no assumed knowledge (R3.7) |
 | Writing a recipe file without asking the user first | Read the recipe-creation skill. You must gather info through conversation first |
 | Skipping `version`, `author`, or `status` fields | Every recipe needs ALL 5 required fields — check the list below |
 | Putting `notes` on a `stable` recipe | `notes` is only for `beta` or `draft`. Remove it before promoting |

@@ -59,10 +59,11 @@ instructions:
   - heading: null
     type: sequence
     steps:
-      - text: Grate onion and squeeze out as much juice as possible
+      - text: Grate onion using a cheese grater into a bowl
+      - text: Squeeze out as much juice as possible using a cheesecloth, clean tea towel, or your hands
         notes:
           - The onion juice can be reserved and used in a sauce.
-      - text: Combine all ingredients and mix thoroughly
+      - text: Combine all ingredients in your mixing bowl and mix by hand until the mixture resembles a paste
         notes:
           - A stand mixer with a paddle attachment works very well and gives the mixture a more kebab-like texture.
           - For a traditional kebab consistency, blend the mixture in a food processor or meat grinder until you have a meat paste. Skip this step if you just want the flavor without skewering.

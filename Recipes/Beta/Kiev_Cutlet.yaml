@@ -1,0 +1,138 @@
+name: Kiev Cutlet
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  Chicken Kiev-style cutlets made from ground chicken thighs with an herb
+  butter center, coated in panko. Assembled and frozen raw for cooking later.
+status: beta
+
+ingredients:
+  - heading: Meat Mixture
+    items:
+      - quantity: 2722
+        unit: g
+        name: Ground Chicken Thighs (boneless, skinless)
+      - quantity: 4
+        unit: g
+        name: Paprika
+        volume_alt: "1 3/4 tsp."
+      - quantity: 8
+        unit: g
+        name: Black Pepper
+        volume_alt: "1 tbsp."
+      - quantity: 36
+        unit: g
+        name: Salt
+
+  - heading: Herb Butter
+    items:
+      - quantity: 452
+        unit: g
+        name: Unsalted Butter
+      - quantity: 6.7
+        unit: g
+        name: Salt
+        volume_alt: "1 tsp."
+      - quantity: 2.7
+        unit: g
+        name: Black Pepper
+        volume_alt: "1 tsp."
+      - quantity: 3.5
+        unit: g
+        name: Garlic Powder
+        volume_alt: "1 tsp."
+      - quantity: 6
+        unit: g
+        name: Fresh Parsley
+        volume_alt: "1 1/2 tbsp."
+
+  - heading: Breading
+    items:
+      - quantity: 234
+        unit: g
+        name: Panko Bread Crumbs
+      - quantity: 8
+        unit: whole
+        name: Eggs
+
+utensils:
+  - heading: null
+    items:
+      - Meat Grinder
+      - Cookie Scoop
+      - Mixing Bowl
+      - Sheet Pans / Baking Sheets
+      - Freezer Trays
+      - Shallow Bowl or Tray (for egg wash)
+      - Shallow Bowl or Tray (for panko)
+
+instructions:
+  - heading: Herb Butter
+    type: sequence
+    steps:
+      - text: Remove butter from the refrigerator and let it sit at room temperature until soft.
+      - text: While the butter softens, bring a small pot of water to a boil.
+      - text: Chop the fresh parsley finely.
+      - text: Blanche the chopped parsley by submerging it in the boiling water for 10–15 seconds, then immediately transfer to ice water to stop cooking. Drain thoroughly.
+      - text: Add the salt, black pepper, garlic powder, and blanched parsley to the softened butter.
+      - text: Mix with a spoon or spatula until all ingredients are evenly distributed.
+      - text: Using a cookie scoop, divide the butter mixture into 18 equal portions of approximately 25 g each (roughly 1 3/4 tbsp per portion).
+      - text: Place the portions on a sheet pan or tray and transfer to the freezer until firm.
+
+  - heading: Chicken Preparation
+    type: sequence
+    steps:
+      - text: Measure out the paprika, black pepper, and salt for the meat mixture.
+      - text: Season the chicken thighs by rubbing the spices evenly across all surfaces.
+      - text: For best results, cover and refrigerate the seasoned meat overnight to let the spices marinate before grinding.
+      - text: If using store-bought ground chicken, measure the spices and work them into the meat by hand until evenly distributed, then continue to the next step.
+      - text: Grind the seasoned chicken thighs using a meat grinder.
+        notes:
+          - For a cleaner grind, partially freeze the seasoned chicken (firm but not solid) before grinding.
+      - text: Divide the ground chicken into 18 balls of approximately 140–150 g each.
+
+  - heading: Forming Cutlets
+    type: sequence
+    steps:
+      - text: Remove the herb butter portions from the freezer.
+      - text: Take one ground chicken ball and flatten it in your palm into a disc large enough to wrap around a butter portion.
+      - text: Place one frozen herb butter portion in the center of the disc.
+      - text: Fold the edges of the chicken around the butter, pressing and smoothing the seams so the butter is completely enclosed with no gaps.
+      - text: Repeat for all 18 cutlets.
+      - text: Arrange the formed cutlets on a sheet pan, leaving space between each so they do not touch.
+      - text: Place the sheet pan in the freezer and freeze until the cutlets are solid, approximately 2–3 hours.
+        notes:
+          - Ensure cutlets are spaced apart so they do not touch or freeze together.
+
+  - heading: Breading
+    type: sequence
+    steps:
+      - text: Remove the frozen cutlets from the freezer.
+      - text: Crack the eggs into a shallow bowl or tray and beat with a fork until smooth.
+      - text: Pour the panko bread crumbs into a separate shallow bowl or tray.
+      - text: Take one frozen cutlet and dip it into the egg wash, turning to coat all sides.
+      - text: Transfer the coated cutlet into the panko and press gently, turning to cover all surfaces evenly.
+      - text: Place the breaded cutlet back on the sheet pan.
+      - text: Repeat for all cutlets.
+      - text: Return the breaded cutlets to the freezer until ready to cook.
+        notes:
+          - Cutlets are stored frozen raw and cooked from frozen when ready to serve.
+          - Once fully frozen, transfer cutlets to a sealed freezer bag or vacuum-sealed bag for long-term storage.
+          - Stores for up to 3 months in a standard freezer bag; longer in a vacuum-sealed bag.
+
+  - heading: Cooking
+    type: sequence
+    steps:
+      - text: Preheat a convection oven to 204°C (400°F).
+      - text: Place frozen breaded cutlets on a sheet pan, leaving space between each.
+      - text: Bake for approximately 45 minutes.
+      - text: Check internal temperature — chicken must reach at least 74°C (165°F). If not, continue baking in 5-minute increments and check again.
+        notes:
+          - Cooking time and results are still being tested. 45 minutes at 204°C (400°F) convection is the current estimate.
+
+notes:
+  - "Egg quantity (8 whole) is scaled from ~2.25 eggs per 5 servings. May need adjustment after a full 18-serving batch."
+  - "Panko quantity (234 g) is scaled from 65 g per 5 servings. May need fine-tuning."
+  - "Cooking time of 45 minutes at 204°C (400°F) convection is preliminary — awaiting final test results."
+  - "Storage duration for frozen raw cutlets needs to be determined."
+  - "Per-ball weight ranged 140–150 g in testing. Total meat (2722 g ÷ 18) gives ~151 g; slight variance is acceptable."

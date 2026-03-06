@@ -1,9 +1,6 @@
 ---
 name: recipe-creation
-description: >
-  Step-by-step workflow for creating a new recipe from scratch.
-  Use when the user wants to add a new recipe to the repository.
-  Always starts with a conversation to gather information — never write a recipe without asking first.
+description: Step-by-step workflow for creating a new recipe from scratch. Use when the user wants to add a new recipe to the repository. Always starts with a conversation to gather information — never write a recipe without asking first.
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
@@ -37,7 +34,9 @@ Ask the user these questions. Do not skip any unless the answer is already known
 
 1. What is the dish?
 2. What are the ingredients and their quantities?
-3. What are the step-by-step cooking instructions?
+3. What are the step-by-step cooking instructions?  
+   - **Be extremely granular**; include every action a novice would need (open jars, measure, preheat, etc.).
+   Machines will interpret text literally. If a detail is not written, it is not done.
 4. How many servings / what yield?
 5. Has this recipe been tested? How many times?
 6. Are there variation paths (e.g. grilled vs. baked, spicy vs. mild)?

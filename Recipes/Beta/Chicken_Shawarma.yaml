@@ -73,7 +73,8 @@ instructions:
   - heading: Marinating the Chicken
     type: sequence
     steps:
-      - text: Combine all spices in your bowl
+      - text: Measure out all spices and add them to your mixing bowl
+      - text: Stir the spices together with a spoon or whisk until evenly combined
       - text: Add half the buttermilk and all the lemon juice, stir to combine
       - text: Add chicken thighs and mix to coat
       - text: Add enough remaining buttermilk to fully cover the chicken and mix again
@@ -107,7 +108,7 @@ instructions:
       - text: Let chicken rest for 8 minutes before slicing
         notes:
           - Resting allows the juices to redistribute and stay in the meat when cut.
-      - text: Slice into cubes and serve
+      - text: Slice into roughly 2cm (3/4 inch) cubes and serve
 
   - heading: Freezing
     type: sequence

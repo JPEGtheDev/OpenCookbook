@@ -27,10 +27,13 @@ instructions:
     type: sequence
     steps:
       - text: Preheat oven to 204°C (400°F)
-      - text: Mix breadcrumbs into kebab meat
-      - text: Form into 24 equal-sized meatballs
-      - text: Space meatballs evenly on a baking sheet
-      - text: Bake for 18–20 minutes
+      - text: Mix breadcrumbs into kebab meat by hand, or add them to the stand mixer if the meat is still in it from the previous recipe
+      - text: Using a cookie scoop or by hand, form into 24 equal-sized meatballs of approximately 39 g each
+      - text: Space meatballs evenly on a bare baking sheet — no lining needed
+      - text: Bake for 18–20 minutes, or until the internal temperature reaches at least 71°C (160°F)
+        notes:
+          - 71°C (160°F) is the minimum safe internal temperature for ground beef.
+          - For well done, cook to 77°C (170°F).
 
   - heading: Freezing
     type: sequence

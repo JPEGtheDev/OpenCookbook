@@ -1,9 +1,6 @@
 ---
 name: recipe-validation
-description: >
-  Checklist for validating an OpenCookbook recipe. Use when reviewing a recipe
-  before promotion, after edits, or for quality checking. Fix everything you can.
-  Only flag issues that need the author's judgment.
+description: Checklist for validating an OpenCookbook recipe. Use when reviewing a recipe before promotion, after edits, or for quality checking. Fix everything you can. Only flag issues that need the author's judgment.
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
@@ -72,6 +69,7 @@ Do not say "looks good" without checking each item. Fix what you can. Flag what 
 - [ ] Each branch is complete on its own (no branch depends on steps from another)
 - [ ] All temperatures are dual-format: `°C (°F)`
 - [ ] No step references an ingredient not in the `ingredients` list
+- [ ] Every step is explicit enough for a novice — no implicit actions assumed (R3.7)
 
 ### 4. Food Safety
 

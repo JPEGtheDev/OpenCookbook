@@ -29,7 +29,7 @@ instructions:
   - heading: null
     type: sequence
     steps:
-      - text: Combine all ingredients and mix thoroughly
+      - text: Add all ingredients to a bowl and mix thoroughly with a spoon until fully combined
         notes:
           - This recipe makes approximately 1.5× to 2× the amount needed for a single brisket, depending on its size.
 

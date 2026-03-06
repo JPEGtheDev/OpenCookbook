@@ -44,10 +44,11 @@ instructions:
   - heading: null
     type: sequence
     steps:
-      - text: Remove the stems from the chiles and grind until a fine powder
+      - text: Remove the stems from the chiles by hand
+      - text: Add the chiles to a blender or food processor and grind until a fine powder
         notes:
           - If you do not have pre-ground mustard seed powder, grind the mustard seeds at this step as well.
-      - text: Combine all remaining ingredients and mix thoroughly
+      - text: Add all remaining ingredients to a large bowl and combine using your hands or a large spoon until evenly mixed
 
 related:
   - label: Guajillo Brisket Binder

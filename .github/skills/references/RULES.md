@@ -43,6 +43,7 @@ Full rule set for the `recipe-validation` skill. These rules are checked during 
 | R3.4 | Branch sections representing the same choice must share a `branch_group` value. |
 | R3.5 | All temperatures must be dual-format: `°C (°F)`. Never just one. |
 | R3.6 | Each branch path must be complete on its own — no branch assumes steps from another. |
+| R3.7 | Every step must be explicit enough for a novice or literal interpreter — no implicit actions, no assumed knowledge. |
 
 ### R4 — Food Safety
 

@@ -1,9 +1,6 @@
 ---
 name: recipe-documentation
-description: >
-  How to format and structure a recipe YAML file in the OpenCookbook repository.
-  Use this skill when writing, editing, or reviewing any recipe file.
-  Covers every field, unit rule, and file convention.
+description: How to format and structure a recipe YAML file in the OpenCookbook repository. Use this skill when writing, editing, or reviewing any recipe file. Covers every field, unit rule, and file convention.
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
@@ -155,6 +152,8 @@ instructions:
           - "A tip or clarification"
 ```
 
+> **Explicitness rule:** Write every step as if directing a complete novice or a robot. Do not assume the reader will fill in logical gaps. Opening containers, measuring, transferring between bowls, and any preparation actions must be stated explicitly.
+
 ### type Field
 
 Every instruction section MUST have a `type` field:
@@ -259,6 +258,26 @@ related:
 
 - [STRUCTURED_FORMAT.md](../references/STRUCTURED_FORMAT.md) — Full YAML schema with complete examples
 - [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md) — Gram-to-volume conversion table for all spices
+
+---
+
+## Cut Styles Reference
+
+When a recipe says to cut an ingredient, use the correct term and include an approximate size so there is no ambiguity.
+
+| Cut Style | Description | Approximate Size |
+|---|---|---|
+| Rough chop | Irregular, uneven pieces | ~2–3 cm (¾–1 in) |
+| Chopped | Roughly uniform pieces | ~2 cm (¾ in) |
+| Diced | Uniform cubes | ~1 cm (⅜ in) |
+| Small dice | Smaller uniform cubes | ~6 mm (¼ in) |
+| Julienned | Thin matchstick strips | ~3 mm × 3 mm × 5 cm |
+| Chiffonade | Thin ribbons (leafy herbs/greens) | ~2–3 mm wide |
+| Minced | Very finely cut | ~2 mm (⅛ in) |
+| Brunoise | Tiny uniform cubes | ~3 mm (⅛ in) |
+| Sliced | Flat cuts across the ingredient | Specify thickness |
+
+**Rule:** Always pair the cut style with an approximate metric size in the step text so the reader doesn't have to guess.
 
 ---
 

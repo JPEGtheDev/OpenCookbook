@@ -57,12 +57,12 @@ instructions:
   - heading: Preparing the Potatoes
     type: sequence
     steps:
-      - text: Wash potatoes
+      - text: Wash potatoes under running water, scrubbing with a brush if needed to remove any dirt
         notes:
           - You can peel the potatoes at this point — entirely personal preference.
-      - text: Cut potatoes into cubes
+      - text: Cut potatoes into roughly 2.5cm (1 inch) cubes
       - text: Add potatoes to the pot and cover with water — you want about 2.5cm (1 inch) of water over the potatoes
-      - text: Salt the water
+      - text: Add the 18 g of salt (for the water) to the pot and stir briefly
       - text: Bring to a boil, then reduce heat to a simmer
       - text: Cover with a lid and cook for 15–25 minutes, or until potatoes fall apart when pierced with a fork
         notes:
@@ -90,7 +90,7 @@ instructions:
     type: sequence
     steps:
       - text: Pour the salt, pepper, and heavy cream (plain or infused) into the pot
-      - text: Mash until you reach the consistency you are looking for
+      - text: Using a potato masher or handheld electric mixer / hand blender, mash until you reach the consistency you are looking for
 
   - heading: Freezing
     type: sequence

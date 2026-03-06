@@ -27,6 +27,31 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-05 — Always show scaling math and confirm with the user
+
+**What happened:** A panko quantity of "65 for scaling to 18" was misinterpreted
+as 65 g total for 18 servings, when it actually meant 65 g for a 5-serving test
+batch. This caused panko and egg quantities to be drastically under-scaled
+(65 g / 6 eggs instead of 234 g / 8 eggs).
+**Prevention rule:** When scaling ingredient quantities from a test batch to a
+full recipe, always show the per-serving calculation and the final scaled amount,
+then ask the user to confirm before writing. Do not assume which number is the
+base and which is the target.
+**Rule ID:** None.
+
+### 2026-02-28 — Instructions must leave no room for assumptions
+
+**What happened:** We discussed the peanut-butter-and-jelly thought experiment to
+highlight that implicit steps cause failures when instructions are interpreted
+literally. Even though no mistake occurred in the repository, the risk remains
+whenever recipes are written with gaps.
+**Prevention rule:** When collecting or writing recipe instructions, require absolute
+clarity. Every action a novice would need must be included explicitly. Assume a
+machine (or a new cook) will follow the text exactly—open jars, preheat ovens,
+measure ingredients, handle equipment, etc.  Do not rely on context or common
+sense.
+**Rule ID:** R3.7.
+
 ### 2026-02-28 — Must self-evaluate after editing instructions/skills
 
 **What happened:** After rewriting copilot-instructions.md and all skill files, the assistant

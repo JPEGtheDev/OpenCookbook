@@ -1,9 +1,6 @@
 ---
 name: recipe-rendering
-description: >
-  Data model and layout specification for rendering OpenCookbook recipes
-  on a webpage or as a PDF. Defines how YAML recipe data maps to visual output.
-  Language-agnostic — covers data structure and layout intent, not implementation.
+description: Data model and layout specification for rendering OpenCookbook recipes on a webpage or as a PDF. Defines how YAML recipe data maps to visual output. Language-agnostic \u2014 covers data structure and layout intent, not implementation.
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
