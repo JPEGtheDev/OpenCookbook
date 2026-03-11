@@ -65,4 +65,4 @@ instructions:
 
 related:
   - label: Kebab Meat Recipe
-    path: ../Beta/Kebab_Meat.yaml
+    path: ./Kebab_Meat.yaml
