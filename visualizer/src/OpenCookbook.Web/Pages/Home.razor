@@ -1,0 +1,58 @@
+﻿@page "/"
+@inject RecipeService RecipeService
+@inject NavigationManager Nav
+
+<PageTitle>OpenCookbook</PageTitle>
+
+<div class="home-page">
+    <h1>Recipes</h1>
+
+    @if (_loading)
+    {
+        <p class="loading-message">Loading recipes…</p>
+    }
+    else if (_error is not null)
+    {
+        <p class="error-message">@_error</p>
+    }
+    else if (_recipes is not null)
+    {
+        <div class="recipe-grid">
+            @foreach (var recipe in _recipes)
+            {
+                <div class="recipe-card" @onclick="() => NavigateToRecipe(recipe.Path)">
+                    <h2 class="recipe-card-title">@recipe.Name</h2>
+                    <p class="recipe-card-description">@recipe.Description</p>
+                    <StatusBadge Status="recipe.Status" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private IReadOnlyList<RecipeIndex>? _recipes;
+    private bool _loading = true;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _recipes = await RecipeService.GetAllRecipesAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load recipes: {ex.Message}";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void NavigateToRecipe(string path)
+    {
+        Nav.NavigateTo($"/recipe/{Uri.EscapeDataString(path)}");
+    }
+}

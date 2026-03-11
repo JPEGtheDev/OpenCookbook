@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OpenCookbook.Application/OpenCookbook.Application.csproj" />
+    <Project Path="src/OpenCookbook.Domain/OpenCookbook.Domain.csproj" />
+    <Project Path="src/OpenCookbook.Infrastructure/OpenCookbook.Infrastructure.csproj" />
+    <Project Path="src/OpenCookbook.Web/OpenCookbook.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OpenCookbook.Domain.Tests/OpenCookbook.Domain.Tests.csproj" />
+    <Project Path="tests/OpenCookbook.Infrastructure.Tests/OpenCookbook.Infrastructure.Tests.csproj" />
+  </Folder>
+</Solution>

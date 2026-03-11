@@ -1,0 +1,42 @@
+<section class="ingredients-section">
+    <h2>Ingredients</h2>
+
+    @foreach (var group in Groups)
+    {
+        @if (group.Heading is not null)
+        {
+            <h3 class="group-heading">@group.Heading</h3>
+        }
+
+        <ul class="ingredient-list">
+            @foreach (var item in group.Items)
+            {
+                <li class="ingredient-item">
+                    <span class="ingredient-qty">@FormatQuantity(item.Quantity)@item.Unit</span>
+                    <span class="ingredient-name">
+                        @item.Name
+                        @if (item.VolumeAlt is not null)
+                        {
+                            <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
+                        }
+                        @if (item.Note is not null)
+                        {
+                            <span class="ingredient-note">(@item.Note)</span>
+                        }
+                    </span>
+                </li>
+            }
+        </ul>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired]
+    public List<IngredientGroup> Groups { get; set; } = [];
+
+    private static string FormatQuantity(double qty)
+    {
+        // Display whole numbers without decimal places
+        return qty == Math.Floor(qty) ? qty.ToString("F0") : qty.ToString("G");
+    }
+}
