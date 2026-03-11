@@ -1,0 +1,16 @@
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/bin/Debug/net9.0/OpenCookbook.Application.deps.json
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/bin/Debug/net9.0/OpenCookbook.Application.dll
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/bin/Debug/net9.0/OpenCookbook.Application.pdb
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/bin/Debug/net9.0/OpenCookbook.Domain.dll
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/bin/Debug/net9.0/OpenCookbook.Domain.pdb
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.csproj.AssemblyReference.cache
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.AssemblyInfoInputs.cache
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.AssemblyInfo.cs
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.csproj.CoreCompileInputs.cache
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.sourcelink.json
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCook.EA3562B7.Up2Date
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.dll
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/refint/OpenCookbook.Application.dll
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/OpenCookbook.Application.pdb
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/obj/Debug/net9.0/ref/OpenCookbook.Application.dll

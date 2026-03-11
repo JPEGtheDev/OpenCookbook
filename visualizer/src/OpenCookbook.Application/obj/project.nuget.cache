@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "i4dpBeA2rqw=",
+  "success": true,
+  "projectFilePath": "/home/runner/work/OpenCookbook/OpenCookbook/visualizer/src/OpenCookbook.Application/OpenCookbook.Application.csproj",
+  "expectedPackageFiles": [
+    "/home/runner/.nuget/packages/microsoft.netcore.app.ref/9.0.12/microsoft.netcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/runner/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.12/microsoft.aspnetcore.app.ref.9.0.12.nupkg.sha512"
+  ],
+  "logs": []
+}

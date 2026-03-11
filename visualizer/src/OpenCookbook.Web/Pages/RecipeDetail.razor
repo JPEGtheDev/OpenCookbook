@@ -23,14 +23,14 @@ else if (_recipe is not null)
             <div class="recipe-meta">
                 <span class="recipe-author">@_recipe.Author</span>
                 <span class="recipe-version">v@(_recipe.Version)</span>
-                <StatusBadge Status="_recipe.Status" />
+                <StatusBadge Status="@_recipe.Status" />
             </div>
             <p class="recipe-description">@_recipe.Description</p>
         </header>
 
         <div class="recipe-body">
             <aside class="recipe-sidebar">
-                <IngredientList Groups="_recipe.Ingredients" />
+                <IngredientList Groups="@_recipe.Ingredients" />
 
                 @if (_recipe.Utensils is { Count: > 0 })
                 {
@@ -54,7 +54,7 @@ else if (_recipe is not null)
             </aside>
 
             <div class="recipe-instructions">
-                <InstructionList Sections="_recipe.Instructions" />
+                <InstructionList Sections="@_recipe.Instructions" />
             </div>
         </div>
 

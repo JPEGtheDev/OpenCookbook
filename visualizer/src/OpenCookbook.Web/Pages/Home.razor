@@ -23,7 +23,7 @@
                 <div class="recipe-card" @onclick="() => NavigateToRecipe(recipe.Path)">
                     <h2 class="recipe-card-title">@recipe.Name</h2>
                     <p class="recipe-card-description">@recipe.Description</p>
-                    <StatusBadge Status="recipe.Status" />
+                    <StatusBadge Status="@recipe.Status" />
                 </div>
             }
         </div>
