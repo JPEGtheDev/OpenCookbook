@@ -86,123 +86,448 @@ public class YamlRecipeParserTests
     [Fact]
     public void Parse_SimpleRecipe_ReturnsCorrectName()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Guajillo Brisket Rub", recipe.Name);
     }
 
     [Fact]
     public void Parse_SimpleRecipe_ReturnsCorrectVersion()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("1.0", recipe.Version);
     }
 
     [Fact]
     public void Parse_SimpleRecipe_ReturnsCorrectAuthor()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Jonathan Petz | JPEGtheDev", recipe.Author);
     }
 
     [Fact]
     public void Parse_SimpleRecipe_ReturnsStableStatus()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal(RecipeStatus.Stable, recipe.Status);
     }
 
     [Fact]
-    public void Parse_SimpleRecipe_ParsesIngredients()
+    public void Parse_SimpleRecipe_HasOneIngredientGroup()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Single(recipe.Ingredients);
-        var group = recipe.Ingredients[0];
-        Assert.Null(group.Heading);
-        Assert.Equal(2, group.Items.Count);
-        Assert.Equal("Guajillo Chiles", group.Items[0].Name);
-        Assert.Equal(100, group.Items[0].Quantity);
-        Assert.Equal("g", group.Items[0].Unit);
     }
 
     [Fact]
-    public void Parse_SimpleRecipe_ParsesInstructions()
+    public void Parse_SimpleRecipe_IngredientGroupHeadingIsNull()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Null(recipe.Ingredients[0].Heading);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_IngredientGroupHasTwoItems()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal(2, recipe.Ingredients[0].Items.Count);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_FirstIngredientNameIsCorrect()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("Guajillo Chiles", recipe.Ingredients[0].Items[0].Name);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_FirstIngredientQuantityIsCorrect()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal(100, recipe.Ingredients[0].Items[0].Quantity);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_FirstIngredientUnitIsCorrect()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("g", recipe.Ingredients[0].Items[0].Unit);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_HasOneInstructionSection()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Single(recipe.Instructions);
-        var section = recipe.Instructions[0];
-        Assert.Equal(SectionType.Sequence, section.Type);
-        Assert.Equal(2, section.Steps.Count);
     }
 
     [Fact]
-    public void Parse_SimpleRecipe_ParsesStepNotes()
+    public void Parse_SimpleRecipe_InstructionTypeIsSequence()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
-        var step = recipe.Instructions[0].Steps[1];
-        Assert.NotNull(step.Notes);
-        Assert.Single(step.Notes);
-        Assert.Contains("mustard seeds", step.Notes[0]);
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal(SectionType.Sequence, recipe.Instructions[0].Type);
     }
 
     [Fact]
-    public void Parse_SimpleRecipe_ParsesRelated()
+    public void Parse_SimpleRecipe_InstructionHasTwoSteps()
     {
-        var recipe = _parser.Parse(SimpleRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal(2, recipe.Instructions[0].Steps.Count);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_SecondStepHasNotes()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.NotNull(recipe.Instructions[0].Steps[1].Notes);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_SecondStepHasOneNote()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Single(recipe.Instructions[0].Steps[1].Notes!);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_SecondStepNoteContainsMustardSeeds()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Contains("mustard seeds", recipe.Instructions[0].Steps[1].Notes![0]);
+    }
+
+    [Fact]
+    public void Parse_SimpleRecipe_HasRelatedRecipes()
+    {
+        // Arrange
+        var yaml = SimpleRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.NotNull(recipe.Related);
-        Assert.Single(recipe.Related);
-        Assert.Equal("Guajillo Brisket Binder", recipe.Related[0].Label);
-        Assert.Equal("./Guajillo_Brisket_Binder.yaml", recipe.Related[0].Path);
     }
 
     [Fact]
-    public void Parse_BranchRecipe_ParsesBranchSections()
+    public void Parse_SimpleRecipe_HasOneRelatedRecipe()
     {
-        var recipe = _parser.Parse(BranchRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
-        var branches = recipe.Instructions
-            .Where(s => s.Type == SectionType.Branch)
-            .ToList();
+        // Act
+        var recipe = _parser.Parse(yaml);
 
-        Assert.Equal(2, branches.Count);
-        Assert.Equal("Grilled", branches[0].Heading);
-        Assert.Equal("Baked", branches[1].Heading);
-        Assert.Equal("cooking-method", branches[0].BranchGroup);
-        Assert.Equal("cooking-method", branches[1].BranchGroup);
+        // Assert
+        Assert.Single(recipe.Related!);
     }
 
     [Fact]
-    public void Parse_BranchRecipe_ParsesVolumeAlt()
+    public void Parse_SimpleRecipe_RelatedLabelIsCorrect()
     {
-        var recipe = _parser.Parse(BranchRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
-        var pepper = recipe.Ingredients[0].Items[1];
-        Assert.Equal("Black Pepper", pepper.Name);
-        Assert.Equal("3/4 tsp.", pepper.VolumeAlt);
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("Guajillo Brisket Binder", recipe.Related![0].Label);
     }
 
     [Fact]
-    public void Parse_BranchRecipe_ParsesOptionalSection()
+    public void Parse_SimpleRecipe_RelatedPathIsCorrect()
     {
-        var recipe = _parser.Parse(BranchRecipeYaml);
+        // Arrange
+        var yaml = SimpleRecipeYaml;
 
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("./Guajillo_Brisket_Binder.yaml", recipe.Related![0].Path);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_HasTwoBranchSections()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        var branchCount = recipe.Instructions.Count(s => s.Type == SectionType.Branch);
+        Assert.Equal(2, branchCount);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FirstBranchHeadingIsGrilled()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        var firstBranch = recipe.Instructions.First(s => s.Type == SectionType.Branch);
+        Assert.Equal("Grilled", firstBranch.Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_SecondBranchHeadingIsBaked()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        var secondBranch = recipe.Instructions.Where(s => s.Type == SectionType.Branch).Skip(1).First();
+        Assert.Equal("Baked", secondBranch.Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FirstBranchGroupIsCookingMethod()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        var firstBranch = recipe.Instructions.First(s => s.Type == SectionType.Branch);
+        Assert.Equal("cooking-method", firstBranch.BranchGroup);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_SecondBranchGroupIsCookingMethod()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        var secondBranch = recipe.Instructions.Where(s => s.Type == SectionType.Branch).Skip(1).First();
+        Assert.Equal("cooking-method", secondBranch.BranchGroup);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_VolumeAltIngredientNameIsCorrect()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("Black Pepper", recipe.Ingredients[0].Items[1].Name);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_VolumeAltValueIsCorrect()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal("3/4 tsp.", recipe.Ingredients[0].Items[1].VolumeAlt);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FreezingSectionIsOptional()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         var freezing = recipe.Instructions.First(s => s.Heading == "Freezing");
         Assert.True(freezing.Optional);
     }
 
     [Fact]
-    public void Parse_BranchRecipe_MaintainsSectionOrder()
+    public void Parse_BranchRecipe_HasFiveSections()
     {
-        var recipe = _parser.Parse(BranchRecipeYaml);
+        // Arrange
+        var yaml = BranchRecipeYaml;
 
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal(5, recipe.Instructions.Count);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FirstSectionIsMarinating()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Marinating", recipe.Instructions[0].Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_SecondSectionIsGrilled()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Grilled", recipe.Instructions[1].Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_ThirdSectionIsBaked()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Baked", recipe.Instructions[2].Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FourthSectionIsServing()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Serving", recipe.Instructions[3].Heading);
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_FifthSectionIsFreezing()
+    {
+        // Arrange
+        var yaml = BranchRecipeYaml;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal("Freezing", recipe.Instructions[4].Heading);
     }
 
@@ -212,6 +537,7 @@ public class YamlRecipeParserTests
     [InlineData("status: draft", RecipeStatus.Draft)]
     public void Parse_StatusValues_AreHandledCorrectly(string statusLine, RecipeStatus expected)
     {
+        // Arrange
         var yaml = $"""
             name: Test
             version: "1.0"
@@ -227,19 +553,30 @@ public class YamlRecipeParserTests
             instructions: []
             """;
 
+        // Act
         var recipe = _parser.Parse(yaml);
+
+        // Assert
         Assert.Equal(expected, recipe.Status);
     }
 
     [Fact]
     public void Parse_EmptyString_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => _parser.Parse(""));
+        // Arrange
+        var yaml = "";
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => _parser.Parse(yaml));
     }
 
     [Fact]
     public void Parse_WhitespaceOnly_ThrowsArgumentException()
     {
-        Assert.Throws<ArgumentException>(() => _parser.Parse("   "));
+        // Arrange
+        var yaml = "   ";
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => _parser.Parse(yaml));
     }
 }
