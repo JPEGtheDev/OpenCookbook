@@ -1,10 +1,10 @@
 name: Kebab Meatballs
-version: "1.2"
+version: "1.3"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A continuation of the Kebab Meat recipe. Forms the kebab mixture into meatballs
   that can be made in bulk to eat now or freeze for later.
-status: beta
+status: stable
 
 ingredients:
   - heading: null
@@ -21,25 +21,42 @@ utensils:
     items:
       - Mixing Bowl
       - Baking Sheet
+      - Grill
 
 instructions:
   - heading: null
     type: sequence
     steps:
-      - text: Preheat oven to 204°C (400°F)
       - text: Mix breadcrumbs into kebab meat by hand, or add them to the stand mixer if the meat is still in it from the previous recipe
-      - text: Using a cookie scoop or by hand, form into 24 equal-sized meatballs of approximately 39 g each
+      - text: Using a cookie scoop or by hand, form into 24 equal-sized meatballs of approximately 45 g each (±2.5 g)
+
+  - heading: Oven
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: Preheat oven to 204°C (400°F)
       - text: Space meatballs evenly on a bare baking sheet — no lining needed
       - text: Bake for 18–20 minutes, or until the internal temperature reaches at least 71°C (160°F)
         notes:
           - 71°C (160°F) is the minimum safe internal temperature for ground beef.
           - For well done, cook to 77°C (170°F).
 
+  - heading: Grilled
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: Preheat grill to 232°C (450°F)
+      - text: Place meatballs on the grill grates, spacing them so they are not touching
+      - text: Grill for 15 minutes, or until the internal temperature reaches at least 71°C (160°F)
+        notes:
+          - 71°C (160°F) is the minimum safe internal temperature for ground beef.
+          - For grate marks on both sides, flip the meatballs once halfway through cooking.
+
   - heading: Freezing
     type: sequence
     optional: true
     steps:
-      - text: Allow meatballs to cool fully after baking
+      - text: Allow meatballs to cool fully after cooking
       - text: Place uncovered on a baking tray in the freezer, ensuring pieces are not touching
       - text: Freeze until pieces no longer stick together (approximately 1–2 hours)
       - text: Transfer to a sealed plastic freezer bag or vacuum-sealed bag
@@ -48,4 +65,4 @@ instructions:
 
 related:
   - label: Kebab Meat Recipe
-    path: ./Kebab_Meat.yaml
+    path: ../Beta/Kebab_Meat.yaml
