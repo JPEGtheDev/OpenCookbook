@@ -41,11 +41,12 @@ jobs:
         run: |
           mkdir -p visualizer/output/wwwroot/recipes
           find Recipes -name "*.yaml" | while read -r file; do
-            dir=$(dirname "$file" | sed 's|^Recipes/||;s|^Recipes$||')
-            if [ -n "$dir" ]; then
+            relpath="${file#Recipes/}"
+            dir=$(dirname "$relpath")
+            if [ "$dir" != "." ]; then
               mkdir -p "visualizer/output/wwwroot/recipes/$dir"
             fi
-            cp "$file" "visualizer/output/wwwroot/recipes/$file"
+            cp "$file" "visualizer/output/wwwroot/recipes/$relpath"
           done
 
       - name: Generate recipe index
