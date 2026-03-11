@@ -1,101 +1,97 @@
 <section class="instructions-container">
     <h2>Instructions</h2>
 
-    @{ var sequenceSections = Sections.Where(s => s.Type == SectionType.Sequence).ToList(); }
-    @{ var branchSections = Sections.Where(s => s.Type == SectionType.Branch).ToList(); }
-    @{ var branchGroups = branchSections.GroupBy(s => s.BranchGroup ?? s.Heading ?? "Options").ToList(); }
-
-    @* Render sequence sections *@
-    @foreach (var seq in sequenceSections)
+    @foreach (var item in _renderItems)
     {
-        <div class="instruction-section @(seq.Optional ? "instruction-optional" : "")">
-            @if (seq.Heading is not null)
-            {
-                <h3 class="section-heading">
-                    @seq.Heading
-                    @if (seq.Optional)
-                    {
-                        <span class="optional-label">(optional)</span>
-                    }
-                </h3>
-            }
-
-            <ol class="step-list">
-                @foreach (var step in seq.Steps)
+        if (item.IsSequence)
+        {
+            var seq = item.Section!;
+            <div class="instruction-section @(seq.Optional ? "instruction-optional" : "")">
+                @if (seq.Heading is not null)
                 {
-                    <li class="step-item">
-                        <span class="step-text">@step.Text</span>
-                        @if (step.Notes is { Count: > 0 })
+                    <h3 class="section-heading">
+                        @seq.Heading
+                        @if (seq.Optional)
                         {
-                            <div class="step-notes">
-                                @foreach (var note in step.Notes)
-                                {
-                                    <p class="step-note">💡 @note</p>
-                                }
-                            </div>
+                            <span class="optional-label">(optional)</span>
                         }
-                    </li>
+                    </h3>
                 }
-            </ol>
-        </div>
-    }
 
-    @* Render branch sections as tabbed groups *@
-    @foreach (var group in branchGroups)
-    {
-        var groupKey = group.Key;
-        var options = group.ToList();
+                <ol class="step-list">
+                    @foreach (var step in seq.Steps)
+                    {
+                        <li class="step-item">
+                            <span class="step-text">@step.Text</span>
+                            @if (step.Notes is { Count: > 0 })
+                            {
+                                <div class="step-notes">
+                                    @foreach (var note in step.Notes)
+                                    {
+                                        <p class="step-note">💡 @note</p>
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                </ol>
+            </div>
+        }
+        else
+        {
+            var groupKey = item.BranchGroupKey!;
+            var options = item.BranchOptions!;
 
-        <div class="branch-group">
-            <h3 class="section-heading">@groupKey</h3>
-            <div class="branch-tabs" role="tablist">
+            <div class="branch-group">
+                <div class="branch-tabs" role="tablist">
+                    @foreach (var option in options)
+                    {
+                        var label = option.Heading ?? "Option";
+                        var isActive = GetActiveTab(groupKey) == label;
+
+                        <button class="branch-tab @(isActive ? "branch-tab-active" : "")"
+                                role="tab"
+                                aria-selected="@isActive"
+                                @onclick="() => SetActiveTab(groupKey, label)">
+                            @label
+                            @if (option.Optional)
+                            {
+                                <span class="optional-label">(optional)</span>
+                            }
+                        </button>
+                    }
+                </div>
+
                 @foreach (var option in options)
                 {
                     var label = option.Heading ?? "Option";
                     var isActive = GetActiveTab(groupKey) == label;
 
-                    <button class="branch-tab @(isActive ? "branch-tab-active" : "")"
-                            role="tab"
-                            aria-selected="@isActive"
-                            @onclick="() => SetActiveTab(groupKey, label)">
-                        @label
-                        @if (option.Optional)
-                        {
-                            <span class="optional-label">(optional)</span>
-                        }
-                    </button>
+                    @if (isActive)
+                    {
+                        <div class="branch-panel" role="tabpanel">
+                            <ol class="step-list">
+                                @foreach (var step in option.Steps)
+                                {
+                                    <li class="step-item">
+                                        <span class="step-text">@step.Text</span>
+                                        @if (step.Notes is { Count: > 0 })
+                                        {
+                                            <div class="step-notes">
+                                                @foreach (var note in step.Notes)
+                                                {
+                                                    <p class="step-note">💡 @note</p>
+                                                }
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            </ol>
+                        </div>
+                    }
                 }
             </div>
-
-            @foreach (var option in options)
-            {
-                var label = option.Heading ?? "Option";
-                var isActive = GetActiveTab(groupKey) == label;
-
-                @if (isActive)
-                {
-                    <div class="branch-panel" role="tabpanel">
-                        <ol class="step-list">
-                            @foreach (var step in option.Steps)
-                            {
-                                <li class="step-item">
-                                    <span class="step-text">@step.Text</span>
-                                    @if (step.Notes is { Count: > 0 })
-                                    {
-                                        <div class="step-notes">
-                                            @foreach (var note in step.Notes)
-                                            {
-                                                <p class="step-note">💡 @note</p>
-                                            }
-                                        </div>
-                                    }
-                                </li>
-                            }
-                        </ol>
-                    </div>
-                }
-            }
-        </div>
+        }
     }
 </section>
 
@@ -103,14 +99,47 @@
     [Parameter, EditorRequired]
     public List<Section> Sections { get; set; } = [];
 
+    private List<RenderItem> _renderItems = [];
     private readonly Dictionary<string, string> _activeTabs = new();
+
+    protected override void OnParametersSet()
+    {
+        _renderItems = BuildRenderItems(Sections);
+    }
+
+    private static List<RenderItem> BuildRenderItems(List<Section> sections)
+    {
+        var items = new List<RenderItem>();
+        var renderedBranchGroups = new HashSet<string>();
+
+        foreach (var section in sections)
+        {
+            if (section.Type == SectionType.Sequence)
+            {
+                items.Add(new RenderItem { IsSequence = true, Section = section });
+            }
+            else
+            {
+                var groupKey = section.BranchGroup ?? section.Heading ?? "Options";
+                if (renderedBranchGroups.Add(groupKey))
+                {
+                    var options = sections
+                        .Where(s => s.Type == SectionType.Branch
+                            && (s.BranchGroup ?? s.Heading ?? "Options") == groupKey)
+                        .ToList();
+                    items.Add(new RenderItem { IsSequence = false, BranchGroupKey = groupKey, BranchOptions = options });
+                }
+            }
+        }
+
+        return items;
+    }
 
     private string GetActiveTab(string groupKey)
     {
         if (_activeTabs.TryGetValue(groupKey, out var tab))
             return tab;
 
-        // Default to first tab in group
         var first = Sections
             .Where(s => s.Type == SectionType.Branch && (s.BranchGroup ?? s.Heading ?? "Options") == groupKey)
             .Select(s => s.Heading ?? "Option")
@@ -123,5 +152,13 @@
     private void SetActiveTab(string groupKey, string label)
     {
         _activeTabs[groupKey] = label;
+    }
+
+    private sealed class RenderItem
+    {
+        public bool IsSequence { get; init; }
+        public Section? Section { get; init; }
+        public string? BranchGroupKey { get; init; }
+        public List<Section>? BranchOptions { get; init; }
     }
 }

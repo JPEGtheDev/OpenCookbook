@@ -473,6 +473,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.6",
           "OpenCookbook.Application": "1.0.0",
           "OpenCookbook.Domain": "1.0.0",
           "YamlDotNet": "16.3.0"
@@ -957,6 +958,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.6",
           "OpenCookbook.Application": "1.0.0",
           "OpenCookbook.Domain": "1.0.0",
           "YamlDotNet": "16.3.0"

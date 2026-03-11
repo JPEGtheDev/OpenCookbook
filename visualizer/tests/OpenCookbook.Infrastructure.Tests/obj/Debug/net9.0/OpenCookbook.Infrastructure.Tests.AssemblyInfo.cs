@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OpenCookbook.Infrastructure.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39a5f1a23e044e421420758887e73ebe12207148")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d5b38f7483d8aa33247198547e8c45b7255d6e3")]
 [assembly: System.Reflection.AssemblyProductAttribute("OpenCookbook.Infrastructure.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OpenCookbook.Infrastructure.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

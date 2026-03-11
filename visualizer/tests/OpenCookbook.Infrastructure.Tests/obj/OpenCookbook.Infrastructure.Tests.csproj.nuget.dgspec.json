@@ -193,6 +193,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.Extensions.DependencyInjection.Abstractions": {
+              "target": "Package",
+              "version": "[9.0.6, )"
+            },
             "YamlDotNet": {
               "target": "Package",
               "version": "[16.3.0, )"

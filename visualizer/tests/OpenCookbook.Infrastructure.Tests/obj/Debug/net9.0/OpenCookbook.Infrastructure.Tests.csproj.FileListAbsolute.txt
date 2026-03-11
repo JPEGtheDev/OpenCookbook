@@ -105,3 +105,4 @@
 /home/runner/work/OpenCookbook/OpenCookbook/visualizer/tests/OpenCookbook.Infrastructure.Tests/obj/Debug/net9.0/OpenCookbook.Infrastructure.Tests.pdb
 /home/runner/work/OpenCookbook/OpenCookbook/visualizer/tests/OpenCookbook.Infrastructure.Tests/obj/Debug/net9.0/OpenCookbook.Infrastructure.Tests.genruntimeconfig.cache
 /home/runner/work/OpenCookbook/OpenCookbook/visualizer/tests/OpenCookbook.Infrastructure.Tests/obj/Debug/net9.0/ref/OpenCookbook.Infrastructure.Tests.dll
+/home/runner/work/OpenCookbook/OpenCookbook/visualizer/tests/OpenCookbook.Infrastructure.Tests/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
