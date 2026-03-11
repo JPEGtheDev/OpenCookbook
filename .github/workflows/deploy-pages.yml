@@ -31,7 +31,7 @@ jobs:
 
       - name: Run tests
         working-directory: visualizer
-        run: dotnet test --no-restore --verbosity normal -p:TestingPlatformDotnetTestSupport=true
+        run: dotnet test --no-restore --verbosity normal
 
       - name: Publish Blazor WASM app
         working-directory: visualizer
