@@ -35,7 +35,7 @@ Add new entries at the **TOP** of the log (newest first).
 
 ### 2026-03-12 — Sub-recipe ingredients must include a doc_link field
 
-**What happened:** The "Kebab Meat Recipe (full batch)" ingredient in Kebab_Meatballs.yaml
+**What happened:** The "Kebab Meat Recipe (full batch)" ingredient in `Recipes/Grilling/Kebab_Meatballs.yaml`
 had no `doc_link` field pointing to the Kebab_Meat.yaml recipe file, even though it is
 explicitly a reference to another recipe in the repository.
 **Prevention rule:** Any time an ingredient's `name` refers to another recipe in this

@@ -111,7 +111,7 @@ Spice quantities under 10g must include `volume_alt` as a fallback for cooks wit
 **Optional fields:**
 - `volume_alt` — required when `quantity < 10` and `unit = g`; volumetric fallback for cooks without a precise scale
 - `note` — optional; ingredient-level context (substitution suggestions, fat ratio guidance, etc.)
-- `doc_link` — optional; relative path to another recipe file when this ingredient is itself a recipe (e.g. `./Kebab_Meat.yaml`)
+- `doc_link` — optional in general; **REQUIRED** when this ingredient is itself another recipe in the repo; relative path to the linked recipe file (e.g. `./Kebab_Meat.yaml`)
 
 ---
 

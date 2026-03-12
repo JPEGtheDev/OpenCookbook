@@ -144,7 +144,7 @@ Use the optional `doc_link` field when an ingredient is itself another recipe in
   doc_link: ./Kebab_Meat.yaml
 ```
 
-**RULE:** Any ingredient that refers to another recipe in this repository **must** include a `doc_link` field with the relative path to that recipe's `.yaml` file. Use the same relative-path conventions as the `related` field (`./`, `../`, `../<Folder>/File.yaml`).
+**RULE:** Any ingredient that refers to another recipe in this repository **must** include a `doc_link` field with the relative path to that recipe's `.yaml` file. Use the same relative-path conventions as the `related` field (`./`, `../`, `../<Folder>/File.yaml`). Whenever you add, change, or remove `doc_link` rules here, you **must also** update the Cross-References checklist item in `.github/skills/recipe-validation/SKILL.md` so the validation pass explicitly enforces this requirement.
 
 ---
 
