@@ -1,5 +1,5 @@
 name: Kebab Meatballs
-version: "1.4"
+version: "1.5"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A continuation of the Kebab Meat recipe. Forms the kebab mixture into meatballs
@@ -12,6 +12,7 @@ ingredients:
       - quantity: 1
         unit: whole
         name: Kebab Meat Recipe (full batch)
+        doc_link: ./Kebab_Meat.yaml
       - quantity: 40
         unit: g
         name: Panko Bread Crumbs

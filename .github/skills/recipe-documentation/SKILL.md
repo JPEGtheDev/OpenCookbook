@@ -135,6 +135,17 @@ Use the optional `note` field for substitution tips or context:
   note: "For a fattier result, use 80/20 or 70/30."
 ```
 
+Use the optional `doc_link` field when an ingredient is itself another recipe in the repository:
+
+```yaml
+- quantity: 1
+  unit: whole
+  name: Kebab Meat Recipe (full batch)
+  doc_link: ./Kebab_Meat.yaml
+```
+
+**RULE:** Any ingredient that refers to another recipe in this repository **must** include a `doc_link` field with the relative path to that recipe's `.yaml` file. Use the same relative-path conventions as the `related` field (`./`, `../`, `../<Folder>/File.yaml`).
+
 ---
 
 ## Instructions
