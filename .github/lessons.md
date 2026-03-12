@@ -27,6 +27,12 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-12 — PR titles must use conventional commits format
+
+**What happened:** A PR was created with a freeform title ("Add doc_link to sub-recipe ingredients; enforce self-evaluation; fix binder description") instead of the conventional commits format.
+**Prevention rule:** All PR titles must use conventional commits format: `<type>(<scope>): <description>`. Common types: `feat` (new feature/field), `fix` (bug/error correction), `docs` (documentation only). Scope is optional but use `recipes` for recipe file changes. Example: `feat(recipes): add doc_link to sub-recipe ingredients`.
+**Rule ID:** None.
+
 ### 2026-03-12 — Sub-recipe ingredients must include a doc_link field
 
 **What happened:** The "Kebab Meat Recipe (full batch)" ingredient in Kebab_Meatballs.yaml
