@@ -27,6 +27,34 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-12 — PR titles must use conventional commits format
+
+**What happened:** A PR was created with a freeform title ("Add doc_link to sub-recipe ingredients; enforce self-evaluation; fix binder description") instead of the conventional commits format.
+**Prevention rule:** All PR titles must use conventional commits format: `<type>(<scope>): <description>`. Common types: `feat` (new feature/field), `fix` (bug/error correction), `docs` (documentation only). Scope is optional but use `recipes` for recipe file changes. Example: `feat(recipes): add doc_link to sub-recipe ingredients`.
+**Rule ID:** None.
+
+### 2026-03-12 — Sub-recipe ingredients must include a doc_link field
+
+**What happened:** The "Kebab Meat Recipe (full batch)" ingredient in `Recipes/Grilling/Kebab_Meatballs.yaml`
+had no `doc_link` field pointing to the Kebab_Meat.yaml recipe file, even though it is
+explicitly a reference to another recipe in the repository.
+**Prevention rule:** Any time an ingredient's `name` refers to another recipe in this
+repository, immediately add a `doc_link` field with the relative path to that recipe's
+`.yaml` file. Do not rely on the `related` section alone — the link must be on the
+ingredient itself so a renderer can surface it inline.
+**Rule ID:** None.
+
+### 2026-03-12 — Must run validation checklist after editing any recipe file
+
+**What happened:** After editing four recipe YAML files (renaming, ingredient changes, reordering,
+description fixes), the assistant declared the work done without running the validation checklist
+from the recipe-validation skill on any of the modified recipes.
+**Prevention rule:** After editing ANY recipe YAML file, immediately run the full validation
+checklist from the recipe-validation skill on every file you changed before declaring done.
+Do not skip this step even for small edits. This is required regardless of how minor the change
+appears.
+**Rule ID:** None.
+
 ### 2026-03-11 — Present options before implementing a technology choice
 
 **What happened:** The user asked for a plan for an HTML visualizer and said

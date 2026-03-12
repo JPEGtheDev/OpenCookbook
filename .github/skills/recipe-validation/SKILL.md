@@ -87,6 +87,7 @@ Do not say "looks good" without checking each item. Fix what you can. Flag what 
 - [ ] All `path` values in `related[]` point to files that exist
 - [ ] Paths use relative format (`./` or `../`)
 - [ ] Paths end in `.yaml`, not `.md`
+- [ ] Every ingredient whose `name` refers to another recipe in this repo has a `doc_link` field with the relative path to that recipe's `.yaml` file
 
 ### 6. Text Quality
 

@@ -1,5 +1,5 @@
 name: Perfect Mashed Potatoes
-version: "1.1"
+version: "1.2"
 author: Jonathan Petz | JPEGtheDev
 description: >
   One of the best mashed potato recipes around, with a simple and fancy variation.
@@ -69,6 +69,12 @@ instructions:
           - If you are making the fancy version, start the cream infusion now so it is ready when the potatoes are done.
       - text: Strain potatoes and return to the pot
 
+  - heading: Regular Cream
+    type: branch
+    branch_group: cream-prep
+    steps:
+      - text: Use heavy cream as-is — no additional preparation needed
+
   - heading: Fancy Cream
     type: branch
     branch_group: cream-prep
@@ -79,12 +85,6 @@ instructions:
       - text: Strain through a fine mesh strainer and set aside
         notes:
           - If the potatoes are already done, strain the infused cream directly into the pot — no need to set it aside first.
-
-  - heading: Regular Cream
-    type: branch
-    branch_group: cream-prep
-    steps:
-      - text: Use heavy cream as-is — no additional preparation needed
 
   - heading: Mashing
     type: sequence
