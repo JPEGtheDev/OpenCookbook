@@ -12,7 +12,7 @@ else if (_error is not null)
 {
     <div class="error-message">
         <p>@_error</p>
-        <a href="/">← Back to recipes</a>
+        <a href="@Nav.BaseUri">← Back to recipes</a>
     </div>
 }
 else if (_recipe is not null)
@@ -67,7 +67,7 @@ else if (_recipe is not null)
                         @foreach (var related in _recipe.Related)
                         {
                             <li>
-                                <a href="/recipe/@Uri.EscapeDataString(related.Path)">@related.Label</a>
+                                <a href="@GetRelatedRecipeUrl(related.Path)">@related.Label</a>
                             </li>
                         }
                     </ul>
@@ -88,7 +88,7 @@ else if (_recipe is not null)
             }
         </footer>
 
-        <a href="/" class="back-link">← Back to recipes</a>
+        <a href="@Nav.BaseUri" class="back-link">← Back to recipes</a>
     </article>
 }
 
@@ -119,5 +119,23 @@ else if (_recipe is not null)
         {
             _loading = false;
         }
+    }
+
+    private string GetRelatedRecipeUrl(string relativePath)
+    {
+        var decodedPath = Uri.UnescapeDataString(Path);
+        var currentDir = decodedPath.Contains('/')
+            ? decodedPath[..decodedPath.LastIndexOf('/')]
+            : "";
+
+        var resolved = relativePath.StartsWith("./")
+            ? relativePath[2..]
+            : relativePath;
+
+        var fullPath = string.IsNullOrEmpty(currentDir)
+            ? resolved
+            : $"{currentDir}/{resolved}";
+
+        return $"{Nav.BaseUri}recipe/{Uri.EscapeDataString(fullPath)}";
     }
 }

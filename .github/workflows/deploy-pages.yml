@@ -51,24 +51,25 @@ jobs:
 
       - name: Generate recipe index
         run: |
-          cd visualizer/output/wwwroot/recipes
-          echo "[" > recipe-index.json
-          first=true
-          find . -name "*.yaml" | sort | while read -r file; do
-            path="${file#./}"
-            name=$(grep -m1 '^name:' "$file" | sed 's/^name: *//')
-            status=$(grep -m1 '^status:' "$file" | sed 's/^status: *//')
-            desc=$(grep -m1 '^description:' "$file" | sed 's/^description: *>*//' | sed 's/^ *//')
-            if [ "$first" = true ]; then
-              first=false
-            else
-              echo "," >> recipe-index.json
-            fi
-            printf '  {"name": "%s", "path": "%s", "status": "%s", "description": "%s"}' \
-              "$name" "$path" "$status" "$desc" >> recipe-index.json
-          done
-          echo "" >> recipe-index.json
-          echo "]" >> recipe-index.json
+          pip install pyyaml --quiet
+          python3 -c "
+          import json, yaml, os, glob
+
+          recipes_dir = 'visualizer/output/wwwroot/recipes'
+          entries = []
+          for filepath in sorted(glob.glob(os.path.join(recipes_dir, '**/*.yaml'), recursive=True)):
+              with open(filepath) as f:
+                  data = yaml.safe_load(f)
+              rel_path = os.path.relpath(filepath, recipes_dir)
+              entries.append({
+                  'name': data.get('name', ''),
+                  'path': rel_path,
+                  'status': data.get('status', ''),
+                  'description': (data.get('description', '') or '').strip()
+              })
+          with open(os.path.join(recipes_dir, 'recipe-index.json'), 'w') as f:
+              json.dump(entries, f, indent=2)
+          "
 
       - name: Add .nojekyll and 404.html
         run: |

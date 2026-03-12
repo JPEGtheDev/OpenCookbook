@@ -12,7 +12,7 @@
             @foreach (var item in group.Items)
             {
                 <li class="ingredient-item">
-                    <span class="ingredient-qty">@FormatQuantity(item.Quantity)@item.Unit</span>
+                    <span class="ingredient-qty">@FormatQuantity(item.Quantity) @item.Unit</span>
                     <span class="ingredient-name">
                         @item.Name
                         @if (item.VolumeAlt is not null)

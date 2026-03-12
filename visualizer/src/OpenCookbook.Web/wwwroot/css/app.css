@@ -176,6 +176,9 @@ ul, ol {
     padding: 1.25rem;
     cursor: pointer;
     transition: box-shadow 0.15s ease, transform 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .recipe-card:hover {

@@ -9,6 +9,9 @@
     case RecipeStatus.Draft:
         <span class="status-badge status-draft">Draft — Incomplete</span>
         break;
+    default:
+        <span class="status-badge status-unknown">Unknown status: @Status</span>
+        break;
 }
 
 @code {

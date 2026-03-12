@@ -48,10 +48,14 @@
                     {
                         var label = option.Heading ?? "Option";
                         var isActive = GetActiveTab(groupKey) == label;
+                        var tabId = $"tab-{groupKey}-{label}".Replace(" ", "-").ToLowerInvariant();
+                        var panelId = $"panel-{groupKey}-{label}".Replace(" ", "-").ToLowerInvariant();
 
                         <button class="branch-tab @(isActive ? "branch-tab-active" : "")"
+                                id="@tabId"
                                 role="tab"
                                 aria-selected="@isActive"
+                                aria-controls="@panelId"
                                 @onclick="() => SetActiveTab(groupKey, label)">
                             @label
                             @if (option.Optional)
@@ -66,10 +70,12 @@
                 {
                     var label = option.Heading ?? "Option";
                     var isActive = GetActiveTab(groupKey) == label;
+                    var tabId = $"tab-{groupKey}-{label}".Replace(" ", "-").ToLowerInvariant();
+                    var panelId = $"panel-{groupKey}-{label}".Replace(" ", "-").ToLowerInvariant();
 
                     @if (isActive)
                     {
-                        <div class="branch-panel" role="tabpanel">
+                        <div class="branch-panel" id="@panelId" role="tabpanel" aria-labelledby="@tabId">
                             <ol class="step-list">
                                 @foreach (var step in option.Steps)
                                 {

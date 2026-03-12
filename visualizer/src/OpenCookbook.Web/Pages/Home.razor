@@ -1,6 +1,5 @@
 ﻿@page "/"
 @inject RecipeService RecipeService
-@inject NavigationManager Nav
 
 <PageTitle>OpenCookbook</PageTitle>
 
@@ -20,11 +19,11 @@
         <div class="recipe-grid">
             @foreach (var recipe in _recipes)
             {
-                <div class="recipe-card" @onclick="() => NavigateToRecipe(recipe.Path)">
+                <a class="recipe-card" href="recipe/@Uri.EscapeDataString(recipe.Path)">
                     <h2 class="recipe-card-title">@recipe.Name</h2>
                     <p class="recipe-card-description">@recipe.Description</p>
                     <StatusBadge Status="@recipe.Status" />
-                </div>
+                </a>
             }
         </div>
     }
@@ -49,10 +48,5 @@
         {
             _loading = false;
         }
-    }
-
-    private void NavigateToRecipe(string path)
-    {
-        Nav.NavigateTo($"/recipe/{Uri.EscapeDataString(path)}");
     }
 }
