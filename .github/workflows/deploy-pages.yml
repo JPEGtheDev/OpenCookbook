@@ -1,0 +1,92 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        working-directory: visualizer
+        run: dotnet restore
+
+      - name: Run tests
+        working-directory: visualizer
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Publish Blazor WASM app
+        working-directory: visualizer
+        run: dotnet publish src/OpenCookbook.Web/OpenCookbook.Web.csproj -c Release -o output
+
+      - name: Copy recipes to output
+        run: |
+          mkdir -p visualizer/output/wwwroot/recipes
+          find Recipes -name "*.yaml" | while read -r file; do
+            relpath="${file#Recipes/}"
+            dir=$(dirname "$relpath")
+            if [ "$dir" != "." ]; then
+              mkdir -p "visualizer/output/wwwroot/recipes/$dir"
+            fi
+            cp "$file" "visualizer/output/wwwroot/recipes/$relpath"
+          done
+
+      - name: Generate recipe index
+        run: |
+          pip install pyyaml==6.0.2 --quiet
+          python3 -c "
+          import json, yaml, os, glob
+
+          recipes_dir = 'visualizer/output/wwwroot/recipes'
+          entries = []
+          for filepath in sorted(glob.glob(os.path.join(recipes_dir, '**/*.yaml'), recursive=True)):
+              with open(filepath) as f:
+                  data = yaml.safe_load(f)
+              rel_path = os.path.relpath(filepath, recipes_dir)
+              entries.append({
+                  'name': data.get('name', ''),
+                  'path': rel_path,
+                  'status': data.get('status', ''),
+                  'description': (data.get('description', '') or '').strip()
+              })
+          with open(os.path.join(recipes_dir, 'recipe-index.json'), 'w') as f:
+              json.dump(entries, f, indent=2)
+          "
+
+      - name: Add .nojekyll and 404.html
+        run: |
+          touch visualizer/output/wwwroot/.nojekyll
+          cp visualizer/output/wwwroot/index.html visualizer/output/wwwroot/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: visualizer/output/wwwroot
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ github.event.repository.html_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

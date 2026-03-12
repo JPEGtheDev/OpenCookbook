@@ -1,0 +1,14 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager Nav
+
+<div class="app-layout">
+    <header class="app-header">
+        <a href="@Nav.BaseUri" class="app-title">🍳 OpenCookbook</a>
+    </header>
+    <main class="app-main">
+        @Body
+    </main>
+    <footer class="app-footer">
+        <p>OpenCookbook — CC0 1.0 Universal (Public Domain)</p>
+    </footer>
+</div>

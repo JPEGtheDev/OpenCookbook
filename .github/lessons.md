@@ -27,6 +27,19 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-11 — Present options before implementing a technology choice
+
+**What happened:** The user asked for a plan for an HTML visualizer and said
+their preference was Blazor, but they could be persuaded on another SPA. The
+assistant went straight to implementing Blazor without presenting alternative
+options (e.g., React, Svelte, plain static-site generators) for the user to
+evaluate.
+**Prevention rule:** When the user asks for a plan or says "I can be persuaded,"
+always present at least 2–3 technology options with trade-offs before
+implementing. Let the user choose. Do not assume the stated preference is the
+final decision.
+**Rule ID:** None.
+
 ### 2026-03-05 — Always show scaling math and confirm with the user
 
 **What happened:** A panko quantity of "65 for scaling to 18" was misinterpreted

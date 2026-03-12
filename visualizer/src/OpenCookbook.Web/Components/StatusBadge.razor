@@ -1,0 +1,20 @@
+@switch (Status)
+{
+    case RecipeStatus.Stable:
+        <span class="status-badge status-stable">Stable</span>
+        break;
+    case RecipeStatus.Beta:
+        <span class="status-badge status-beta">Beta — In Progress</span>
+        break;
+    case RecipeStatus.Draft:
+        <span class="status-badge status-draft">Draft — Incomplete</span>
+        break;
+    default:
+        <span class="status-badge status-unknown">Unknown status: @Status</span>
+        break;
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RecipeStatus Status { get; set; }
+}
