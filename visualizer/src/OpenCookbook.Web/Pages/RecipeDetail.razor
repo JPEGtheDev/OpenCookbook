@@ -124,6 +124,11 @@ else if (_recipe is not null)
     private string GetRelatedRecipeUrl(string relativePath)
     {
         var decodedPath = Uri.UnescapeDataString(Path);
+
+        // Guard against malicious route parameter values
+        if (decodedPath.Contains("..") || decodedPath.StartsWith('/') || decodedPath.StartsWith('\\'))
+            return Nav.BaseUri;
+
         var currentDir = decodedPath.Contains('/')
             ? decodedPath[..decodedPath.LastIndexOf('/')]
             : "";

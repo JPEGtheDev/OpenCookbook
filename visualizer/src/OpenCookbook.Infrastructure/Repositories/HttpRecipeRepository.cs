@@ -47,11 +47,15 @@ public sealed class HttpRecipeRepository : IRecipeRepository
         if (path.StartsWith('/') || path.StartsWith('\\'))
             throw new ArgumentException("Recipe path must not start with a slash.", nameof(path));
 
-        if (path.Contains(".."))
-            throw new ArgumentException("Recipe path must not contain directory traversal sequences.", nameof(path));
-
         if (!path.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("Recipe path must have a .yaml extension.", nameof(path));
+
+        // Normalize and check for directory traversal via resolved path
+        var normalized = System.IO.Path.GetFullPath(System.IO.Path.Combine("recipes", path));
+        var basePath = System.IO.Path.GetFullPath("recipes");
+        if (!normalized.StartsWith(basePath + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal)
+            && normalized != basePath)
+            throw new ArgumentException("Recipe path must not escape the recipes directory.", nameof(path));
 
         return path;
     }

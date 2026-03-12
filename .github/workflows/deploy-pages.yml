@@ -51,7 +51,7 @@ jobs:
 
       - name: Generate recipe index
         run: |
-          pip install pyyaml --quiet
+          pip install pyyaml==6.0.2 --quiet
           python3 -c "
           import json, yaml, os, glob
 
