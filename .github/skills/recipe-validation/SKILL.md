@@ -17,7 +17,7 @@ Use this when:
 - Doing a quality check across multiple recipes
 - Something looks wrong and needs investigation
 
-**Full rule details:** See [RULES.md](../references/RULES.md) for the complete rule set with IDs and severity levels.
+**Full rule details:** See [RULES.md](../../references/RULES.md) for the complete rule set with IDs and severity levels.
 
 ---
 
@@ -136,8 +136,8 @@ A recipe can move from `Recipes/Beta/` to `Recipes/` when ALL of these are true:
 
 **This section is not optional.** If your validation pass reveals a gap, fix the system — not just the recipe.
 
-1. Add a rule to [RULES.md](../references/RULES.md) if the error class isn't covered
-2. If a spice was missing, add it to [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md)
+1. Add a rule to [RULES.md](../../references/RULES.md) if the error class isn't covered
+2. If a spice was missing, add it to [SPICE_CONVERSIONS.md](../../references/SPICE_CONVERSIONS.md)
 3. Add a checklist item above if it catches a new class of error
 4. Log the discovery in [lessons.md](../../lessons.md) with a prevention rule
 

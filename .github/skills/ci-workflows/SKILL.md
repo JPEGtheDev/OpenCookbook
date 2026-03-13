@@ -25,8 +25,6 @@ Use this when:
 |---|---|---|
 | `.github/workflows/deploy-pages.yml` | Push to `master`, `workflow_dispatch` | Build Blazor WASM, generate recipe index, deploy to GitHub Pages |
 
-> ⚠️ **Known issue:** `deploy-pages.yml` currently triggers on `branches: [main]` but the repo's default branch is `master`. This means the automatic push trigger never fires — only `workflow_dispatch` works. This should be corrected to `branches: [master]` when the workflow is next touched.
-
 ---
 
 ## Project Structure (Relevant to CI)

@@ -27,6 +27,18 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-12 — Never use sed or terminal commands to edit files
+
+**What happened:** Used `sed -i` to bulk-update reference links across multiple files. The user loses visibility and control over each individual change when edits happen via terminal commands.
+**Prevention rule:** Always use the built-in file editing tools (`replace_string_in_file` or `multi_replace_string_in_file`) for any file modification. Never use `sed`, `awk`, `perl -i`, or any terminal-based text replacement. The only exception is if the user explicitly asks for a terminal command.
+**Rule ID:** None.
+
+### 2026-03-12 — Do not stop when the user skips a tool call
+
+**What happened:** The user skipped a terminal command and the assistant stopped working instead of asking why.
+**Prevention rule:** When the user skips a tool call, ask them why using the `ask_questions` tool before deciding next steps. Do not assume the task is cancelled. The user may want a different approach or may have skipped by accident.
+**Rule ID:** None.
+
 ### 2026-03-12 — PR titles must use conventional commits format
 
 **What happened:** A PR was created with a freeform title ("Add doc_link to sub-recipe ingredients; enforce self-evaluation; fix binder description") instead of the conventional commits format.
@@ -125,7 +137,7 @@ for merged/concatenated words before saving.
 written without a `volume_alt` field.
 **Prevention rule:** Every time you write a spice ingredient under 10g, add
 `volume_alt` immediately. Do not write the ingredient and plan to add it later.
-Look up the value in [SPICE_CONVERSIONS.md](skills/references/SPICE_CONVERSIONS.md).
+Look up the value in [SPICE_CONVERSIONS.md](references/SPICE_CONVERSIONS.md).
 **Rule ID:** R2.5.
 
 ### 2026-02-28 — Migrated recipes must update all internal paths

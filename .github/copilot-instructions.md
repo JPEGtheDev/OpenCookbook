@@ -138,6 +138,6 @@ These are if-then rules. Follow them literally.
 | You finish editing a recipe | Run the validation checklist from the recipe-validation skill. Do not skip this. |
 | The user corrects you | Update [lessons.md](lessons.md) with what went wrong, a prevention rule, and a rule ID. Do this immediately. |
 | A lesson in lessons.md applies to what you're doing | Follow the prevention rule. It exists because the mistake already happened once. |
-| You need a spice gram-to-volume conversion | Look it up in [SPICE_CONVERSIONS.md](skills/references/SPICE_CONVERSIONS.md). Do not guess. |
-| A validation gap or new error pattern is found | Add a rule to [RULES.md](skills/references/RULES.md) and a checklist item to the validation skill. |
+| You need a spice gram-to-volume conversion | Look it up in [SPICE_CONVERSIONS.md](references/SPICE_CONVERSIONS.md). Do not guess. |
+| A validation gap or new error pattern is found | Add a rule to [RULES.md](references/RULES.md) and a checklist item to the validation skill. |
 | You're unsure about anything | Ask the user. Do not guess. Do not assume. |

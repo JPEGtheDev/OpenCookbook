@@ -117,7 +117,7 @@ instructions:
 ```
 
 **Rules to follow while writing:**
-- Every spice under 10g → add `volume_alt` (look up in [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md))
+- Every spice under 10g → add `volume_alt` (look up in [SPICE_CONVERSIONS.md](../../references/SPICE_CONVERSIONS.md))
 - Every temperature → write as `°C (°F)`
 - Every meat recipe → include safe internal temperature
 - Every branch → set `type: branch` and `branch_group`

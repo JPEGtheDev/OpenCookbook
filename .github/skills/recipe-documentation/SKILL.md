@@ -100,7 +100,7 @@ ingredients:
 **If a spice ingredient has `quantity` less than 10 AND `unit` is `g`, you MUST add a `volume_alt` field.**
 
 This is NOT optional. Many kitchen scales cannot read below 1g accurately.
-Look up the conversion in [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md).
+Look up the conversion in [SPICE_CONVERSIONS.md](../../references/SPICE_CONVERSIONS.md).
 
 ✅ **CORRECT:**
 ```yaml
@@ -267,8 +267,8 @@ related:
 
 ## References
 
-- [STRUCTURED_FORMAT.md](../references/STRUCTURED_FORMAT.md) — Full YAML schema with complete examples
-- [SPICE_CONVERSIONS.md](../references/SPICE_CONVERSIONS.md) — Gram-to-volume conversion table for all spices
+- [STRUCTURED_FORMAT.md](../../references/STRUCTURED_FORMAT.md) — Full YAML schema with complete examples
+- [SPICE_CONVERSIONS.md](../../references/SPICE_CONVERSIONS.md) — Gram-to-volume conversion table for all spices
 
 ---
 
