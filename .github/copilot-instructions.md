@@ -28,7 +28,6 @@ The author is Jonathan Petz (JPEGtheDev). The license is CC0 (public domain).
 | Writing a recipe file without asking the user first | Read the recipe-creation skill. You must gather info through conversation first |
 | Skipping `version`, `author`, or `status` fields | Every recipe needs ALL 5 required fields — check the list below |
 | Putting `notes` on a `stable` recipe | `notes` is only for `beta` or `draft`. Remove it before promoting |
-| Using `1.0` instead of `"1.0"` for version | The version field MUST be a quoted string: `"1.0"` |
 
 ---
 
@@ -106,6 +105,7 @@ This repository has detailed skill files. **Read the right skill BEFORE starting
 | Edit, format, or understand recipe structure | [recipe-documentation](skills/recipe-documentation/SKILL.md) |
 | Check a recipe for errors or validate it | [recipe-validation](skills/recipe-validation/SKILL.md) |
 | Build a renderer for recipes (web or PDF) | [recipe-rendering](skills/recipe-rendering/SKILL.md) |
+| Version a recipe or write a commit message | [recipe-versioning](skills/recipe-versioning/SKILL.md) |
 
 If you don't know which skill to use, read **recipe-documentation** — it has the format rules.
 
