@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -31,17 +31,74 @@ jobs:
         working-directory: visualizer
         run: dotnet restore
 
-      - name: Determine version
+      - name: Calculate and tag version
         id: version
         run: |
-          VERSION=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -1)
-          if [ -z "$VERSION" ]; then
-            VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=7 2>/dev/null | sed 's/^v//')
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # If HEAD is already tagged (workflow re-run), use it as-is
+          EXISTING=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          if [ -n "$EXISTING" ]; then
+            echo "HEAD already tagged: $EXISTING"
+            echo "VERSION=${EXISTING#v}" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          if [ -z "$VERSION" ]; then
-            VERSION="1.0.0-dev+$(git rev-parse --short HEAD)"
+
+          # Find the last semver tag
+          LAST_TAG=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)
+          if [ -z "$LAST_TAG" ]; then
+            LAST_VERSION="0.0.0"
+            COMMITS=$(git log --pretty=format:"%s%n%b" HEAD)
+          else
+            LAST_VERSION="${LAST_TAG#v}"
+            COMMITS=$(git log "${LAST_TAG}..HEAD" --pretty=format:"%s%n%b")
           fi
-          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # If no new commits since last tag, emit existing version without re-tagging
+          if [ -z "$(echo "$COMMITS" | tr -d '[:space:]')" ]; then
+            echo "No commits since $LAST_TAG"
+            echo "VERSION=$LAST_VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Parse current version components
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$LAST_VERSION"
+
+          # Determine bump from conventional commits:
+          #   MAJOR — any commit with '!' suffix or a 'BREAKING CHANGE:' footer
+          #   MINOR — any 'feat:' or 'feat(<scope>):' commit
+          #   PATCH — everything else (fix, chore, docs, refactor, …)
+          if echo "$COMMITS" | grep -qE '^[a-z]+(\([^)]+\))?!:' || \
+             echo "$COMMITS" | grep -qE '(^|[[:space:]])BREAKING CHANGE:'; then
+            BUMP="major"
+          elif echo "$COMMITS" | grep -qE '^feat(\([^)]+\))?:'; then
+            BUMP="minor"
+          else
+            BUMP="patch"
+          fi
+
+          case "$BUMP" in
+            major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+            minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+            patch) PATCH=$((PATCH + 1)) ;;
+          esac
+
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "Bump: $BUMP | $LAST_VERSION → $NEW_VERSION"
+
+          git tag "v${NEW_VERSION}"
+          git push origin "v${NEW_VERSION}" || {
+            REMOTE_SHA=$(git ls-remote --tags origin "refs/tags/v${NEW_VERSION}" | awk '{print $1}')
+            if [ -n "$REMOTE_SHA" ]; then
+              echo "Tag v${NEW_VERSION} already exists on remote, proceeding"
+            else
+              echo "ERROR: Failed to push tag v${NEW_VERSION}" >&2
+              exit 1
+            fi
+          }
+
+          echo "VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Run tests
         working-directory: visualizer
