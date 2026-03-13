@@ -25,7 +25,7 @@ Every story must pass all six checks. If it fails any one, revise before writing
 
 | Letter | Criterion | What it means | Common failure |
 |---|---|---|---|
-| **I** | Independent | The story can be built and delivered without blocking or being blocked by another story | "This needs story X done first" |
+| **I** | Independent | The story has no hard dependency on another incomplete story. Dependencies on already-completed work are acceptable. | "This needs story X done first" |
 | **N** | Negotiable | The story describes *what*, not *how*. Implementation details are left to the developer | Story specifies which library or file to use |
 | **V** | Valuable | Delivering this story moves the product forward for a real user or stakeholder | Story is purely internal scaffolding with no visible output |
 | **E** | Estimable | The team (or agent) can give a rough size estimate | Story is too vague to size, or too large to fit in one effort |
