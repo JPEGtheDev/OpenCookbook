@@ -107,6 +107,8 @@ This repository has detailed skill files. **Read the right skill BEFORE starting
 | Build a renderer for recipes (web or PDF) | [recipe-rendering](skills/recipe-rendering/SKILL.md) |
 | Version a recipe or write a commit message | [recipe-versioning](skills/recipe-versioning/SKILL.md) |
 | Write a user story using the INVEST framework | [user-stories](skills/user-stories/SKILL.md) |
+| Fill in a PR description or title | [pull-request](skills/pull-request/SKILL.md) |
+| Write or edit a GitHub Actions workflow | [ci-workflows](skills/ci-workflows/SKILL.md) |
 
 If you don't know which skill to use, read **recipe-documentation** — it has the format rules.
 
