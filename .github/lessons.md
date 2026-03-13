@@ -30,7 +30,7 @@ Add new entries at the **TOP** of the log (newest first).
 ### 2026-03-12 — Never use sed or terminal commands to edit files
 
 **What happened:** Used `sed -i` to bulk-update reference links across multiple files. The user loses visibility and control over each individual change when edits happen via terminal commands.
-**Prevention rule:** Always use the built-in file editing tools (`replace_string_in_file` or `multi_replace_string_in_file`) for any file modification. Never use `sed`, `awk`, `perl -i`, or any terminal-based text replacement. The only exception is if the user explicitly asks for a terminal command.
+**Prevention rule:** Always use the built-in file editing tools (`replace_string_in_file` or `multi_replace_string_in_file`) for any file modification. Never use `sed`, `awk`, `perl -i`, or any terminal-based text replacement. Using `grep` for **reading/searching** is fine — the restriction is on **write operations** only. The only exception is if the user explicitly asks for a terminal command.
 **Rule ID:** None.
 
 ### 2026-03-12 — Do not stop when the user skips a tool call
