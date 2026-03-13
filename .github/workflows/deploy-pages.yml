@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -29,13 +31,25 @@ jobs:
         working-directory: visualizer
         run: dotnet restore
 
+      - name: Determine version
+        id: version
+        run: |
+          VERSION=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -1)
+          if [ -z "$VERSION" ]; then
+            VERSION=$(git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --abbrev=7 2>/dev/null | sed 's/^v//')
+          fi
+          if [ -z "$VERSION" ]; then
+            VERSION="1.0.0-dev+$(git rev-parse --short HEAD)"
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Run tests
         working-directory: visualizer
         run: dotnet test --no-restore --verbosity normal
 
       - name: Publish Blazor WASM app
         working-directory: visualizer
-        run: dotnet publish src/OpenCookbook.Web/OpenCookbook.Web.csproj -c Release -o output
+        run: dotnet publish src/OpenCookbook.Web/OpenCookbook.Web.csproj -c Release -o output -p:Version="${{ steps.version.outputs.VERSION }}"
 
       - name: Copy recipes to output
         run: |
@@ -73,11 +87,7 @@ jobs:
 
       - name: Generate version.json
         run: |
-          VERSION=$(sed -n 's/.*<Version>\(.*\)<\/Version>.*/\1/p' visualizer/Directory.Build.props)
-          if [ -z "$VERSION" ]; then
-            echo "ERROR: Could not read Version from Directory.Build.props" >&2
-            exit 1
-          fi
+          VERSION="${{ steps.version.outputs.VERSION }}"
           echo "Building version: $VERSION"
           echo "{\"version\": \"$VERSION\"}" > visualizer/output/wwwroot/version.json
 
