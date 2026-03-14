@@ -28,7 +28,18 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <!-- __CACHE_BUST__ is replaced with the app version during CI/CD deployment -->
+    <script src="_framework/blazor.webassembly.js?v=__CACHE_BUST__" autostart="false"></script>
+    <script>
+        Blazor.start({
+            loadBootResource: function (type, name, defaultUri, integrity) {
+                if (type === 'manifest') {
+                    return fetch(defaultUri, { cache: 'no-cache' });
+                }
+                return undefined;
+            }
+        });
+    </script>
 </body>
 
 </html>
