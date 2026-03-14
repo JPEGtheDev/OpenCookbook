@@ -5,7 +5,12 @@ Usage: python3 scripts/generate-recipe-index.py <recipes_dir>
   recipes_dir: path to the recipes folder inside wwwroot output
                (e.g. visualizer/output/wwwroot/recipes)
 """
-import json, yaml, os, glob, sys
+import glob
+import json
+import os
+import sys
+
+import yaml
 
 recipes_dir = sys.argv[1] if len(sys.argv) > 1 else None
 if not recipes_dir:

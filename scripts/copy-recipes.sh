@@ -8,7 +8,7 @@ OUTPUT_DIR="${1:?Usage: copy-recipes.sh <output_dir>}"
 RECIPES_DIR="$OUTPUT_DIR/recipes"
 
 mkdir -p "$RECIPES_DIR"
-find Recipes -name "*.yaml" | while read -r file; do
+find Recipes -name "*.yaml" -print0 | while IFS= read -r -d '' file; do
   relpath="${file#Recipes/}"
   dir=$(dirname "$relpath")
   if [ "$dir" != "." ]; then
