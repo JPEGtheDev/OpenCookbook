@@ -120,10 +120,9 @@ Do these steps **in this exact order**. Do not skip any. These are not suggestio
 
 1. **Check out `master` and pull.** Run `git checkout master && git pull origin master` before starting any new task. This ensures you are working from the latest state of the repo.
 2. **Re-read changed files.** After pulling, re-read any copilot-instructions, lessons, or skill files that may have been updated. Do not rely on previously cached content.
-3. **Read lessons.** Open [lessons.md](lessons.md) and read the ENTIRE file, every entry. If a past mistake applies to your current task, follow the prevention rule. If you skip this step, you will repeat a known mistake.
-4. **Read the skill.** Open the correct skill file from the table above and read the ENTIRE file. Do not skim. Do not summarize. Read every line. The skill contains rules you must follow.
-5. **Plan before building.** If the task has 3+ steps or involves any structural decision, write out a numbered step-by-step plan BEFORE doing anything. Show the plan. If something goes wrong mid-plan, STOP immediately and write a new plan. Do not push forward on a broken approach.
-6. **Ask if unsure.** If any detail is ambiguous, missing, or could be interpreted two ways, STOP and ask the user before proceeding. Do not guess. Do not assume. Do not fill in blanks with plausible values.
+3. **Read the skill.** Open the correct skill file from the table above and read the ENTIRE file. Do not skim. Do not summarize. Read every line. The skill contains rules you must follow.
+4. **Plan before building.** If the task has 3+ steps or involves any structural decision, write out a numbered step-by-step plan BEFORE doing anything. Show the plan. If something goes wrong mid-plan, STOP immediately and write a new plan. Do not push forward on a broken approach.
+5. **Ask if unsure.** If any detail is ambiguous, missing, or could be interpreted two ways, STOP and ask the user before proceeding. Do not guess. Do not assume. Do not fill in blanks with plausible values.
 
 ---
 
@@ -151,8 +150,14 @@ These are if-then rules. Follow them literally.
 | You find a fixable error in a recipe | Fix it immediately. Do not just list it. |
 | You find an error you can't fix (need author's input) | Flag it with `[ASK]` and explain what info you need. |
 | You finish editing a recipe | Run the validation checklist from the recipe-validation skill. Do not skip this. |
-| The user corrects you | Update [lessons.md](lessons.md) with what went wrong, a prevention rule, and a rule ID. Do this immediately. |
-| A lesson in lessons.md applies to what you're doing | Follow the prevention rule. It exists because the mistake already happened once. |
+| You finish editing any `.github/` file | Re-read the file and verify it against the rules in this document. |
+| The user corrects you | Update [lessons.md](lessons.md) with a short entry, then absorb the rule into the correct skill file. |
 | You need a spice gram-to-volume conversion | Look it up in [SPICE_CONVERSIONS.md](references/SPICE_CONVERSIONS.md). Do not guess. |
 | A validation gap or new error pattern is found | Add a rule to [RULES.md](references/RULES.md) and a checklist item to the validation skill. |
+| You need to edit a file | Use built-in editing tools (`replace_string_in_file` / `multi_replace_string_in_file`). Never use `sed`, `awk`, or terminal writes. `grep` for reading is fine. |
+| The user skips a tool call | Ask why immediately using `ask_questions` with multi-select options. Do not stop, do not start a new session — ask mid-flight and continue. |
+| You previously reported a blocker | Re-verify the blocker state before repeating it. Do not assume it still exists. |
+| The user asks for a plan and says they're open to options | Present 2–3 options with trade-offs before implementing. Let the user choose. |
+| You convert imperial to metric | Show the converted value and ask the user to confirm before writing. |
+| You scale quantities from a test batch | Show per-serving math and final amount, then ask the user to confirm. Do not assume base vs. target. |
 | You're unsure about anything | Ask the user. Do not guess. Do not assume. |
