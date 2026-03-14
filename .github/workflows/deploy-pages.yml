@@ -142,12 +142,6 @@ jobs:
               json.dump(entries, f, indent=2)
           "
 
-      - name: Generate version.json
-        run: |
-          VERSION="${{ steps.version.outputs.VERSION }}"
-          echo "Building version: $VERSION"
-          echo "{\"version\": \"$VERSION\"}" > visualizer/output/wwwroot/version.json
-
       - name: Add .nojekyll and 404.html
         run: |
           touch visualizer/output/wwwroot/.nojekyll
