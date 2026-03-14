@@ -27,6 +27,12 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-14 — Verify state before assuming blockers
+
+**What happened:** Assumed PR review conversations were still unresolved without checking. The user had already resolved them.
+**Prevention rule:** Never assume a blocker persists. Always verify the current state (re-check PR status, re-read the error, re-query the API) before telling the user something is blocked. If you reported a blocker earlier, re-verify it before repeating it.
+**Rule ID:** None.
+
 ### 2026-03-14 — Always check out master and pull before starting work
 
 **What happened:** Work was started on a branch without first returning to `master` and pulling the latest changes.
