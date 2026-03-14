@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager Nav
+@using System.Reflection
 
 <div class="app-layout">
     <header class="app-header">
@@ -9,12 +10,20 @@
         @Body
     </main>
     <footer class="app-footer">
-        <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · v@AppVersion</p>
+        <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · @_appVersion</p>
     </footer>
 </div>
 
 @code {
-    private string AppVersion =>
-        typeof(App).Assembly.GetName().Version?.ToString() ?? "dev";
+    private string _appVersion = "dev";
+
+    protected override void OnInitialized()
+    {
+        var infoVersion = typeof(App).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion;
+
+        _appVersion = string.IsNullOrWhiteSpace(infoVersion) ? "dev" : $"v{infoVersion}";
+    }
 }
 
