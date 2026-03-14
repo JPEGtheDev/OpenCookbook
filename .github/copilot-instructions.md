@@ -125,6 +125,19 @@ Do these steps **in this exact order**. Do not skip any. These are not suggestio
 
 ---
 
+## Git Workflow
+
+**Never commit directly to `master`.** All changes go through a branch and pull request.
+
+1. **Create a branch** from `master` — use a descriptive name: `<type>/<short-description>` (e.g. `docs/kiev-cutlet-breading-notes`, `feat/search-page`, `fix/deploy-trigger`).
+2. **Commit to the branch** using conventional commit messages.
+3. **Push the branch** to `origin`.
+4. **Create a pull request** targeting `master`. Fill in the PR using the [pull-request skill](skills/pull-request/SKILL.md).
+5. **Address any review comments** — push fixes to the same branch.
+6. **Merge the PR** once all checks pass and conversations are resolved.
+
+---
+
 ## Working Principles
 
 These are if-then rules. Follow them literally.
