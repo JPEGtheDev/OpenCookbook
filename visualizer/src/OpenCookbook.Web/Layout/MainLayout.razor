@@ -15,6 +15,6 @@
 
 @code {
     private string AppVersion =>
-        typeof(App).Assembly.GetName().Version?.ToString(3) ?? "dev";
+        typeof(App).Assembly.GetName().Version?.ToString() ?? "dev";
 }
 
