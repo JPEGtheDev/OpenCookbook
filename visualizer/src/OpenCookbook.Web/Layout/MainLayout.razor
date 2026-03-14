@@ -23,7 +23,8 @@
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion;
 
-        _appVersion = string.IsNullOrWhiteSpace(infoVersion) ? "dev" : $"v{infoVersion}";
+        var cleanVersion = infoVersion?.Split('+')[0];
+        _appVersion = string.IsNullOrWhiteSpace(cleanVersion) ? "dev" : $"v{cleanVersion}";
     }
 }
 
