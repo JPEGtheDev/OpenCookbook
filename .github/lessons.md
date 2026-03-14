@@ -27,6 +27,12 @@ Add new entries at the **TOP** of the log (newest first).
 
 ## Log
 
+### 2026-03-14 — Always check out master and pull before starting work
+
+**What happened:** Work was started on a branch without first returning to `master` and pulling the latest changes.
+**Prevention rule:** Before beginning any new task, always run `git checkout master && git pull origin master`. After pulling, re-read any copilot-instructions, lessons, or skill files that may have changed — do not rely on previously cached content.
+**Rule ID:** None.
+
 ### 2026-03-12 — Never use sed or terminal commands to edit files
 
 **What happened:** Used `sed -i` to bulk-update reference links across multiple files. The user loses visibility and control over each individual change when edits happen via terminal commands.
@@ -36,7 +42,7 @@ Add new entries at the **TOP** of the log (newest first).
 ### 2026-03-12 — Do not stop when the user skips a tool call
 
 **What happened:** The user skipped a terminal command and the assistant stopped working instead of asking why.
-**Prevention rule:** When the user skips a tool call, ask them why using the `ask_questions` tool before deciding next steps. Do not assume the task is cancelled. The user may want a different approach or may have skipped by accident.
+**Prevention rule:** When the user skips a tool call, immediately ask them why using the `ask_questions` tool with a multi-select question. Do not assume the task is cancelled. Do not start a new session or re-plan — ask mid-flight. Suggested options: "Use a different approach", "Add to existing branch instead", "Command was wrong", "Skipped by accident", "I'll handle this step manually". After receiving the answer, continue working in the same session.
 **Rule ID:** None.
 
 ### 2026-03-12 — PR titles must use conventional commits format

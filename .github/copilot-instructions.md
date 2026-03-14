@@ -118,10 +118,25 @@ If you don't know which skill to use, read **recipe-documentation** — it has t
 
 Do these steps **in this exact order**. Do not skip any. These are not suggestions.
 
-1. **Read lessons FIRST.** Open [lessons.md](lessons.md) and read the ENTIRE file, every entry. If a past mistake applies to your current task, follow the prevention rule. If you skip this step, you will repeat a known mistake.
-2. **Read the skill.** Open the correct skill file from the table above and read the ENTIRE file. Do not skim. Do not summarize. Read every line. The skill contains rules you must follow.
-3. **Plan before building.** If the task has 3+ steps or involves any structural decision, write out a numbered step-by-step plan BEFORE doing anything. Show the plan. If something goes wrong mid-plan, STOP immediately and write a new plan. Do not push forward on a broken approach.
-4. **Ask if unsure.** If any detail is ambiguous, missing, or could be interpreted two ways, STOP and ask the user before proceeding. Do not guess. Do not assume. Do not fill in blanks with plausible values.
+1. **Check out `master` and pull.** Run `git checkout master && git pull origin master` before starting any new task. This ensures you are working from the latest state of the repo.
+2. **Re-read changed files.** After pulling, re-read any copilot-instructions, lessons, or skill files that may have been updated. Do not rely on previously cached content.
+3. **Read lessons.** Open [lessons.md](lessons.md) and read the ENTIRE file, every entry. If a past mistake applies to your current task, follow the prevention rule. If you skip this step, you will repeat a known mistake.
+4. **Read the skill.** Open the correct skill file from the table above and read the ENTIRE file. Do not skim. Do not summarize. Read every line. The skill contains rules you must follow.
+5. **Plan before building.** If the task has 3+ steps or involves any structural decision, write out a numbered step-by-step plan BEFORE doing anything. Show the plan. If something goes wrong mid-plan, STOP immediately and write a new plan. Do not push forward on a broken approach.
+6. **Ask if unsure.** If any detail is ambiguous, missing, or could be interpreted two ways, STOP and ask the user before proceeding. Do not guess. Do not assume. Do not fill in blanks with plausible values.
+
+---
+
+## Git Workflow
+
+**Never commit directly to `master`.** All changes go through a branch and pull request.
+
+1. **Create a branch** from `master` — use a descriptive name: `<type>/<short-description>` (e.g. `docs/kiev-cutlet-breading-notes`, `feat/search-page`, `fix/deploy-trigger`).
+2. **Commit to the branch** using conventional commit messages.
+3. **Push the branch** to `origin`.
+4. **Create a pull request** targeting `master`. Fill in the PR using the [pull-request skill](skills/pull-request/SKILL.md).
+5. **Address any review comments** — push fixes to the same branch.
+6. **Merge the PR** once all checks pass and conversations are resolved.
 
 ---
 

@@ -89,7 +89,9 @@ concurrency:
 
 ### Trigger branch
 
-Always use `master`. Never use `main`.
+Always use `master` (the repo's default branch). Never use `main`.
+
+All changes go through branches and pull requests — never push directly to `master`.
 
 ```yaml
 on:
