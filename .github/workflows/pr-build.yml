@@ -6,6 +6,9 @@ on:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -49,20 +52,85 @@ jobs:
       - name: Add .nojekyll and 404.html
         run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 
-      - name: Save PR metadata
-        run: |
-          mkdir -p /tmp/pr-metadata
-          echo "${{ github.event.pull_request.number }}" > /tmp/pr-metadata/number
-          echo "${{ github.event.pull_request.head.sha }}" > /tmp/pr-metadata/sha
-
       - name: Upload preview site
         uses: actions/upload-artifact@v4
         with:
           name: pr-preview-site
           path: visualizer/output/wwwroot
 
-      - name: Upload PR metadata
-        uses: actions/upload-artifact@v4
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Download preview site
+        uses: actions/download-artifact@v4
         with:
-          name: pr-metadata
-          path: /tmp/pr-metadata/
+          name: pr-preview-site
+          path: preview-site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: preview-site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Post or update preview comment
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PREVIEW_URL: ${{ steps.deploy.outputs.page_url }}
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const prNumber = Number(process.env.PR_NUMBER);
+            const previewUrl = process.env.PREVIEW_URL;
+            const sha = process.env.PR_SHA.substring(0, 7);
+
+            const body = [
+              '## 🚀 PR Preview Deployed',
+              '',
+              '| Detail | Value |',
+              '|--------|-------|',
+              `| **Preview URL** | ${previewUrl} |`,
+              `| **Commit** | \`${sha}\` |`,
+              `| **PR** | #${prNumber} |`,
+              '',
+              '> This preview reflects the latest changes in this PR.',
+              '> The production site will be restored when this PR is merged or on the next push to `master`.',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const marker = '## 🚀 PR Preview Deployed';
+            const existing = comments.find(c =>
+              c.body.includes(marker) && c.user.type === 'Bot'
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
