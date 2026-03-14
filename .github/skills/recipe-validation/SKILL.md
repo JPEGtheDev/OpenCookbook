@@ -88,10 +88,11 @@ Do not say "looks good" without checking each item. Fix what you can. Flag what 
 - [ ] Paths use relative format (`./` or `../`)
 - [ ] Paths end in `.yaml`, not `.md`
 - [ ] Every ingredient whose `name` refers to another recipe in this repo has a `doc_link` field with the relative path to that recipe's `.yaml` file
+- [ ] If a recipe was moved or renamed, all references to the old path across the repo have been updated
 
 ### 6. Text Quality
 
-- [ ] No merged/concatenated words (e.g. "Fahrenheittested")
+- [ ] No merged/concatenated words from copy-paste (e.g. "Fahrenheittested") — scan all pasted text
 - [ ] No placeholder text (`TBD`, `TODO`) in stable or beta recipes
 - [ ] Ingredient names are spelled correctly
 - [ ] Step text is clear and unambiguous

@@ -47,7 +47,11 @@ Ask the user these questions. Do not skip any unless the answer is already known
 
 **If the user gives quantities in pounds, cups, or ounces:**
 - Convert to grams before writing the file
-- Tell the user the converted amount and ask them to confirm
+- Tell the user the converted amount and ask them to confirm (they may prefer a round number)
+
+**If the user gives test-batch quantities to scale up:**
+- Show the per-serving calculation and the final scaled amount
+- Ask the user to confirm before writing — do not assume which number is the base vs. the target
 
 ⚠️ **STOP — DO NOT PROCEED TO STEP 2.**
 You need enough information to write the recipe. If you are missing ingredients, quantities, or cooking steps, go back and ask. Do not fill in gaps with guesses.
