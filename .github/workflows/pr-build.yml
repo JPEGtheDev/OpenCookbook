@@ -39,43 +39,15 @@ jobs:
         run: dotnet publish src/OpenCookbook.Web/OpenCookbook.Web.csproj -c Release -o output
 
       - name: Copy recipes to output
-        run: |
-          mkdir -p visualizer/output/wwwroot/recipes
-          find Recipes -name "*.yaml" | while read -r file; do
-            relpath="${file#Recipes/}"
-            dir=$(dirname "$relpath")
-            if [ "$dir" != "." ]; then
-              mkdir -p "visualizer/output/wwwroot/recipes/$dir"
-            fi
-            cp "$file" "visualizer/output/wwwroot/recipes/$relpath"
-          done
+        run: ./scripts/copy-recipes.sh visualizer/output/wwwroot
 
       - name: Generate recipe index
         run: |
           pip install pyyaml==6.0.2 --quiet
-          python3 -c "
-          import json, yaml, os, glob
-
-          recipes_dir = 'visualizer/output/wwwroot/recipes'
-          entries = []
-          for filepath in sorted(glob.glob(os.path.join(recipes_dir, '**/*.yaml'), recursive=True)):
-              with open(filepath) as f:
-                  data = yaml.safe_load(f)
-              rel_path = os.path.relpath(filepath, recipes_dir)
-              entries.append({
-                  'name': data.get('name', ''),
-                  'path': rel_path,
-                  'status': data.get('status', ''),
-                  'description': (data.get('description', '') or '').strip()
-              })
-          with open(os.path.join(recipes_dir, 'recipe-index.json'), 'w') as f:
-              json.dump(entries, f, indent=2)
-          "
+          python3 scripts/generate-recipe-index.py visualizer/output/wwwroot/recipes
 
       - name: Add .nojekyll and 404.html
-        run: |
-          touch visualizer/output/wwwroot/.nojekyll
-          cp visualizer/output/wwwroot/index.html visualizer/output/wwwroot/404.html
+        run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 
       - name: Save PR metadata
         run: |
