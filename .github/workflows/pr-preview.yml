@@ -1,0 +1,199 @@
+name: Deploy PR Preview
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
+    branches: [master]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: pr-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        working-directory: visualizer
+        run: dotnet restore
+
+      - name: Build
+        working-directory: visualizer
+        run: dotnet build --no-restore
+
+      - name: Test
+        working-directory: visualizer
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Publish Blazor WASM app
+        working-directory: visualizer
+        run: dotnet publish src/OpenCookbook.Web/OpenCookbook.Web.csproj -c Release -o output
+
+      - name: Copy recipes to output
+        run: |
+          mkdir -p visualizer/output/wwwroot/recipes
+          find Recipes -name "*.yaml" | while read -r file; do
+            relpath="${file#Recipes/}"
+            dir=$(dirname "$relpath")
+            if [ "$dir" != "." ]; then
+              mkdir -p "visualizer/output/wwwroot/recipes/$dir"
+            fi
+            cp "$file" "visualizer/output/wwwroot/recipes/$relpath"
+          done
+
+      - name: Generate recipe index
+        run: |
+          pip install pyyaml==6.0.2 --quiet
+          python3 -c "
+          import json, yaml, os, glob
+
+          recipes_dir = 'visualizer/output/wwwroot/recipes'
+          entries = []
+          for filepath in sorted(glob.glob(os.path.join(recipes_dir, '**/*.yaml'), recursive=True)):
+              with open(filepath) as f:
+                  data = yaml.safe_load(f)
+              rel_path = os.path.relpath(filepath, recipes_dir)
+              entries.append({
+                  'name': data.get('name', ''),
+                  'path': rel_path,
+                  'status': data.get('status', ''),
+                  'description': (data.get('description', '') or '').strip()
+              })
+          with open(os.path.join(recipes_dir, 'recipe-index.json'), 'w') as f:
+              json.dump(entries, f, indent=2)
+          "
+
+      - name: Add .nojekyll and 404.html
+        run: |
+          touch visualizer/output/wwwroot/.nojekyll
+          cp visualizer/output/wwwroot/index.html visualizer/output/wwwroot/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: visualizer/output/wwwroot
+
+  deploy:
+    needs: build
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      - name: Post or update preview comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const previewUrl = '${{ steps.deploy.outputs.page_url }}';
+            const sha = context.payload.pull_request.head.sha.substring(0, 7);
+
+            const body = [
+              '## 🚀 PR Preview Deployed',
+              '',
+              '| Detail | Value |',
+              '|--------|-------|',
+              `| **Preview URL** | ${previewUrl} |`,
+              `| **Commit** | \`${sha}\` |`,
+              `| **PR** | #${prNumber} |`,
+              '',
+              '> This preview reflects the latest changes in this PR.',
+              '> The production site will be restored when this PR is merged or on the next push to `master`.',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const marker = '## 🚀 PR Preview Deployed';
+            const existing = comments.find(c =>
+              c.body.includes(marker) && c.user.type === 'Bot'
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update preview comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const merged = context.payload.pull_request.merged;
+            const action = merged ? 'merged' : 'closed';
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const marker = '## 🚀 PR Preview Deployed';
+            const existing = comments.find(c =>
+              c.body.includes(marker) && c.user.type === 'Bot'
+            );
+
+            const body = [
+              '## 🏁 PR Preview Removed',
+              '',
+              `This preview has been removed because the PR was **${action}**.`,
+              '',
+              merged
+                ? '> The production site will be updated automatically by the deploy workflow.'
+                : '> The production site will be restored on the next push to `master`.',
+            ].join('\n');
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
