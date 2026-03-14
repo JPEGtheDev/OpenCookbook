@@ -150,8 +150,9 @@ These are if-then rules. Follow them literally.
 | You find a fixable error in a recipe | Fix it immediately. Do not just list it. |
 | You find an error you can't fix (need author's input) | Flag it with `[ASK]` and explain what info you need. |
 | You finish editing a recipe | Run the validation checklist from the recipe-validation skill. Do not skip this. |
-| You finish editing any `.github/` file | Re-read the file and verify it against the rules in this document. |
-| The user corrects you | Update [lessons.md](lessons.md) with a short entry, then absorb the rule into the correct skill file. |
+| You finish editing any `.github/` file | Re-read the file and verify it against the rules in this document. Check if any lessons in [lessons.md](lessons.md) have not been absorbed into skills yet — if so, absorb them now. |
+| The user corrects you | Log a short entry in [lessons.md](lessons.md), then immediately absorb the rule into the correct skill file or this Working Principles table. Do not leave rules only in lessons. |
+| You start a new task from a todo list | Re-read the relevant skill file(s) before beginning. Do not rely on cached content from earlier in the session. |
 | You need a spice gram-to-volume conversion | Look it up in [SPICE_CONVERSIONS.md](references/SPICE_CONVERSIONS.md). Do not guess. |
 | A validation gap or new error pattern is found | Add a rule to [RULES.md](references/RULES.md) and a checklist item to the validation skill. |
 | You need to edit a file | Use built-in editing tools (`replace_string_in_file` / `multi_replace_string_in_file`). Never use `sed`, `awk`, or terminal writes. `grep` for reading is fine. |
