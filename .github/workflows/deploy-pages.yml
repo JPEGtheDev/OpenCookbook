@@ -31,7 +31,7 @@ jobs:
         working-directory: visualizer
         run: dotnet restore
 
-      - name: Calculate and tag version
+      - name: Calculate version
         id: version
         run: |
           git config user.name "github-actions[bot]"
@@ -45,8 +45,8 @@ jobs:
             exit 0
           fi
 
-          # Find the last semver tag
-          LAST_TAG=$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' | sort -V | tail -1)
+          # Find the last strict semver tag (vX.Y.Z only — no pre-release suffixes)
+          LAST_TAG=$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
           if [ -z "$LAST_TAG" ]; then
             LAST_VERSION="0.0.0"
             COMMITS=$(git log --pretty=format:"%s%n%b" HEAD)
@@ -86,23 +86,32 @@ jobs:
 
           NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
           echo "Bump: $BUMP | $LAST_VERSION → $NEW_VERSION"
-
-          git tag "v${NEW_VERSION}"
-          git push origin "v${NEW_VERSION}" || {
-            REMOTE_SHA=$(git ls-remote --tags origin "refs/tags/v${NEW_VERSION}" | awk '{print $1}')
-            if [ -n "$REMOTE_SHA" ]; then
-              echo "Tag v${NEW_VERSION} already exists on remote, proceeding"
-            else
-              echo "ERROR: Failed to push tag v${NEW_VERSION}" >&2
-              exit 1
-            fi
-          }
-
           echo "VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Run tests
         working-directory: visualizer
         run: dotnet test --no-restore --verbosity normal
+
+      - name: Push version tag
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Skip if HEAD is already tagged (re-run of a previously tagged commit)
+          if git tag --points-at HEAD | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "HEAD already tagged, skipping"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}" || {
+            REMOTE_SHA=$(git ls-remote --tags origin "refs/tags/v${VERSION}" | awk '{print $1}')
+            if [ -n "$REMOTE_SHA" ]; then
+              echo "Tag v${VERSION} already exists on remote, proceeding"
+            else
+              echo "ERROR: Failed to push tag v${VERSION}" >&2
+              exit 1
+            fi
+          }
 
       - name: Publish Blazor WASM app
         working-directory: visualizer
