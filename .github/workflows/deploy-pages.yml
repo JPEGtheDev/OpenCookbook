@@ -151,6 +151,11 @@ jobs:
               json.dump(entries, f, indent=2)
           "
 
+      - name: Inject cache-busting version into index.html
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          sed -i "s/__CACHE_BUST__/${VERSION}/g" visualizer/output/wwwroot/index.html
+
       - name: Add .nojekyll and 404.html
         run: |
           touch visualizer/output/wwwroot/.nojekyll
