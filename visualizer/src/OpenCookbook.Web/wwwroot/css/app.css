@@ -566,3 +566,108 @@ ul, ol {
 .blazor-error-boundary::after {
     content: "An error has occurred."
 }
+
+/* ── Nutrition Panel ───────────────────────────── */
+.nutrition-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.nutrition-section h2 {
+    margin-bottom: 0.75rem;
+}
+
+.nutrition-loading {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.nutrition-warning {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #856404;
+}
+
+.nutrition-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.nutrition-card {
+    background: var(--color-surface, #fff);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.nutrition-card h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1rem;
+    color: var(--color-heading);
+}
+
+.nutrition-servings {
+    font-weight: normal;
+    color: var(--color-muted);
+    font-size: 0.85rem;
+}
+
+.nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.nutrition-item {
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    background: var(--color-background);
+}
+
+.nutrition-calories {
+    grid-column: 1 / -1;
+    background: #fef3e2;
+}
+
+.nutrition-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-heading);
+}
+
+.nutrition-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.15rem;
+}
+
+.nutrition-missing {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+}
+
+.nutrition-missing summary {
+    cursor: pointer;
+    font-style: italic;
+}
+
+.nutrition-missing ul {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+}
+
+.nutrition-missing li {
+    margin-bottom: 0.25rem;
+}

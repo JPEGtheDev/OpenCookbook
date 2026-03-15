@@ -1,5 +1,6 @@
 @page "/recipe/{Path}"
 @inject RecipeService RecipeService
+@inject NutritionCalculator NutritionCalculator
 @inject NavigationManager Nav
 
 <PageTitle>@(_recipe?.Name ?? "Recipe") — OpenCookbook</PageTitle>
@@ -51,6 +52,8 @@ else if (_recipe is not null)
                         }
                     </section>
                 }
+
+                <NutritionPanel Nutrition="@_nutrition" />
             </aside>
 
             <div class="recipe-instructions">
@@ -97,6 +100,7 @@ else if (_recipe is not null)
     public string Path { get; set; } = string.Empty;
 
     private Recipe? _recipe;
+    private RecipeNutrition? _nutrition;
     private bool _loading = true;
     private string? _error;
 
@@ -105,6 +109,7 @@ else if (_recipe is not null)
         _loading = true;
         _error = null;
         _recipe = null;
+        _nutrition = null;
 
         try
         {
@@ -118,6 +123,18 @@ else if (_recipe is not null)
         finally
         {
             _loading = false;
+        }
+
+        if (_recipe is not null)
+        {
+            try
+            {
+                _nutrition = await NutritionCalculator.CalculateAsync(_recipe);
+            }
+            catch
+            {
+                // Nutrition is optional — don't block the page if calculation fails
+            }
         }
     }
 

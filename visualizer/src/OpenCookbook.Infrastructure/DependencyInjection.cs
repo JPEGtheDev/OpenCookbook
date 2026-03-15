@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddSingleton<IRecipeParser, YamlRecipeParser>();
         services.AddScoped<IRecipeRepository, HttpRecipeRepository>();
+        services.AddScoped<INutritionRepository, HttpNutritionRepository>();
 
         return services;
     }

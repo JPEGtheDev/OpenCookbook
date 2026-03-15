@@ -1,0 +1,99 @@
+@using OpenCookbook.Domain.Entities
+
+@if (_loading)
+{
+    <section class="nutrition-section">
+        <h2>Nutrition</h2>
+        <p class="nutrition-loading">Calculating nutrition…</p>
+    </section>
+}
+else if (Nutrition is not null)
+{
+    <section class="nutrition-section">
+        <h2>Nutrition</h2>
+
+        @if (!Nutrition.IsComplete)
+        {
+            <p class="nutrition-warning">⚠️ Nutrition data incomplete — some ingredients are missing data.</p>
+        }
+
+        <div class="nutrition-summary">
+            <div class="nutrition-card">
+                <h3>Per Recipe</h3>
+                <div class="nutrition-grid">
+                    <div class="nutrition-item nutrition-calories">
+                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.CaloriesKcal)</span>
+                        <span class="nutrition-label">Calories</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.ProteinG)g</span>
+                        <span class="nutrition-label">Protein</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.FatG)g</span>
+                        <span class="nutrition-label">Fat</span>
+                    </div>
+                    <div class="nutrition-item">
+                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.CarbsG)g</span>
+                        <span class="nutrition-label">Carbs</span>
+                    </div>
+                </div>
+            </div>
+
+            @if (Nutrition.PerServingNutrients is not null && Nutrition.Servings > 1)
+            {
+                <div class="nutrition-card">
+                    <h3>Per Serving <span class="nutrition-servings">(@Nutrition.Servings servings)</span></h3>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item nutrition-calories">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.CaloriesKcal)</span>
+                            <span class="nutrition-label">Calories</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.ProteinG)g</span>
+                            <span class="nutrition-label">Protein</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.FatG)g</span>
+                            <span class="nutrition-label">Fat</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.CarbsG)g</span>
+                            <span class="nutrition-label">Carbs</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Nutrition.MissingIngredients.Count > 0)
+        {
+            <details class="nutrition-missing">
+                <summary>@Nutrition.MissingIngredients.Count ingredient(s) missing nutrition data</summary>
+                <ul>
+                    @foreach (var name in Nutrition.MissingIngredients)
+                    {
+                        <li>@name</li>
+                    }
+                </ul>
+            </details>
+        }
+    </section>
+}
+
+@code {
+    [Parameter]
+    public RecipeNutrition? Nutrition { get; set; }
+
+    private bool _loading;
+
+    protected override void OnParametersSet()
+    {
+        _loading = Nutrition is null;
+    }
+
+    private static string FormatValue(double value)
+    {
+        return value == Math.Floor(value) ? value.ToString("F0") : value.ToString("F1");
+    }
+}
