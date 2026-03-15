@@ -7,4 +7,5 @@ public class Ingredient
     public string Name { get; set; } = string.Empty;
     public string? VolumeAlt { get; set; }
     public string? Note { get; set; }
+    public Guid? NutritionId { get; set; }
 }

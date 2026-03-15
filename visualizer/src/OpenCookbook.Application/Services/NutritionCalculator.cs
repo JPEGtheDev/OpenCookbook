@@ -13,6 +13,7 @@ public class NutritionCalculator
     private readonly INutritionRepository _nutritionRepository;
     private IReadOnlyList<NutritionEntry>? _cachedEntries;
     private Dictionary<string, NutritionEntry>? _cachedLookup;
+    private Dictionary<Guid, NutritionEntry>? _cachedIdLookup;
 
     public NutritionCalculator(INutritionRepository nutritionRepository)
     {
@@ -23,6 +24,7 @@ public class NutritionCalculator
     {
         _cachedEntries ??= await _nutritionRepository.GetAllEntriesAsync();
         _cachedLookup ??= BuildLookup(_cachedEntries);
+        _cachedIdLookup ??= BuildIdLookup(_cachedEntries);
 
         var result = new RecipeNutrition { Servings = servings };
         var totalCalories = 0.0;
@@ -46,7 +48,10 @@ public class NutritionCalculator
                     continue;
                 }
 
-                var entry = FindEntry(_cachedLookup, ingredient.Name);
+                var entry = ingredient.NutritionId.HasValue
+                    ? FindEntryById(_cachedIdLookup, ingredient.NutritionId.Value)
+                        ?? FindEntry(_cachedLookup, ingredient.Name)
+                    : FindEntry(_cachedLookup, ingredient.Name);
                 if (entry is null)
                 {
                     result.MissingIngredients.Add(ingredient.Name);
@@ -126,6 +131,24 @@ public class NutritionCalculator
         }
 
         return lookup;
+    }
+
+    internal static Dictionary<Guid, NutritionEntry> BuildIdLookup(IReadOnlyList<NutritionEntry> entries)
+    {
+        var lookup = new Dictionary<Guid, NutritionEntry>();
+
+        foreach (var entry in entries)
+        {
+            lookup.TryAdd(entry.Id, entry);
+        }
+
+        return lookup;
+    }
+
+    internal static NutritionEntry? FindEntryById(
+        Dictionary<Guid, NutritionEntry> idLookup, Guid nutritionId)
+    {
+        return idLookup.TryGetValue(nutritionId, out var entry) ? entry : null;
     }
 
     internal static NutritionEntry? FindEntry(
