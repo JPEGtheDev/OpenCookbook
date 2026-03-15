@@ -1,4 +1,3 @@
-using OpenCookbook.Application.Interfaces;
 using OpenCookbook.Application.Services;
 using OpenCookbook.Domain.Entities;
 
@@ -215,18 +214,4 @@ public class BrisketRubNutritionTests
         Assert.All(result.Ingredients, i => Assert.True(i.IsMatch));
     }
 
-    private sealed class FakeNutritionRepository : INutritionRepository
-    {
-        private readonly IReadOnlyList<NutritionEntry> _entries;
-
-        public FakeNutritionRepository(IReadOnlyList<NutritionEntry> entries)
-        {
-            _entries = entries;
-        }
-
-        public Task<IReadOnlyList<NutritionEntry>> GetAllEntriesAsync()
-        {
-            return Task.FromResult(_entries);
-        }
-    }
 }

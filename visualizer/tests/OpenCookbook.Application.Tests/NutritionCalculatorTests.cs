@@ -1,4 +1,3 @@
-using OpenCookbook.Application.Interfaces;
 using OpenCookbook.Application.Services;
 using OpenCookbook.Domain.Entities;
 
@@ -465,18 +464,4 @@ public class NutritionCalculatorTests
         Assert.NotNull(result);
     }
 
-    private sealed class FakeNutritionRepository : INutritionRepository
-    {
-        private readonly IReadOnlyList<NutritionEntry> _entries;
-
-        public FakeNutritionRepository(IReadOnlyList<NutritionEntry> entries)
-        {
-            _entries = entries;
-        }
-
-        public Task<IReadOnlyList<NutritionEntry>> GetAllEntriesAsync()
-        {
-            return Task.FromResult(_entries);
-        }
-    }
 }

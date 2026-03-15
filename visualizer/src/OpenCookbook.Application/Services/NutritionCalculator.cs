@@ -6,6 +6,8 @@ namespace OpenCookbook.Application.Services;
 public class NutritionCalculator
 {
     private readonly INutritionRepository _nutritionRepository;
+    private IReadOnlyList<NutritionEntry>? _cachedEntries;
+    private Dictionary<string, NutritionEntry>? _cachedLookup;
 
     public NutritionCalculator(INutritionRepository nutritionRepository)
     {
@@ -14,8 +16,8 @@ public class NutritionCalculator
 
     public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, int servings = 1)
     {
-        var entries = await _nutritionRepository.GetAllEntriesAsync();
-        var lookup = BuildLookup(entries);
+        _cachedEntries ??= await _nutritionRepository.GetAllEntriesAsync();
+        _cachedLookup ??= BuildLookup(_cachedEntries);
 
         var result = new RecipeNutrition { Servings = servings };
         var totalCalories = 0.0;
@@ -39,7 +41,7 @@ public class NutritionCalculator
                     continue;
                 }
 
-                var entry = FindEntry(lookup, ingredient.Name);
+                var entry = FindEntry(_cachedLookup, ingredient.Name);
                 if (entry is null)
                 {
                     result.MissingIngredients.Add(ingredient.Name);
