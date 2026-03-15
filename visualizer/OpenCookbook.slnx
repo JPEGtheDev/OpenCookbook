@@ -9,5 +9,6 @@
     <Project Path="tests/OpenCookbook.Application.Tests/OpenCookbook.Application.Tests.csproj" />
     <Project Path="tests/OpenCookbook.Domain.Tests/OpenCookbook.Domain.Tests.csproj" />
     <Project Path="tests/OpenCookbook.Infrastructure.Tests/OpenCookbook.Infrastructure.Tests.csproj" />
+    <Project Path="tests/OpenCookbook.Web.Tests/OpenCookbook.Web.Tests.csproj" />
   </Folder>
 </Solution>
