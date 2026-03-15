@@ -6,6 +6,7 @@
     <Project Path="src/OpenCookbook.Web/OpenCookbook.Web.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/OpenCookbook.Application.Tests/OpenCookbook.Application.Tests.csproj" />
     <Project Path="tests/OpenCookbook.Domain.Tests/OpenCookbook.Domain.Tests.csproj" />
     <Project Path="tests/OpenCookbook.Infrastructure.Tests/OpenCookbook.Infrastructure.Tests.csproj" />
   </Folder>
