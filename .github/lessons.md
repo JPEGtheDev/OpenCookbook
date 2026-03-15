@@ -30,9 +30,9 @@ record; the skills and instructions are where rules live and get enforced.
 **What happened:** Assumed PR review conversations were still unresolved without checking.
 **Absorbed into:** copilot-instructions → Working Principles ("You previously reported a blocker → re-verify").
 
-### 2026-03-14 — Always check out master and pull before starting work
+### 2026-03-14 — Always check out main and pull before starting work
 
-**What happened:** Work was started on a branch without first returning to `master` and pulling.
+**What happened:** Work was started on a branch without first returning to `main` and pulling.
 **Absorbed into:** copilot-instructions → Before You Start (steps 1–2).
 
 ### 2026-03-12 — Never use sed or terminal commands to edit files

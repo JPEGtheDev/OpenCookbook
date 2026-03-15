@@ -3,7 +3,7 @@ name: PR Preview Cleanup
 on:
   pull_request_target:
     types: [closed]
-    branches: [master]
+    branches: [main]
 
 permissions:
   pull-requests: write
