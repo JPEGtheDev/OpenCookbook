@@ -1,0 +1,78 @@
+using OpenCookbook.Domain.Entities;
+
+namespace OpenCookbook.Domain.Tests;
+
+public class NutritionEntryTests
+{
+    [Fact]
+    public void NutritionEntry_DefaultId_IsEmptyGuid()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.Equal(Guid.Empty, entry.Id);
+    }
+
+    [Fact]
+    public void NutritionEntry_DefaultName_IsEmpty()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.Equal(string.Empty, entry.Name);
+    }
+
+    [Fact]
+    public void NutritionEntry_DefaultAliases_IsEmpty()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.Empty(entry.Aliases);
+    }
+
+    [Fact]
+    public void NutritionEntry_DefaultPer100g_IsNotNull()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.NotNull(entry.Per100g);
+    }
+
+    [Fact]
+    public void NutritionEntry_DefaultFdcId_IsNull()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.Null(entry.FdcId);
+    }
+
+    [Fact]
+    public void NutritionEntry_SetValues_ReturnsSetValues()
+    {
+        // Arrange
+        var id = Guid.Parse("2724c62f-1832-5ccf-97b0-d219812368d8");
+        var entry = new NutritionEntry
+        {
+            Id = id,
+            Name = "Ground Beef",
+            Aliases = ["beef", "minced beef"],
+            Per100g = new NutrientInfo { CaloriesKcal = 215 },
+            FdcId = 174035
+        };
+
+        // Assert
+        Assert.Equal(id, entry.Id);
+        Assert.Equal("Ground Beef", entry.Name);
+        Assert.Equal(2, entry.Aliases.Count);
+        Assert.Equal(215, entry.Per100g.CaloriesKcal);
+        Assert.Equal(174035, entry.FdcId);
+    }
+}
