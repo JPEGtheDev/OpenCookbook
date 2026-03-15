@@ -20,10 +20,10 @@ Use this when:
 
 ## The Core Rule
 
-**Only bump a recipe's `version` field when the change will be merged to `master`.**
+**Only bump a recipe's `version` field when the change will be merged to `main`.**
 
 - During local edits or drafting, do NOT change the version.
-- When working on a branch that will be merged via PR, include the version bump in the branch commits — it will land on `master` when the PR merges.
+- When working on a branch that will be merged via PR, include the version bump in the branch commits — it will land on `main` when the PR merges.
 
 ---
 

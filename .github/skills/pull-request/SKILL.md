@@ -101,7 +101,7 @@ Pull items from the recipe-validation skill that are relevant to the specific re
 - [ ] Filename: `Title_Case_With_Underscores.yaml`
 - [ ] File in correct folder for its status
 - [ ] All instruction steps are explicit — no assumed knowledge (R3.7)
-- [ ] Version bumped per recipe-versioning skill (if this merges to master)
+- [ ] Version bumped per recipe-versioning skill (if this merges to main)
 
 Add sub-recipe `doc_link` item only if this PR touches a recipe that references another recipe.
 
@@ -113,7 +113,7 @@ Add sub-recipe `doc_link` item only if this PR touches a recipe that references 
 #### CI checklist items (use when `.github/workflows/` files changed)
 
 - [ ] Workflow YAML is syntactically valid
-- [ ] Trigger branches match the repo's default branch (`master`)
+- [ ] Trigger branches match the repo's default branch (`main`)
 - [ ] Permissions are scoped to minimum required
 - [ ] Concurrency group is set if the workflow deploys or mutates shared state
 - [ ] New workflow follows naming and structure conventions in the ci-workflows skill

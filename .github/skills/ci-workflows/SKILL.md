@@ -23,9 +23,9 @@ Use this when:
 
 | File | Trigger | Purpose |
 |---|---|---|
-| `.github/workflows/deploy-pages.yml` | Push to `master`, `workflow_dispatch` | Build Blazor WASM, generate recipe index, deploy to GitHub Pages |
-| `.github/workflows/pr-build.yml` | `pull_request` targeting `master` | Build/test, upload artifact, post download instructions comment on PR |
-| `.github/workflows/pr-preview.yml` | `pull_request_target` closed targeting `master` | Update PR comment when PR is closed/merged |
+| `.github/workflows/deploy-pages.yml` | Push to `main`, `workflow_dispatch` | Build Blazor WASM, generate recipe index, deploy to GitHub Pages |
+| `.github/workflows/pr-build.yml` | `pull_request` targeting `main` | Build/test, upload artifact, post download instructions comment on PR |
+| `.github/workflows/pr-preview.yml` | `pull_request_target` closed targeting `main` | Update PR comment when PR is closed/merged |
 
 ---
 
@@ -106,16 +106,16 @@ concurrency:
 
 ### Trigger branch
 
-Always use `master` (the repo's default branch). Never use `main`.
+Always use `main` (the repo's default branch).
 
-All changes go through branches and pull requests — never push directly to `master`.
+All changes go through branches and pull requests — never push directly to `main`.
 
 ```yaml
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 ```
 
 ### .NET version
@@ -185,7 +185,7 @@ For deploy jobs, use `cancel-in-progress: false`.
 
 ### #4 — `pr-build.yml` — dotnet build check on every PR ✅ Implemented
 
-See `.github/workflows/pr-build.yml`. Triggers on `pull_request` targeting `master`. Runs full build/test pipeline, uploads the built site as an artifact, and posts a PR comment with download instructions.
+See `.github/workflows/pr-build.yml`. Triggers on `pull_request` targeting `main`. Runs full build/test pipeline, uploads the built site as an artifact, and posts a PR comment with download instructions.
 
 **Artifact-based PR preview approach:** The built site (including `scripts/serve.py`) is uploaded as a GitHub Actions artifact named `pr-preview-site`. The PR comment posts both a `gh` CLI command and a `curl` one-liner so reviewers can download and serve the site locally with `python3 serve.py`. This avoids overwriting the production GitHub Pages site.
 
@@ -227,7 +227,7 @@ Always pass `--no-restore` to `build`/`test`/`publish` when a prior restore step
 
 | Symptom | Likely cause |
 |---|---|
-| Workflow never triggers on push | Branch name mismatch — check `branches:` trigger matches `master` |
+| Workflow never triggers on push | Branch name mismatch — check `branches:` trigger matches `main` |
 | `dotnet` command not found | Missing `setup-dotnet` step |
 | `working-directory` error | Path is wrong — must be `visualizer`, not `visualizer/src` |
 | Pages deploy fails with permission error | Missing `pages: write` or `id-token: write` permission |
