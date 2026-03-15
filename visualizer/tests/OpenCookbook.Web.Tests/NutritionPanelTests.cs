@@ -9,9 +9,12 @@ public class NutritionPanelTests : BunitContext
     [Fact]
     public void NutritionPanel_WithNullNutrition_ShowsLoadingState()
     {
-        // Arrange & Act
+        // Arrange
+        RecipeNutrition? nutrition = null;
+
+        // Act
         var cut = Render<NutritionPanel>(parameters =>
-            parameters.Add(p => p.Nutrition, null));
+            parameters.Add(p => p.Nutrition, nutrition));
 
         // Assert
         Assert.Contains("Calculating nutrition", cut.Markup);
