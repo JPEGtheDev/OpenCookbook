@@ -1,198 +1,231 @@
 [
   {
     "id": "ground-beef-88-12",
+    "fdc_id": 174035,
     "name": "88/12 Ground Beef",
     "aliases": ["ground beef", "ground beef 88/12"],
     "per_100g": { "calories_kcal": 215, "protein_g": 20.0, "fat_g": 15.0, "carbs_g": 0.0 }
   },
   {
     "id": "ground-chicken-thighs",
+    "fdc_id": 171116,
     "name": "Ground Chicken Thighs",
     "aliases": ["ground chicken thighs (boneless, skinless)", "ground chicken"],
     "per_100g": { "calories_kcal": 180, "protein_g": 19.0, "fat_g": 11.0, "carbs_g": 0.0 }
   },
   {
     "id": "chicken-thighs-boneless-skinless",
+    "fdc_id": 171638,
     "name": "Boneless Skinless Chicken Thighs",
     "aliases": ["chicken thighs", "boneless chicken thighs"],
     "per_100g": { "calories_kcal": 177, "protein_g": 20.0, "fat_g": 10.2, "carbs_g": 0.0 }
   },
   {
     "id": "chicken-wings",
+    "fdc_id": 171134,
     "name": "Chicken Wings",
     "aliases": ["party wings", "wings"],
     "per_100g": { "calories_kcal": 203, "protein_g": 18.3, "fat_g": 14.3, "carbs_g": 0.0 }
   },
   {
     "id": "yellow-potatoes",
+    "fdc_id": 170026,
     "name": "Yellow Potatoes",
     "aliases": ["potatoes", "yukon gold potatoes"],
     "per_100g": { "calories_kcal": 77, "protein_g": 2.0, "fat_g": 0.1, "carbs_g": 17.5 }
   },
   {
     "id": "heavy-whipping-cream",
+    "fdc_id": 170859,
     "name": "Heavy Whipping Cream",
     "aliases": ["heavy cream", "whipping cream"],
     "per_100g": { "calories_kcal": 340, "protein_g": 2.1, "fat_g": 36.1, "carbs_g": 2.8 }
   },
   {
     "id": "unsalted-butter",
+    "fdc_id": 173430,
     "name": "Unsalted Butter",
     "aliases": ["butter"],
     "per_100g": { "calories_kcal": 717, "protein_g": 0.9, "fat_g": 81.1, "carbs_g": 0.1 }
   },
   {
     "id": "eggs",
+    "fdc_id": 171287,
     "name": "Eggs",
     "aliases": ["egg", "whole eggs"],
     "per_100g": { "calories_kcal": 143, "protein_g": 12.6, "fat_g": 9.9, "carbs_g": 0.8 }
   },
   {
     "id": "panko-bread-crumbs",
+    "fdc_id": 172018,
     "name": "Panko Bread Crumbs",
     "aliases": ["panko", "bread crumbs", "breadcrumbs"],
     "per_100g": { "calories_kcal": 395, "protein_g": 10.5, "fat_g": 5.3, "carbs_g": 71.0 }
   },
   {
     "id": "yellow-onion",
+    "fdc_id": 170000,
     "name": "Yellow Onion",
     "aliases": ["onion", "onions"],
     "per_100g": { "calories_kcal": 40, "protein_g": 1.1, "fat_g": 0.1, "carbs_g": 9.3 }
   },
   {
     "id": "fine-sea-salt",
+    "fdc_id": 173468,
     "name": "Fine Sea Salt",
     "aliases": ["salt", "sea salt", "fine sea salt (for the water)"],
     "per_100g": { "calories_kcal": 0, "protein_g": 0.0, "fat_g": 0.0, "carbs_g": 0.0 }
   },
   {
     "id": "black-pepper",
+    "fdc_id": 170931,
     "name": "Black Pepper",
     "aliases": ["pepper", "ground black pepper"],
     "per_100g": { "calories_kcal": 251, "protein_g": 10.4, "fat_g": 3.3, "carbs_g": 63.9 }
   },
   {
     "id": "garlic-powder",
+    "fdc_id": 171324,
     "name": "Garlic Powder",
     "aliases": ["garlic pwd"],
     "per_100g": { "calories_kcal": 331, "protein_g": 16.6, "fat_g": 0.7, "carbs_g": 72.7 }
   },
   {
     "id": "onion-powder",
+    "fdc_id": 170927,
     "name": "Onion Powder",
     "aliases": ["onion pwd"],
     "per_100g": { "calories_kcal": 341, "protein_g": 10.4, "fat_g": 1.0, "carbs_g": 79.1 }
   },
   {
     "id": "cumin",
+    "fdc_id": 171283,
     "name": "Cumin",
     "aliases": ["ground cumin", "cumin powder"],
     "per_100g": { "calories_kcal": 375, "protein_g": 17.8, "fat_g": 22.3, "carbs_g": 44.2 }
   },
   {
     "id": "paprika",
+    "fdc_id": 171329,
     "name": "Paprika",
     "aliases": ["sweet paprika", "smoked paprika"],
     "per_100g": { "calories_kcal": 282, "protein_g": 14.1, "fat_g": 13.0, "carbs_g": 53.9 }
   },
   {
     "id": "cayenne-pepper",
+    "fdc_id": 171284,
     "name": "Cayenne Pepper",
     "aliases": ["cayenne", "ground cayenne"],
     "per_100g": { "calories_kcal": 318, "protein_g": 12.0, "fat_g": 17.3, "carbs_g": 56.6 }
   },
   {
     "id": "ground-coriander",
+    "fdc_id": 170924,
     "name": "Ground Coriander",
     "aliases": ["coriander", "coriander powder"],
     "per_100g": { "calories_kcal": 298, "protein_g": 12.4, "fat_g": 17.8, "carbs_g": 54.0 }
   },
   {
     "id": "sumac",
+    "fdc_id": null,
     "name": "Sumac",
     "aliases": ["ground sumac"],
     "per_100g": { "calories_kcal": 239, "protein_g": 5.0, "fat_g": 8.0, "carbs_g": 44.0 }
   },
   {
     "id": "red-pepper-flakes",
+    "fdc_id": 171285,
     "name": "Red Pepper Flakes",
     "aliases": ["crushed red pepper", "chili flakes"],
     "per_100g": { "calories_kcal": 318, "protein_g": 12.0, "fat_g": 17.3, "carbs_g": 56.6 }
   },
   {
     "id": "brown-sugar",
+    "fdc_id": 168833,
     "name": "Brown Sugar",
     "aliases": ["light brown sugar", "dark brown sugar"],
     "per_100g": { "calories_kcal": 380, "protein_g": 0.1, "fat_g": 0.0, "carbs_g": 98.1 }
   },
   {
     "id": "molasses",
+    "fdc_id": 168862,
     "name": "Molasses",
     "aliases": ["blackstrap molasses"],
     "per_100g": { "calories_kcal": 290, "protein_g": 0.0, "fat_g": 0.1, "carbs_g": 74.7 }
   },
   {
     "id": "mustard-seed",
+    "fdc_id": 171328,
     "name": "Mustard Seed",
     "aliases": ["mustard seeds", "yellow mustard seed"],
     "per_100g": { "calories_kcal": 508, "protein_g": 26.1, "fat_g": 36.2, "carbs_g": 28.1 }
   },
   {
     "id": "caraway-seed",
+    "fdc_id": 170922,
     "name": "Caraway Seed",
     "aliases": ["caraway", "caraway seed (ground)", "caraway seed powder", "ground caraway"],
     "per_100g": { "calories_kcal": 333, "protein_g": 19.8, "fat_g": 14.6, "carbs_g": 49.9 }
   },
   {
     "id": "guajillo-chiles",
+    "fdc_id": null,
     "name": "Guajillo Chiles",
     "aliases": ["guajillo chile", "dried guajillo"],
     "per_100g": { "calories_kcal": 314, "protein_g": 11.0, "fat_g": 5.8, "carbs_g": 56.0 }
   },
   {
     "id": "pasilla-chiles",
+    "fdc_id": null,
     "name": "Pasilla Chiles",
     "aliases": ["pasilla chile", "dried pasilla"],
     "per_100g": { "calories_kcal": 314, "protein_g": 11.0, "fat_g": 5.8, "carbs_g": 56.0 }
   },
   {
     "id": "fresh-parsley",
+    "fdc_id": 170416,
     "name": "Fresh Parsley",
     "aliases": ["parsley", "flat leaf parsley"],
     "per_100g": { "calories_kcal": 36, "protein_g": 3.0, "fat_g": 0.8, "carbs_g": 6.3 }
   },
   {
     "id": "lemon-juice",
+    "fdc_id": 168153,
     "name": "Lemon Juice",
     "aliases": ["lemon", "fresh lemon juice"],
     "per_100g": { "calories_kcal": 22, "protein_g": 0.4, "fat_g": 0.2, "carbs_g": 6.9 }
   },
   {
     "id": "coconut-aminos",
+    "fdc_id": null,
     "name": "Coconut Aminos",
     "aliases": ["coconut amino"],
     "per_100g": { "calories_kcal": 100, "protein_g": 0.0, "fat_g": 0.0, "carbs_g": 20.0 }
   },
   {
     "id": "worcestershire-sauce",
+    "fdc_id": 171240,
     "name": "Worcestershire Sauce",
     "aliases": ["worcestershire"],
     "per_100g": { "calories_kcal": 78, "protein_g": 0.0, "fat_g": 0.0, "carbs_g": 19.5 }
   },
   {
     "id": "franks-red-hot",
+    "fdc_id": null,
     "name": "Franks Red Hot",
     "aliases": ["frank's red hot", "hot sauce"],
     "per_100g": { "calories_kcal": 0, "protein_g": 0.0, "fat_g": 0.0, "carbs_g": 0.0 }
   },
   {
     "id": "buttermilk",
+    "fdc_id": 171250,
     "name": "Buttermilk",
     "aliases": ["cultured buttermilk"],
     "per_100g": { "calories_kcal": 40, "protein_g": 3.3, "fat_g": 0.9, "carbs_g": 4.8 }
   },
   {
     "id": "water",
+    "fdc_id": 171705,
     "name": "Water",
     "aliases": [],
     "per_100g": { "calories_kcal": 0, "protein_g": 0.0, "fat_g": 0.0, "carbs_g": 0.0 }

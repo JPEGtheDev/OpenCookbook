@@ -45,6 +45,16 @@ public class NutritionEntryTests
     }
 
     [Fact]
+    public void NutritionEntry_DefaultFdcId_IsNull()
+    {
+        // Arrange & Act
+        var entry = new NutritionEntry();
+
+        // Assert
+        Assert.Null(entry.FdcId);
+    }
+
+    [Fact]
     public void NutritionEntry_SetValues_ReturnsSetValues()
     {
         // Arrange
@@ -53,7 +63,8 @@ public class NutritionEntryTests
             Id = "ground-beef",
             Name = "Ground Beef",
             Aliases = ["beef", "minced beef"],
-            Per100g = new NutrientInfo { CaloriesKcal = 215 }
+            Per100g = new NutrientInfo { CaloriesKcal = 215 },
+            FdcId = 174035
         };
 
         // Assert
@@ -61,5 +72,6 @@ public class NutritionEntryTests
         Assert.Equal("Ground Beef", entry.Name);
         Assert.Equal(2, entry.Aliases.Count);
         Assert.Equal(215, entry.Per100g.CaloriesKcal);
+        Assert.Equal(174035, entry.FdcId);
     }
 }

@@ -239,9 +239,28 @@ public class NutritionCalculatorTests
         var result = await calculator.CalculateAsync(recipe, servings: 4);
 
         // Assert
+        Assert.Equal(4, result.Servings);
+        Assert.True(result.IsComplete);
+        Assert.Empty(result.MissingIngredients);
+        Assert.Single(result.Ingredients);
+
+        Assert.Equal(800, result.TotalNutrients.CaloriesKcal);
+        Assert.Equal(80, result.TotalNutrients.ProteinG);
+        Assert.Equal(48, result.TotalNutrients.FatG);
+        Assert.Equal(0, result.TotalNutrients.CarbsG);
+
         Assert.NotNull(result.PerServingNutrients);
         Assert.Equal(200, result.PerServingNutrients!.CaloriesKcal);
-        Assert.Equal(4, result.Servings);
+        Assert.Equal(20, result.PerServingNutrients.ProteinG);
+        Assert.Equal(12, result.PerServingNutrients.FatG);
+        Assert.Equal(0, result.PerServingNutrients.CarbsG);
+
+        var ingredientResult = result.Ingredients[0];
+        Assert.Equal("Ground Beef", ingredientResult.IngredientName);
+        Assert.Equal(400, ingredientResult.QuantityG);
+        Assert.True(ingredientResult.IsMatch);
+        Assert.NotNull(ingredientResult.Nutrients);
+        Assert.Equal(800, ingredientResult.Nutrients!.CaloriesKcal);
     }
 
     [Fact]
