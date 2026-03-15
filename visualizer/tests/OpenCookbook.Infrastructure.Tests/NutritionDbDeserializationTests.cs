@@ -96,7 +96,7 @@ public class NutritionDbDeserializationTests
         // Assert
         foreach (var entry in entries)
         {
-            Assert.False(string.IsNullOrWhiteSpace(entry.Id), $"Entry '{entry.Name}' has empty Id");
+            Assert.NotEqual(Guid.Empty, entry.Id);
         }
     }
 

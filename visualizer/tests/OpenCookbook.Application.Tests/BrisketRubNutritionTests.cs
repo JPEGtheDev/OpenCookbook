@@ -17,56 +17,56 @@ public class BrisketRubNutritionTests
     [
         new NutritionEntry
         {
-            Id = "guajillo-chiles",
+            Id = Guid.NewGuid(),
             Name = "Guajillo Chiles",
             Aliases = ["guajillo chile", "dried guajillo"],
             Per100g = new NutrientInfo { CaloriesKcal = 314, ProteinG = 11.0, FatG = 5.8, CarbsG = 56.0 }
         },
         new NutritionEntry
         {
-            Id = "pasilla-chiles",
+            Id = Guid.NewGuid(),
             Name = "Pasilla Chiles",
             Aliases = ["pasilla chile", "dried pasilla"],
             Per100g = new NutrientInfo { CaloriesKcal = 314, ProteinG = 11.0, FatG = 5.8, CarbsG = 56.0 }
         },
         new NutritionEntry
         {
-            Id = "fine-sea-salt",
+            Id = Guid.NewGuid(),
             Name = "Fine Sea Salt",
             Aliases = ["salt", "sea salt"],
             Per100g = new NutrientInfo { CaloriesKcal = 0, ProteinG = 0, FatG = 0, CarbsG = 0 }
         },
         new NutritionEntry
         {
-            Id = "brown-sugar",
+            Id = Guid.NewGuid(),
             Name = "Brown Sugar",
             Aliases = ["light brown sugar", "dark brown sugar"],
             Per100g = new NutrientInfo { CaloriesKcal = 380, ProteinG = 0.1, FatG = 0, CarbsG = 98.1 }
         },
         new NutritionEntry
         {
-            Id = "garlic-powder",
+            Id = Guid.NewGuid(),
             Name = "Garlic Powder",
             Aliases = ["garlic pwd"],
             Per100g = new NutrientInfo { CaloriesKcal = 331, ProteinG = 16.6, FatG = 0.7, CarbsG = 72.7 }
         },
         new NutritionEntry
         {
-            Id = "onion-powder",
+            Id = Guid.NewGuid(),
             Name = "Onion Powder",
             Aliases = ["onion pwd"],
             Per100g = new NutrientInfo { CaloriesKcal = 341, ProteinG = 10.4, FatG = 1.0, CarbsG = 79.1 }
         },
         new NutritionEntry
         {
-            Id = "black-pepper",
+            Id = Guid.NewGuid(),
             Name = "Black Pepper",
             Aliases = ["pepper", "ground black pepper"],
             Per100g = new NutrientInfo { CaloriesKcal = 251, ProteinG = 10.4, FatG = 3.3, CarbsG = 63.9 }
         },
         new NutritionEntry
         {
-            Id = "mustard-seed",
+            Id = Guid.NewGuid(),
             Name = "Mustard Seed",
             Aliases = ["mustard seeds", "yellow mustard seed"],
             Per100g = new NutrientInfo { CaloriesKcal = 508, ProteinG = 26.1, FatG = 36.2, CarbsG = 28.1 }

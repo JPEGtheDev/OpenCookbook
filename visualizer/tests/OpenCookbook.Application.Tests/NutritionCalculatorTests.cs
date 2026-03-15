@@ -10,7 +10,7 @@ public class NutritionCalculatorTests
     [
         new NutritionEntry
         {
-            Id = "ground-beef",
+            Id = Guid.NewGuid(),
             Name = "Ground Beef",
             Aliases = ["beef", "minced beef"],
             Per100g = new NutrientInfo
@@ -23,7 +23,7 @@ public class NutritionCalculatorTests
         },
         new NutritionEntry
         {
-            Id = "fine-sea-salt",
+            Id = Guid.NewGuid(),
             Name = "Fine Sea Salt",
             Aliases = ["salt", "sea salt"],
             Per100g = new NutrientInfo
@@ -36,7 +36,7 @@ public class NutritionCalculatorTests
         },
         new NutritionEntry
         {
-            Id = "black-pepper",
+            Id = Guid.NewGuid(),
             Name = "Black Pepper",
             Aliases = ["pepper"],
             Per100g = new NutrientInfo

@@ -5,13 +5,13 @@ namespace OpenCookbook.Domain.Tests;
 public class NutritionEntryTests
 {
     [Fact]
-    public void NutritionEntry_DefaultId_IsEmpty()
+    public void NutritionEntry_DefaultId_IsEmptyGuid()
     {
         // Arrange & Act
         var entry = new NutritionEntry();
 
         // Assert
-        Assert.Equal(string.Empty, entry.Id);
+        Assert.Equal(Guid.Empty, entry.Id);
     }
 
     [Fact]
@@ -58,9 +58,10 @@ public class NutritionEntryTests
     public void NutritionEntry_SetValues_ReturnsSetValues()
     {
         // Arrange
+        var id = Guid.Parse("2724c62f-1832-5ccf-97b0-d219812368d8");
         var entry = new NutritionEntry
         {
-            Id = "ground-beef",
+            Id = id,
             Name = "Ground Beef",
             Aliases = ["beef", "minced beef"],
             Per100g = new NutrientInfo { CaloriesKcal = 215 },
@@ -68,7 +69,7 @@ public class NutritionEntryTests
         };
 
         // Assert
-        Assert.Equal("ground-beef", entry.Id);
+        Assert.Equal(id, entry.Id);
         Assert.Equal("Ground Beef", entry.Name);
         Assert.Equal(2, entry.Aliases.Count);
         Assert.Equal(215, entry.Per100g.CaloriesKcal);
