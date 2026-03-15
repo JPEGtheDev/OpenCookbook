@@ -31,10 +31,10 @@
 
         var parts = infoVersion.Split('+', 2);
         var version = parts[0];
-        var commitHash = parts.Length > 1 ? parts[1] : null;
+        var commitHash = parts.Length > 1 && !string.IsNullOrEmpty(parts[1]) ? parts[1] : null;
 
         // Show version + short commit hash for build verification
-        _appVersion = !string.IsNullOrWhiteSpace(commitHash)
+        _appVersion = commitHash is not null
             ? $"v{version} ({commitHash[..Math.Min(7, commitHash.Length)]})"
             : $"v{version}";
     }

@@ -5,13 +5,24 @@ namespace OpenCookbook.Infrastructure.Tests;
 
 public class NutritionDbDeserializationTests
 {
-    private static readonly string NutritionDbJsonPath = Path.Combine(
-        AppContext.BaseDirectory, "..", "..", "..", "..", "..",
-        "src", "OpenCookbook.Web", "wwwroot", "data", "nutrition-db.json");
+    private static string FindNutritionDbJsonPath()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir is not null && !dir.GetFiles("OpenCookbook.slnx").Any())
+        {
+            dir = dir.Parent;
+        }
+
+        var path = dir is not null
+            ? Path.Combine(dir.FullName, "src", "OpenCookbook.Web", "wwwroot", "data", "nutrition-db.json")
+            : throw new FileNotFoundException("Could not find solution root to locate nutrition-db.json");
+
+        return path;
+    }
 
     private static async Task<HttpNutritionRepository> CreateRepositoryFromRealJsonAsync()
     {
-        var json = await File.ReadAllTextAsync(NutritionDbJsonPath, TestContext.Current.CancellationToken);
+        var json = await File.ReadAllTextAsync(FindNutritionDbJsonPath(), TestContext.Current.CancellationToken);
         var handler = new FakeHttpMessageHandler(json);
         var httpClient = new HttpClient(handler) { BaseAddress = new Uri("https://localhost/") };
         return new HttpNutritionRepository(httpClient);
