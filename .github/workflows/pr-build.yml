@@ -50,6 +50,12 @@ jobs:
       - name: Add .nojekyll and 404.html
         run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 
+      - name: Patch base href for local serving
+        run: |
+          sed -i 's|<base href="/OpenCookbook/" />|<base href="/" />|g' \
+            visualizer/output/wwwroot/index.html \
+            visualizer/output/wwwroot/404.html
+
       - name: Bundle local preview server
         run: cp scripts/serve.py visualizer/output/wwwroot/serve.py
 

@@ -13,6 +13,9 @@ import os
 import socketserver
 import sys
 
+# Serve from the directory containing this script, regardless of where it is invoked from
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
 
 # Ensure .wasm files get the correct MIME type (required by browsers)
