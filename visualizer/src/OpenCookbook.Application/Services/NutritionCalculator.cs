@@ -3,6 +3,11 @@ using OpenCookbook.Domain.Entities;
 
 namespace OpenCookbook.Application.Services;
 
+/// <summary>
+/// Calculates recipe nutrition by matching ingredients against the nutrition database.
+/// Entries are cached after the first load to avoid redundant fetches within the same scope.
+/// Registered as scoped — not thread-safe.
+/// </summary>
 public class NutritionCalculator
 {
     private readonly INutritionRepository _nutritionRepository;
