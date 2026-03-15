@@ -26,19 +26,19 @@ jobs:
               issue_number: prNumber,
             });
 
-            const marker = '## 🚀 PR Preview Deployed';
+            const marker = '## � PR Preview Built';
             const existing = comments.find(c =>
               c.body.includes(marker) && c.user.type === 'Bot'
             );
 
             const body = [
-              '## 🏁 PR Preview Removed',
+              '## 🏁 PR Preview Artifact Expired',
               '',
-              `This preview has been removed because the PR was **${action}**.`,
+              `This PR was **${action}**. The preview artifact is no longer available.`,
               '',
               merged
                 ? '> The production site will be updated automatically by the deploy workflow.'
-                : '> The production site will be restored on the next push to `master`.',
+                : '> No further action needed.',
             ].join('\n');
 
             if (existing) {

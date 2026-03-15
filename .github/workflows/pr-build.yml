@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
   pull-requests: write
 
 concurrency:
@@ -52,60 +50,47 @@ jobs:
       - name: Add .nojekyll and 404.html
         run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 
-      - name: Upload preview site
+      - name: Bundle local preview server
+        run: cp scripts/serve.py visualizer/output/wwwroot/serve.py
+
+      - name: Upload preview artifact
+        id: upload
         uses: actions/upload-artifact@v4
         with:
           name: pr-preview-site
           path: visualizer/output/wwwroot
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    concurrency:
-      group: pages
-      cancel-in-progress: false
-    steps:
-      - name: Download preview site
-        uses: actions/download-artifact@v4
-        with:
-          name: pr-preview-site
-          path: preview-site
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: preview-site
-
-      - name: Deploy to GitHub Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
-
-      - name: Post or update preview comment
+      - name: Post preview download instructions
         uses: actions/github-script@v7
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          PREVIEW_URL: ${{ steps.deploy.outputs.page_url }}
           PR_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
         with:
           script: |
             const prNumber = Number(process.env.PR_NUMBER);
-            const previewUrl = process.env.PREVIEW_URL;
             const sha = process.env.PR_SHA.substring(0, 7);
+            const runId = process.env.RUN_ID;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const ghCmd = [
+              `gh run download ${runId} --repo ${owner}/${repo} -n pr-preview-site`,
+              `cd pr-preview-site && python3 serve.py`,
+            ].join('\n');
 
             const body = [
-              '## 🚀 PR Preview Deployed',
+              '## 📦 PR Preview Built',
               '',
-              '| Detail | Value |',
-              '|--------|-------|',
-              `| **Preview URL** | ${previewUrl} |`,
-              `| **Commit** | \`${sha}\` |`,
-              `| **PR** | #${prNumber} |`,
+              `**Commit:** \`${sha}\` | **PR:** #${prNumber}`,
               '',
-              '> This preview reflects the latest changes in this PR.',
-              '> The production site will be restored when this PR is merged or on the next push to `master`.',
+              'Download and run locally:',
+              '',
+              '```bash',
+              ghCmd,
+              '```',
+              '',
+              '> Opens at `http://localhost:8000`. Pass a port as argument if needed: `python3 serve.py 9000`',
             ].join('\n');
 
             const { data: comments } = await github.rest.issues.listComments({
@@ -114,7 +99,7 @@ jobs:
               issue_number: prNumber,
             });
 
-            const marker = '## 🚀 PR Preview Deployed';
+            const marker = '## 📦 PR Preview Built';
             const existing = comments.find(c =>
               c.body.includes(marker) && c.user.type === 'Bot'
             );

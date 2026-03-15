@@ -24,6 +24,8 @@ Use this when:
 | File | Trigger | Purpose |
 |---|---|---|
 | `.github/workflows/deploy-pages.yml` | Push to `master`, `workflow_dispatch` | Build Blazor WASM, generate recipe index, deploy to GitHub Pages |
+| `.github/workflows/pr-build.yml` | `pull_request` targeting `master` | Build/test, upload artifact, post download instructions comment on PR |
+| `.github/workflows/pr-preview.yml` | `pull_request_target` closed targeting `master` | Update PR comment when PR is closed/merged |
 
 ---
 
@@ -42,6 +44,21 @@ OpenCookbook/
 ```
 
 **All `dotnet` commands must use `working-directory: visualizer`.**
+
+---
+
+## Shared Scripts
+
+Both `deploy-pages.yml` and `pr-build.yml` call these scripts instead of duplicating inline shell:
+
+| Script | Purpose |
+|---|---|
+| `scripts/copy-recipes.sh <output_dir>` | Copies `Recipes/**/*.yaml` into `<output_dir>/recipes/` preserving folder structure |
+| `scripts/generate-recipe-index.py <recipes_dir>` | Generates `recipe-index.json` from YAML metadata (name, path, status, description) |
+| `scripts/prepare-spa.sh <output_dir>` | Adds `.nojekyll` and copies `index.html` → `404.html` for SPA routing |
+| `scripts/serve.py [port]` | Bundled in artifact. Python SPA server for local preview (handles `.wasm` MIME type, falls back unknown paths to `index.html`) |
+
+All scripts use `set -euo pipefail`. Never add inline versions of these steps — call the scripts.
 
 ---
 
@@ -132,6 +149,7 @@ All `dotnet` commands run from the `visualizer/` subdirectory:
 | `actions/deploy-pages` | `@v4` |
 | `actions/upload-artifact` | `@v4` |
 | `actions/download-artifact` | `@v4` |
+| `actions/github-script` | `@v7` |
 
 Do not use `@latest` or unpinned versions.
 
@@ -165,33 +183,16 @@ For deploy jobs, use `cancel-in-progress: false`.
 
 ## Planned Workflows (Issues #4–#7)
 
-### #4 — `pr-build.yml` — dotnet build check on every PR
+### #4 — `pr-build.yml` — dotnet build check on every PR ✅ Implemented
 
-Triggers on `pull_request` targeting `master`. Runs `dotnet restore` + `dotnet build` + `dotnet test`. Must be a required status check before merge.
+See `.github/workflows/pr-build.yml`. Triggers on `pull_request` targeting `master`. Runs full build/test pipeline, uploads the built site as an artifact, and posts a PR comment with download instructions.
 
-```yaml
-on:
-  pull_request:
-    branches: [master]
+**Artifact-based PR preview approach:** The built site (including `scripts/serve.py`) is uploaded as a GitHub Actions artifact named `pr-preview-site`. The PR comment posts both a `gh` CLI command and a `curl` one-liner so reviewers can download and serve the site locally with `python3 serve.py`. This avoids overwriting the production GitHub Pages site.
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 10.0.x
-      - name: Restore
-        working-directory: visualizer
-        run: dotnet restore
-      - name: Build
-        working-directory: visualizer
-        run: dotnet build --no-restore
-      - name: Test
-        working-directory: visualizer
-        run: dotnet test --no-restore --verbosity normal
-```
+**Key points:**
+- Permissions: `contents: read` + `pull-requests: write` only. No `pages: write` or `id-token: write` needed.
+- The `upload-artifact` step outputs `artifact-id` — capture this with `id: upload` and pass it to the comment script via `env:`.
+- `serve.py` handles `.wasm` MIME type and SPA route fallback. It is copied into the artifact output dir before upload so it travels with the build.
 
 ### #5 — Website package versioning
 
@@ -201,17 +202,11 @@ Version is embedded in the `.csproj` or via a `Directory.Build.props` file. The 
 
 Implemented in the Blazor project itself (service worker update strategy or cache headers), not in the workflow. No new workflow file needed unless the fix requires a build-time step.
 
-### #7 — `pr-preview.yml` — PR preview deploy + cleanup
+### #7 — `pr-preview.yml` — PR preview cleanup ✅ Implemented
 
-**Depends on #4 being implemented first.** Only deploy if the build job passes.
+See `.github/workflows/pr-preview.yml`. Uses `pull_request_target` (types: `closed`) so it fires when a PR is merged or closed. Updates the `## 📦 PR Preview Built` bot comment to indicate the artifact is no longer available.
 
-Two triggers:
-1. `pull_request` (types: `opened`, `synchronize`, `reopened`) → build + deploy preview
-2. `pull_request` (types: `closed`) → clean up preview environment
-
-Preview environment name: `pr-${{ github.event.pull_request.number }}`
-
-Post the preview URL as a PR comment using `gh` CLI or the GitHub REST API.
+**Note:** Uses `pull_request_target` not `pull_request` — this is required to get write permissions on the `GITHUB_TOKEN` when the PR is from a fork. The job only makes GitHub API calls, no code checkout.
 
 ---
 
