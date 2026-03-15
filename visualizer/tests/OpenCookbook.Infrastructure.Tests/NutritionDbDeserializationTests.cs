@@ -13,9 +13,10 @@ public class NutritionDbDeserializationTests
             dir = dir.Parent;
         }
 
-        var path = dir is not null
-            ? Path.Combine(dir.FullName, "src", "OpenCookbook.Web", "wwwroot", "data", "nutrition-db.json")
-            : throw new FileNotFoundException("Could not find solution root to locate nutrition-db.json");
+        // The solution root is visualizer/; the source-of-truth lives one level up in docs/data/
+        var path = dir?.Parent is not null
+            ? Path.Combine(dir.Parent.FullName, "docs", "data", "nutrition-db.json")
+            : throw new FileNotFoundException("Could not find repo root to locate nutrition-db.json");
 
         return path;
     }

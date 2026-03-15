@@ -24,4 +24,17 @@
     <ProjectReference Include="..\OpenCookbook.Infrastructure\OpenCookbook.Infrastructure.csproj" />
   </ItemGroup>
 
+  <!-- Copy the nutrition DB from docs/data (source-of-truth) into wwwroot/data at build time -->
+  <PropertyGroup>
+    <NutritionDbSource>$(MSBuildProjectDirectory)/../../../docs/data/nutrition-db.json</NutritionDbSource>
+    <NutritionDbDest>$(MSBuildProjectDirectory)/wwwroot/data/nutrition-db.json</NutritionDbDest>
+  </PropertyGroup>
+
+  <Target Name="CopyNutritionDb" BeforeTargets="BeforeBuild"
+          Inputs="$(NutritionDbSource)"
+          Outputs="$(NutritionDbDest)">
+    <MakeDir Directories="$(MSBuildProjectDirectory)/wwwroot/data" />
+    <Copy SourceFiles="$(NutritionDbSource)" DestinationFiles="$(NutritionDbDest)" />
+  </Target>
+
 </Project>
