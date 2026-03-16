@@ -40,7 +40,7 @@ else if (Nutrition is not null)
                 </div>
             </div>
 
-            @if (Nutrition.PerUnitNutrients is not null && Nutrition.YieldsQuantity is not null)
+            @if (Nutrition.PerUnitNutrients is not null && Nutrition.YieldsQuantity is not null && Nutrition.YieldsUnit is not null)
             {
                 <div class="nutrition-card">
                     <h3>Per @Capitalize(Nutrition.YieldsUnit) <span class="nutrition-servings">(@Nutrition.YieldsQuantity total)</span></h3>
@@ -149,6 +149,7 @@ else if (Nutrition is not null)
     private static string Capitalize(string? value)
     {
         if (string.IsNullOrEmpty(value)) return string.Empty;
+        if (value.Length == 1) return char.ToUpperInvariant(value[0]).ToString();
         return char.ToUpperInvariant(value[0]) + value[1..];
     }
 }
