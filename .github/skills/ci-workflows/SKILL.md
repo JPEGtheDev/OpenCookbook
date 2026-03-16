@@ -187,7 +187,7 @@ For deploy jobs, use `cancel-in-progress: false`.
 
 See `.github/workflows/pr-build.yml`. Triggers on `pull_request` targeting `main`. Runs full build/test pipeline, uploads the built site as an artifact, and posts a PR comment with download instructions.
 
-**Artifact-based PR preview approach:** The built site (including `scripts/serve.py`) is uploaded as a GitHub Actions artifact named `pr-preview-site`. The PR comment posts both a `gh` CLI command and a `curl` one-liner so reviewers can download and serve the site locally with `python3 serve.py`. This avoids overwriting the production GitHub Pages site.
+**Artifact-based PR preview approach:** The built site (including `scripts/serve.py`) is uploaded as a GitHub Actions artifact named `pr-preview-site`. The PR comment posts a `gh` CLI command (including `-D pr-preview-site` so the artifact extracts into a known folder) and a `curl` one-liner so reviewers can download and serve the site locally with `python3 serve.py` from the extracted directory. This avoids overwriting the production GitHub Pages site.
 
 **Key points:**
 - Permissions: `contents: read` + `pull-requests: write` only. No `pages: write` or `id-token: write` needed.
