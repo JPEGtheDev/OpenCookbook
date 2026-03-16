@@ -25,6 +25,11 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-03-15 — Include self‑evaluation section at end of every response
+
+**What happened:** I responded without a consistent self‑evaluation format and the user pointed out the missing behavior.
+**Absorbed into:** copilot-instructions → Working Principles ("You finish a response to the user → Add a self‑evaluation section...").
+
 ### 2026-03-14 — Verify state before assuming blockers
 
 **What happened:** Assumed PR review conversations were still unresolved without checking.

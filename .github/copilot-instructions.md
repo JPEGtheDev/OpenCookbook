@@ -109,8 +109,25 @@ This repository has detailed skill files. **Read the right skill BEFORE starting
 | Write a user story using the INVEST framework | [user-stories](skills/user-stories/SKILL.md) |
 | Fill in a PR description or title | [pull-request](skills/pull-request/SKILL.md) |
 | Write or edit a GitHub Actions workflow | [ci-workflows](skills/ci-workflows/SKILL.md) |
+| Execute any non-trivial implementation work | [execution](skills/execution/SKILL.md) |
+| End-of-session review and lessons learned | [self-evaluation](skills/self-evaluation/SKILL.md) |
 
 If you don't know which skill to use, read **recipe-documentation** — it has the format rules.
+
+### Minimum Skill Loads by Task Type
+
+These are **mandatory** — not suggestions. Load these skills before starting the listed task.
+
+| If the task involves… | MUST read these skills |
+|---|---|
+| Any multi-step implementation work | `execution` |
+| Creating or editing a recipe | `execution`, `recipe-documentation` |
+| Creating a new recipe from scratch | `execution`, `recipe-creation`, `recipe-documentation` |
+| Validating a recipe | `recipe-validation` |
+| Writing or editing C#/Blazor code | `execution` |
+| Creating a PR or commit | `recipe-versioning` |
+| CI/CD or workflow changes | `ci-workflows` |
+| End of session (always) | `self-evaluation` |
 
 ---
 
@@ -123,6 +140,25 @@ Do these steps **in this exact order**. Do not skip any. These are not suggestio
 3. **Read the skill.** Open the correct skill file from the table above and read the ENTIRE file. Do not skim. Do not summarize. Read every line. The skill contains rules you must follow.
 4. **Plan before building.** If the task has 3+ steps or involves any structural decision, write out a numbered step-by-step plan BEFORE doing anything. Show the plan. If something goes wrong mid-plan, STOP immediately and write a new plan. Do not push forward on a broken approach.
 5. **Ask if unsure.** If any detail is ambiguous, missing, or could be interpreted two ways, STOP and ask the user before proceeding. Do not guess. Do not assume. Do not fill in blanks with plausible values.
+6. **Use a todo list.** For every task, use `manage_todo_list` to plan your work. Mark items in-progress before starting, completed immediately after finishing. This makes progress visible and ensures nothing is forgotten.
+
+---
+
+## After You Finish Any Task (Session Lifecycle)
+
+**Before your final message to the user**, you MUST do all of the following:
+
+1. **Read** the [self-evaluation skill](skills/self-evaluation/SKILL.md) and follow its steps.
+2. **Identify lessons learned** — mistakes made, user corrections, patterns discovered.
+3. **Check existing skills** — is the lesson already documented? If yes, skip.
+4. **Apply updates** — for High/Medium priority lessons, update the relevant skill file and bump its version in the YAML frontmatter.
+5. **Report** — include a brief `### Session Self-Evaluation` block in your final message:
+   ```
+   ### Session Self-Evaluation
+   Lessons: [count] | Skills updated: [list or "None"] | Compacted: [files or "None"]
+   ```
+
+If you have nothing to report, still include the block with zeroes. This ensures the behavior is habitual.
 
 ---
 
