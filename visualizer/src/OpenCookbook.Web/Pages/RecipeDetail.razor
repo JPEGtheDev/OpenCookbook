@@ -111,9 +111,10 @@ else if (_recipe is not null)
         _recipe = null;
         _nutrition = null;
 
+        var decodedPath = Uri.UnescapeDataString(Path);
+
         try
         {
-            var decodedPath = Uri.UnescapeDataString(Path);
             _recipe = await RecipeService.GetRecipeByPathAsync(decodedPath);
         }
         catch (Exception ex)
@@ -129,7 +130,7 @@ else if (_recipe is not null)
         {
             try
             {
-                _nutrition = await NutritionCalculator.CalculateAsync(_recipe);
+                _nutrition = await NutritionCalculator.CalculateAsync(_recipe, basePath: GetRecipeDirectory(decodedPath));
             }
             catch
             {
@@ -159,5 +160,11 @@ else if (_recipe is not null)
             : $"{currentDir}/{resolved}";
 
         return $"{Nav.BaseUri}recipe/{Uri.EscapeDataString(fullPath)}";
+    }
+
+    private static string? GetRecipeDirectory(string path)
+    {
+        var lastSlash = path.LastIndexOf('/');
+        return lastSlash > 0 ? path[..lastSlash] : null;
     }
 }

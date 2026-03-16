@@ -6,21 +6,25 @@ namespace OpenCookbook.Application.Services;
 /// <summary>
 /// Calculates recipe nutrition by matching ingredients against the nutrition database.
 /// Ingredients must have a <see cref="Ingredient.NutritionId"/> set to be matched.
+/// Ingredients with a <see cref="Ingredient.DocLink"/> are resolved as sub-recipes and
+/// their nutrition is scaled by the ingredient quantity and added to the parent totals.
 /// Entries are cached after the first load to avoid redundant fetches within the same scope.
 /// Registered as scoped — not thread-safe.
 /// </summary>
 public class NutritionCalculator
 {
     private readonly INutritionRepository _nutritionRepository;
+    private readonly IRecipeRepository? _recipeRepository;
     private IReadOnlyList<NutritionEntry>? _cachedEntries;
     private Dictionary<Guid, NutritionEntry>? _cachedIdLookup;
 
-    public NutritionCalculator(INutritionRepository nutritionRepository)
+    public NutritionCalculator(INutritionRepository nutritionRepository, IRecipeRepository? recipeRepository = null)
     {
         _nutritionRepository = nutritionRepository;
+        _recipeRepository = recipeRepository;
     }
 
-    public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, int servings = 1)
+    public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, string? basePath = null, int servings = 1)
     {
         _cachedEntries ??= await _nutritionRepository.GetAllEntriesAsync();
         _cachedIdLookup ??= BuildIdLookup(_cachedEntries);
@@ -35,6 +39,64 @@ public class NutritionCalculator
         {
             foreach (var ingredient in group.Items)
             {
+                // Sub-recipe reference: resolve via doc_link before unit check
+                if (ingredient.DocLink is not null)
+                {
+                    if (_recipeRepository is not null)
+                    {
+                        try
+                        {
+                            var resolvedPath = ResolveSubRecipePath(basePath, ingredient.DocLink);
+                            var subRecipe = await _recipeRepository.GetRecipeAsync(resolvedPath);
+                            var subBasePath = GetDirectoryFromPath(resolvedPath);
+                            var subNutrition = await CalculateAsync(subRecipe, basePath: subBasePath);
+
+                            var scale = ingredient.Quantity;
+                            var scaledNutrients = new NutrientInfo
+                            {
+                                CaloriesKcal = Math.Round(subNutrition.TotalNutrients.CaloriesKcal * scale, 1),
+                                ProteinG = Math.Round(subNutrition.TotalNutrients.ProteinG * scale, 1),
+                                FatG = Math.Round(subNutrition.TotalNutrients.FatG * scale, 1),
+                                CarbsG = Math.Round(subNutrition.TotalNutrients.CarbsG * scale, 1)
+                            };
+
+                            totalCalories += scaledNutrients.CaloriesKcal;
+                            totalProtein += scaledNutrients.ProteinG;
+                            totalFat += scaledNutrients.FatG;
+                            totalCarbs += scaledNutrients.CarbsG;
+
+                            result.Ingredients.Add(new IngredientNutrition
+                            {
+                                IngredientName = ingredient.Name,
+                                QuantityG = 0,
+                                IsMatch = true,
+                                Nutrients = scaledNutrients
+                            });
+                        }
+                        catch
+                        {
+                            result.MissingIngredients.Add(ingredient.Name);
+                            result.Ingredients.Add(new IngredientNutrition
+                            {
+                                IngredientName = ingredient.Name,
+                                QuantityG = 0,
+                                IsMatch = false
+                            });
+                        }
+                    }
+                    else
+                    {
+                        result.MissingIngredients.Add(ingredient.Name);
+                        result.Ingredients.Add(new IngredientNutrition
+                        {
+                            IngredientName = ingredient.Name,
+                            QuantityG = 0,
+                            IsMatch = false
+                        });
+                    }
+                    continue;
+                }
+
                 if (!IsGramUnit(ingredient.Unit))
                 {
                     result.MissingIngredients.Add(ingredient.Name);
@@ -167,5 +229,45 @@ public class NutritionCalculator
         Dictionary<Guid, NutritionEntry> idLookup, Guid nutritionId)
     {
         return idLookup.TryGetValue(nutritionId, out var entry) ? entry : null;
+    }
+
+    /// <summary>
+    /// Resolves a sub-recipe's <paramref name="docLink"/> relative to the parent recipe's
+    /// <paramref name="basePath"/> directory. Strips leading <c>./</c> and normalises
+    /// <c>..</c> segments so the result can be passed directly to
+    /// <see cref="IRecipeRepository.GetRecipeAsync"/>.
+    /// </summary>
+    internal static string ResolveSubRecipePath(string? basePath, string docLink)
+    {
+        var linkPath = docLink.StartsWith("./", StringComparison.Ordinal) ? docLink[2..] : docLink;
+
+        var combined = string.IsNullOrEmpty(basePath)
+            ? linkPath
+            : $"{basePath}/{linkPath}";
+
+        // Normalise .. components
+        var parts = combined.Split('/');
+        var normalized = new List<string>();
+        foreach (var part in parts)
+        {
+            if (part == "..")
+            {
+                if (normalized.Count > 0)
+                    normalized.RemoveAt(normalized.Count - 1);
+            }
+            else if (part != "." && part.Length > 0)
+            {
+                normalized.Add(part);
+            }
+        }
+
+        return string.Join("/", normalized);
+    }
+
+    /// <summary>Returns the directory portion of a recipe path, or <c>null</c> if the path has no directory.</summary>
+    internal static string? GetDirectoryFromPath(string path)
+    {
+        var lastSlash = path.LastIndexOf('/');
+        return lastSlash > 0 ? path[..lastSlash] : null;
     }
 }
