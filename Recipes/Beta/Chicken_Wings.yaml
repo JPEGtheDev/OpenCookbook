@@ -13,33 +13,43 @@ ingredients:
       - quantity: 4000
         unit: g
         name: Party Wings
+        nutrition_id: "91538d7b-584e-5ba7-a374-0ce39c67dbc4"
       - quantity: 54
         unit: g
         name: Paprika
+        nutrition_id: "ffc59cf3-4d62-5b01-b14d-820ca9c88098"
       - quantity: 54
         unit: g
         name: Fine Sea Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 28
         unit: g
         name: Garlic Powder
+        nutrition_id: "6fd97682-cd9c-54a6-a8a9-94273d4f6137"
       - quantity: 23
         unit: g
         name: Onion Powder
+        nutrition_id: "5fd3cc2d-5d2a-56c1-90de-d30638cf3a45"
       - quantity: 21
         unit: g
         name: Cayenne Pepper
+        nutrition_id: "90032c80-ba60-5844-b724-913bc7d45601"
       - quantity: 28
         unit: g
         name: Black Pepper
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 680
         unit: ml
         name: Franks Red Hot
+        nutrition_id: "6b2ab625-b5ff-5d97-8bbc-8a8b1233cf0d"
       - quantity: 680
         unit: ml
         name: Water
+        nutrition_id: "5c8950b5-a700-54eb-93d9-b25665f4846e"
       - quantity: 240
         unit: ml
         name: Lemon Juice
+        nutrition_id: "a65310ae-6b42-58b5-86a1-31baa3d80854"
 
 instructions: []
 

@@ -12,45 +12,55 @@ ingredients:
       - quantity: 2722
         unit: g
         name: Ground Chicken Thighs (boneless, skinless)
+        nutrition_id: "17f890a2-d0d9-5056-b97f-b1d666860bc2"
       - quantity: 4
         unit: g
         name: Paprika
         volume_alt: "1 3/4 tsp."
+        nutrition_id: "ffc59cf3-4d62-5b01-b14d-820ca9c88098"
       - quantity: 8
         unit: g
         name: Black Pepper
         volume_alt: "1 tbsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 36
         unit: g
         name: Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
 
   - heading: Herb Butter
     items:
       - quantity: 452
         unit: g
         name: Unsalted Butter
+        nutrition_id: "cdbcd21f-80e1-549e-b6c9-bd23ade428df"
       - quantity: 6.7
         unit: g
         name: Salt
         volume_alt: "1 tsp."
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 2.7
         unit: g
         name: Black Pepper
         volume_alt: "1 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 3.5
         unit: g
         name: Garlic Powder
         volume_alt: "1 tsp."
+        nutrition_id: "6fd97682-cd9c-54a6-a8a9-94273d4f6137"
       - quantity: 6
         unit: g
         name: Fresh Parsley
         volume_alt: "1 1/2 tbsp."
+        nutrition_id: "5dcd3736-953b-5bfe-adf0-bc6990e27abe"
 
   - heading: Breading
     items:
       - quantity: 270
         unit: g
         name: Panko Bread Crumbs
+        nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
       - quantity: 6
         unit: whole
         name: Eggs

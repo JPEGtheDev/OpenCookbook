@@ -13,21 +13,26 @@ ingredients:
       - quantity: 2400
         unit: g
         name: Yellow Potatoes
+        nutrition_id: "764b2405-028b-583c-8f46-0fcace9f4995"
       - quantity: 3.5
         unit: g
         name: Black Pepper
         volume_alt: "1 1/2 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 12
         unit: g
         name: Fine Sea Salt
         volume_alt: "2 tsp."
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 18
         unit: g
         name: Fine Sea Salt (for the water)
         volume_alt: "1 tbsp."
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 300
         unit: g
         name: Heavy Whipping Cream
+        nutrition_id: "b3716736-0dd4-5730-9d05-8e495ad76433"
 
   - heading: Fancy Additions
     items:

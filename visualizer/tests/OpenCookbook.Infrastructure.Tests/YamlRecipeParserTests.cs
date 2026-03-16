@@ -579,4 +579,63 @@ public class YamlRecipeParserTests
         // Act & Assert
         Assert.Throws<ArgumentException>(() => _parser.Parse(yaml));
     }
+
+    [Fact]
+    public void Parse_IngredientWithNutritionId_DeserializesToExpectedGuid()
+    {
+        // Arrange
+        var yaml = """
+            name: Test Recipe
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Chicken Wings
+                    nutrition_id: "91538d7b-584e-5ba7-a374-0ce39c67dbc4"
+
+            instructions: []
+            """;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Equal(
+            new Guid("91538d7b-584e-5ba7-a374-0ce39c67dbc4"),
+            recipe.Ingredients[0].Items[0].NutritionId);
+    }
+
+    [Fact]
+    public void Parse_IngredientWithoutNutritionId_HasNullNutritionId()
+    {
+        // Arrange
+        var yaml = """
+            name: Test Recipe
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Guajillo Chiles
+
+            instructions: []
+            """;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Null(recipe.Ingredients[0].Items[0].NutritionId);
+    }
 }

@@ -13,12 +13,15 @@ ingredients:
       - quantity: 100
         unit: g
         name: Coconut Aminos
+        nutrition_id: "343f0f20-48dd-512a-a001-b3441ad58fcd"
       - quantity: 100
         unit: g
         name: Worcestershire Sauce
+        nutrition_id: "92e38e1b-3a62-5f60-aeec-a5485b73e0c9"
       - quantity: 250
         unit: g
         name: Molasses
+        nutrition_id: "c6693b0a-3cc0-52d2-ba5b-75d17ea0f053"
 
 utensils:
   - heading: null

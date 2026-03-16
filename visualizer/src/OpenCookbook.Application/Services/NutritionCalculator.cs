@@ -5,6 +5,7 @@ namespace OpenCookbook.Application.Services;
 
 /// <summary>
 /// Calculates recipe nutrition by matching ingredients against the nutrition database.
+/// Ingredients must have a <see cref="Ingredient.NutritionId"/> set to be matched.
 /// Entries are cached after the first load to avoid redundant fetches within the same scope.
 /// Registered as scoped — not thread-safe.
 /// </summary>
@@ -12,7 +13,7 @@ public class NutritionCalculator
 {
     private readonly INutritionRepository _nutritionRepository;
     private IReadOnlyList<NutritionEntry>? _cachedEntries;
-    private Dictionary<string, NutritionEntry>? _cachedLookup;
+    private Dictionary<Guid, NutritionEntry>? _cachedIdLookup;
 
     public NutritionCalculator(INutritionRepository nutritionRepository)
     {
@@ -22,7 +23,7 @@ public class NutritionCalculator
     public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, int servings = 1)
     {
         _cachedEntries ??= await _nutritionRepository.GetAllEntriesAsync();
-        _cachedLookup ??= BuildLookup(_cachedEntries);
+        _cachedIdLookup ??= BuildIdLookup(_cachedEntries);
 
         var result = new RecipeNutrition { Servings = servings };
         var totalCalories = 0.0;
@@ -46,7 +47,9 @@ public class NutritionCalculator
                     continue;
                 }
 
-                var entry = FindEntry(_cachedLookup, ingredient.Name);
+                var entry = ingredient.NutritionId.HasValue
+                    ? FindEntryById(_cachedIdLookup, ingredient.NutritionId.Value)
+                    : null;
                 if (entry is null)
                 {
                     result.MissingIngredients.Add(ingredient.Name);
@@ -111,45 +114,21 @@ public class NutritionCalculator
             || unit.Equals("ml", StringComparison.OrdinalIgnoreCase);
     }
 
-    internal static Dictionary<string, NutritionEntry> BuildLookup(IReadOnlyList<NutritionEntry> entries)
+    internal static Dictionary<Guid, NutritionEntry> BuildIdLookup(IReadOnlyList<NutritionEntry> entries)
     {
-        var lookup = new Dictionary<string, NutritionEntry>(StringComparer.OrdinalIgnoreCase);
+        var lookup = new Dictionary<Guid, NutritionEntry>();
 
         foreach (var entry in entries)
         {
-            lookup.TryAdd(NormalizeKey(entry.Name), entry);
-
-            foreach (var alias in entry.Aliases)
-            {
-                lookup.TryAdd(NormalizeKey(alias), entry);
-            }
+            lookup.TryAdd(entry.Id, entry);
         }
 
         return lookup;
     }
 
-    internal static NutritionEntry? FindEntry(
-        Dictionary<string, NutritionEntry> lookup, string ingredientName)
+    internal static NutritionEntry? FindEntryById(
+        Dictionary<Guid, NutritionEntry> idLookup, Guid nutritionId)
     {
-        var normalized = NormalizeKey(ingredientName);
-
-        if (lookup.TryGetValue(normalized, out var exact))
-            return exact;
-
-        // Try stripping parenthetical qualifiers, e.g. "Fine Sea Salt (for the water)" → "Fine Sea Salt"
-        var parenIndex = normalized.IndexOf('(');
-        if (parenIndex > 0)
-        {
-            var withoutParen = normalized[..parenIndex].Trim();
-            if (lookup.TryGetValue(withoutParen, out var stripped))
-                return stripped;
-        }
-
-        return null;
-    }
-
-    private static string NormalizeKey(string name)
-    {
-        return name.Trim().ToLowerInvariant();
+        return idLookup.TryGetValue(nutritionId, out var entry) ? entry : null;
     }
 }

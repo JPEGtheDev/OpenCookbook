@@ -13,52 +13,65 @@ ingredients:
       - quantity: 1300
         unit: g
         name: Boneless Skinless Chicken Thighs
+        nutrition_id: "4a614979-a9a7-55aa-9b95-3668c2b7aa05"
       - quantity: 1.7
         unit: g
         name: Black Pepper
         volume_alt: "3/4 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 0.8
         unit: g
         name: Garlic Powder
         volume_alt: "1/4 tsp."
+        nutrition_id: "6fd97682-cd9c-54a6-a8a9-94273d4f6137"
       - quantity: 1.9
         unit: g
         name: Onion Powder
         volume_alt: "3/4 tsp."
+        nutrition_id: "5fd3cc2d-5d2a-56c1-90de-d30638cf3a45"
       - quantity: 1.1
         unit: g
         name: Cumin
         volume_alt: "1/2 tsp."
+        nutrition_id: "4cee9687-0345-5c5c-bf34-0bc7cd916e13"
       - quantity: 2.3
         unit: g
         name: Paprika
         volume_alt: "1 tsp."
+        nutrition_id: "ffc59cf3-4d62-5b01-b14d-820ca9c88098"
       - quantity: 0.3
         unit: g
         name: Ground Coriander
         volume_alt: "1/8 tsp."
+        nutrition_id: "d607cd8d-0a12-557c-84ca-d0123f64236b"
       - quantity: 0.3
         unit: g
         name: Caraway Seed (ground)
         volume_alt: "1/8 tsp."
+        nutrition_id: "5f93c38f-94bf-5663-b13c-bd53518b1273"
       - quantity: 9
         unit: g
         name: Fine Sea Salt
         volume_alt: "1 1/2 tsp."
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 1.2
         unit: g
         name: Cayenne Pepper
         volume_alt: "1/2 tsp."
+        nutrition_id: "90032c80-ba60-5844-b724-913bc7d45601"
       - quantity: 0.5
         unit: g
         name: Red Pepper Flakes
         volume_alt: "1/4 tsp."
+        nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
       - quantity: 55
         unit: ml
         name: Lemon Juice
+        nutrition_id: "a65310ae-6b42-58b5-86a1-31baa3d80854"
       - quantity: 250
         unit: ml
         name: Buttermilk
+        nutrition_id: "2798e0fc-6377-5ad6-86a1-6d5d87698afb"
 
 utensils:
   - heading: null
