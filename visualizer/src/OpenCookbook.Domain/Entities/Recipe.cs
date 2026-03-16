@@ -12,4 +12,6 @@ public class Recipe
     public List<Section> Instructions { get; set; } = [];
     public List<RelatedRecipe>? Related { get; set; }
     public List<string>? Notes { get; set; }
+    public RecipeYield? Yields { get; set; }
+    public RecipeServingSize? ServingSize { get; set; }
 }

@@ -94,7 +94,44 @@ public class NutritionCalculator
             CarbsG = Math.Round(totalCarbs, 1)
         };
 
-        if (servings > 0)
+        if (recipe.Yields is { Quantity: > 0 })
+        {
+            result.YieldsQuantity = recipe.Yields.Quantity;
+            result.YieldsUnit = recipe.Yields.Unit;
+            result.PerUnitNutrients = new NutrientInfo
+            {
+                CaloriesKcal = Math.Round(totalCalories / recipe.Yields.Quantity, 1),
+                ProteinG = Math.Round(totalProtein / recipe.Yields.Quantity, 1),
+                FatG = Math.Round(totalFat / recipe.Yields.Quantity, 1),
+                CarbsG = Math.Round(totalCarbs / recipe.Yields.Quantity, 1)
+            };
+
+            if (recipe.ServingSize is { Quantity: > 0 })
+            {
+                result.ServingSizeQuantity = recipe.ServingSize.Quantity;
+                result.ServingSizeUnit = recipe.ServingSize.Unit;
+
+                // Only multiply when the serving-size unit matches the yields unit
+                // (e.g. 4 meatballs from 24 meatballs yields a meaningful per-serving value).
+                // When units differ (e.g. 120 g from 14 servings), the serving_size is
+                // informational — use PerUnitNutrients directly to avoid cross-unit multiplication.
+                if (string.Equals(recipe.ServingSize.Unit, recipe.Yields.Unit, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.PerServingNutrients = new NutrientInfo
+                    {
+                        CaloriesKcal = Math.Round(totalCalories / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        ProteinG = Math.Round(totalProtein / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        FatG = Math.Round(totalFat / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        CarbsG = Math.Round(totalCarbs / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1)
+                    };
+                }
+                else
+                {
+                    result.PerServingNutrients = result.PerUnitNutrients;
+                }
+            }
+        }
+        else if (servings > 0)
         {
             result.PerServingNutrients = new NutrientInfo
             {

@@ -40,7 +40,61 @@ else if (Nutrition is not null)
                 </div>
             </div>
 
-            @if (Nutrition.PerServingNutrients is not null && Nutrition.Servings > 1)
+            @if (Nutrition.PerUnitNutrients is not null
+                && Nutrition.YieldsQuantity is not null
+                && Nutrition.YieldsUnit is not null
+                && !NonPluralizableUnits.Contains(Nutrition.YieldsUnit)
+                && !(string.Equals(Nutrition.YieldsUnit, "serving", StringComparison.OrdinalIgnoreCase)
+                     && Nutrition.ServingSizeQuantity is not null))
+            {
+                <div class="nutrition-card">
+                    <h3>Per @Capitalize(Nutrition.YieldsUnit) <span class="nutrition-servings">(@Nutrition.YieldsQuantity total)</span></h3>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item nutrition-calories">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients.CaloriesKcal)</span>
+                            <span class="nutrition-label">Calories</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients.ProteinG)g</span>
+                            <span class="nutrition-label">Protein</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients.FatG)g</span>
+                            <span class="nutrition-label">Fat</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients.CarbsG)g</span>
+                            <span class="nutrition-label">Carbs</span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Nutrition.PerServingNutrients is not null && Nutrition.ServingSizeQuantity is not null && Nutrition.ServingSizeQuantity > 1)
+            {
+                <div class="nutrition-card">
+                    <h3>Per Serving <span class="nutrition-servings">(@Nutrition.ServingSizeQuantity @Pluralize(Nutrition.ServingSizeUnit, Nutrition.ServingSizeQuantity))</span></h3>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item nutrition-calories">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.CaloriesKcal)</span>
+                            <span class="nutrition-label">Calories</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.ProteinG)g</span>
+                            <span class="nutrition-label">Protein</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.FatG)g</span>
+                            <span class="nutrition-label">Fat</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.CarbsG)g</span>
+                            <span class="nutrition-label">Carbs</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Nutrition.PerServingNutrients is not null && Nutrition.Servings > 1)
             {
                 <div class="nutrition-card">
                     <h3>Per Serving <span class="nutrition-servings">(@Nutrition.Servings servings)</span></h3>
@@ -95,5 +149,23 @@ else if (Nutrition is not null)
     private static string FormatValue(double value)
     {
         return value == Math.Floor(value) ? value.ToString("F0") : value.ToString("F1");
+    }
+
+    private static string Capitalize(string? value)
+    {
+        if (string.IsNullOrEmpty(value)) return string.Empty;
+        if (value.Length == 1) return char.ToUpperInvariant(value[0]).ToString();
+        return char.ToUpperInvariant(value[0]) + value[1..];
+    }
+
+    private static readonly HashSet<string> NonPluralizableUnits =
+        new(StringComparer.OrdinalIgnoreCase) { "g", "ml", "kg", "l", "oz", "lb", "lbs" };
+
+    private static string Pluralize(string? unit, int? quantity)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        if (quantity == 1) return unit;
+        if (NonPluralizableUnits.Contains(unit)) return unit;
+        return unit + "s";
     }
 }

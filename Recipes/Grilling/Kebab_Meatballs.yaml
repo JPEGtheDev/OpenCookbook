@@ -1,10 +1,18 @@
 name: Kebab Meatballs
-version: "1.5"
+version: "1.6"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A continuation of the Kebab Meat recipe. Forms the kebab mixture into meatballs
   that can be made in bulk to eat now or freeze for later.
 status: stable
+
+yields:
+  quantity: 24
+  unit: meatball
+
+serving_size:
+  quantity: 4
+  unit: meatball
 
 ingredients:
   - heading: null
