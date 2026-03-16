@@ -339,4 +339,54 @@ public class NutritionPanelTests : BunitContext
         // Assert
         Assert.DoesNotContain("total)", cut.Markup);
     }
+
+    [Fact]
+    public void NutritionPanel_WithServingSizeOfOne_DoesNotShowPerServingCard()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 9259 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 514, ProteinG = 30.7, FatG = 37.8, CarbsG = 11.3 },
+            PerServingNutrients = new NutrientInfo { CaloriesKcal = 514, ProteinG = 30.7, FatG = 37.8, CarbsG = 11.3 },
+            YieldsQuantity = 18,
+            YieldsUnit = "cutlet",
+            ServingSizeQuantity = 1,
+            ServingSizeUnit = "cutlet",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert — per-unit card is shown but per-serving card is suppressed (it would be identical)
+        Assert.Contains("Per Cutlet", cut.Markup);
+        Assert.DoesNotContain("Per Serving", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithGramServingSize_ShowsUnitWithoutPluralS()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 2600 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 1.6, ProteinG = 0.1, FatG = 0.1, CarbsG = 0.1 },
+            PerServingNutrients = new NutrientInfo { CaloriesKcal = 192, ProteinG = 12, FatG = 8, CarbsG = 10 },
+            YieldsQuantity = 1624,
+            YieldsUnit = "g",
+            ServingSizeQuantity = 120,
+            ServingSizeUnit = "g",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert — "g" should not be pluralized to "gs"
+        Assert.Contains("120 g", cut.Markup);
+        Assert.DoesNotContain("120 gs", cut.Markup);
+    }
 }

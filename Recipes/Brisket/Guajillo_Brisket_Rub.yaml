@@ -7,8 +7,8 @@ description: >
 status: stable
 
 yields:
-  quantity: 10
-  unit: serving
+  quantity: 960
+  unit: g
 
 ingredients:
   - heading: null

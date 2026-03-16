@@ -8,8 +8,12 @@ description: >
 status: stable
 
 yields:
-  quantity: 14
-  unit: serving
+  quantity: 1624
+  unit: g
+
+serving_size:
+  quantity: 120
+  unit: g
 
 ingredients:
   - heading: null
