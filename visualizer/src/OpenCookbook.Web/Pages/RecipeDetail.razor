@@ -31,7 +31,7 @@ else if (_recipe is not null)
 
         <div class="recipe-body">
             <aside class="recipe-sidebar">
-                <IngredientList Groups="@_recipe.Ingredients" />
+                <IngredientList Groups="@_recipe.Ingredients" RecipePath="@_decodedPath" />
 
                 @if (_recipe.Utensils is { Count: > 0 })
                 {
@@ -103,6 +103,7 @@ else if (_recipe is not null)
     private RecipeNutrition? _nutrition;
     private bool _loading = true;
     private string? _error;
+    private string? _decodedPath;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -110,11 +111,12 @@ else if (_recipe is not null)
         _error = null;
         _recipe = null;
         _nutrition = null;
+        _decodedPath = null;
 
         try
         {
-            var decodedPath = Uri.UnescapeDataString(Path);
-            _recipe = await RecipeService.GetRecipeByPathAsync(decodedPath);
+            _decodedPath = Uri.UnescapeDataString(Path);
+            _recipe = await RecipeService.GetRecipeByPathAsync(_decodedPath);
         }
         catch (Exception ex)
         {
@@ -125,11 +127,11 @@ else if (_recipe is not null)
             _loading = false;
         }
 
-        if (_recipe is not null)
+        if (_recipe is not null && _decodedPath is not null)
         {
             try
             {
-                _nutrition = await NutritionCalculator.CalculateAsync(_recipe);
+                _nutrition = await NutritionCalculator.CalculateAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
             }
             catch
             {
@@ -140,7 +142,7 @@ else if (_recipe is not null)
 
     private string GetRelatedRecipeUrl(string relativePath)
     {
-        var decodedPath = Uri.UnescapeDataString(Path);
+        var decodedPath = _decodedPath ?? Uri.UnescapeDataString(Path);
 
         // Guard against malicious route parameter values
         if (decodedPath.Contains("..") || decodedPath.StartsWith('/') || decodedPath.StartsWith('\\'))
@@ -159,5 +161,11 @@ else if (_recipe is not null)
             : $"{currentDir}/{resolved}";
 
         return $"{Nav.BaseUri}recipe/{Uri.EscapeDataString(fullPath)}";
+    }
+
+    private static string? GetRecipeDirectory(string path)
+    {
+        var lastSlash = path.LastIndexOf('/');
+        return lastSlash > 0 ? path[..lastSlash] : null;
     }
 }

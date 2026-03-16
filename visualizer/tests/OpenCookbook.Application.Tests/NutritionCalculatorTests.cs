@@ -646,4 +646,267 @@ public class NutritionCalculatorTests
         Assert.Equal("g", result.ServingSizeUnit);
     }
 
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_ResolvesSubRecipeNutrition()
+    {
+        // Arrange
+        var subRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ]
+        };
+
+        var recipeRepo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Grilling/Kebab_Meat.yaml"] = subRecipe
+        });
+
+        var calculator = new NutritionCalculator(new FakeNutritionRepository(SampleEntries), recipeRepo);
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 1,
+                            Unit = "whole",
+                            Name = "Kebab Meat Recipe (full batch)",
+                            DocLink = "./Kebab_Meat.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe, basePath: "Grilling");
+
+        // Assert — sub-recipe nutrition (500g beef × 200 kcal/100g = 1000 kcal) flows into parent totals
+        Assert.Equal(1000, result.TotalNutrients.CaloriesKcal);
+        Assert.Single(result.Ingredients);
+        Assert.True(result.Ingredients[0].IsMatch);
+        Assert.Empty(result.MissingIngredients);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_ScalesNutritionByQuantity()
+    {
+        // Arrange — quantity: 2 means 2 full batches
+        var subRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ]
+        };
+
+        var recipeRepo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Grilling/Kebab_Meat.yaml"] = subRecipe
+        });
+
+        var calculator = new NutritionCalculator(new FakeNutritionRepository(SampleEntries), recipeRepo);
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 2,
+                            Unit = "whole",
+                            Name = "Kebab Meat Recipe (2 batches)",
+                            DocLink = "./Kebab_Meat.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe, basePath: "Grilling");
+
+        // Assert — 2 batches × 1000 kcal = 2000 kcal
+        Assert.Equal(2000, result.TotalNutrients.CaloriesKcal);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_NoRecipeRepository_AddsMissingIngredient()
+    {
+        // Arrange — calculator has no recipe repository
+        var calculator = CreateCalculator();
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 1,
+                            Unit = "whole",
+                            Name = "Kebab Meat Recipe (full batch)",
+                            DocLink = "./Kebab_Meat.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe);
+
+        // Assert
+        Assert.Single(result.MissingIngredients);
+        Assert.Contains("Kebab Meat Recipe (full batch)", result.MissingIngredients);
+        Assert.Equal(0, result.TotalNutrients.CaloriesKcal);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_NotFoundInRepository_AddsMissingIngredient()
+    {
+        // Arrange — repository has no matching recipe
+        var recipeRepo = new FakeRecipeRepository(new Dictionary<string, Recipe>());
+        var calculator = new NutritionCalculator(new FakeNutritionRepository(SampleEntries), recipeRepo);
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 1,
+                            Unit = "whole",
+                            Name = "Missing Sub-Recipe",
+                            DocLink = "./Missing.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe);
+
+        // Assert
+        Assert.Single(result.MissingIngredients);
+        Assert.Contains("Missing Sub-Recipe", result.MissingIngredients);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_IncompleteSubRecipe_PropagatesMissingIngredients()
+    {
+        // Arrange — sub-recipe has one matched and one unmatched ingredient
+        var subRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId },
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Yellow Onion" } // no nutrition_id, not resolvable
+                    ]
+                }
+            ]
+        };
+
+        var recipeRepo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Grilling/Kebab_Meat.yaml"] = subRecipe
+        });
+
+        var calculator = new NutritionCalculator(new FakeNutritionRepository(SampleEntries), recipeRepo);
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 1,
+                            Unit = "whole",
+                            Name = "Kebab Meat Recipe (full batch)",
+                            DocLink = "./Kebab_Meat.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe, basePath: "Grilling");
+
+        // Assert — sub-recipe missing item is propagated with prefix; parent ingredient IsMatch is false
+        Assert.False(result.IsComplete);
+        Assert.Single(result.MissingIngredients);
+        Assert.Contains("Yellow Onion", result.MissingIngredients[0]);
+        Assert.Contains("Kebab Meat Recipe (full batch)", result.MissingIngredients[0]);
+        Assert.Single(result.Ingredients);
+        Assert.False(result.Ingredients[0].IsMatch);
+        // Calories from the matched Ground Beef still contribute even when incomplete
+        Assert.Equal(1000, result.TotalNutrients.CaloriesKcal);
+    }
+
+    [Theory]
+    [InlineData(null, "./Kebab_Meat.yaml", "Kebab_Meat.yaml")]
+    [InlineData("Grilling", "./Kebab_Meat.yaml", "Grilling/Kebab_Meat.yaml")]
+    [InlineData("Grilling", "../Brisket/Rub.yaml", "Brisket/Rub.yaml")]
+    [InlineData("A/B/C", "../../D.yaml", "A/D.yaml")]
+    public void ResolveSubRecipePath_ReturnsExpectedPath(string? basePath, string docLink, string expected)
+    {
+        // Act
+        var result = NutritionCalculator.ResolveSubRecipePath(basePath, docLink);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("Grilling", "Grilling/Kebab_Meatballs.yaml")]
+    [InlineData(null, "Kebab_Meat.yaml")]
+    public void GetDirectoryFromPath_ReturnsExpectedDirectory(string? expected, string path)
+    {
+        // Act
+        var result = NutritionCalculator.GetDirectoryFromPath(path);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
 }
