@@ -366,6 +366,76 @@ public class NutritionPanelTests : BunitContext
     }
 
     [Fact]
+    public void NutritionPanel_WithGramYieldsAndNoServingSize_DoesNotShowPerGramCard()
+    {
+        // Arrange — Brisket Rub style: yields in grams, no serving_size
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 2327 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 2.4, ProteinG = 0.1, FatG = 0, CarbsG = 0.5 },
+            YieldsQuantity = 960,
+            YieldsUnit = "g",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert — "Per G (960 total)" card must not appear
+        Assert.DoesNotContain("Per G", cut.Markup);
+        Assert.DoesNotContain("960 total", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithServingYieldsAndGramServingSize_ShowsOnlyPerServingCard()
+    {
+        // Arrange — Shawarma style: yields in servings, serving_size in grams
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 2800 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 200, ProteinG = 18, FatG = 12, CarbsG = 2 },
+            PerServingNutrients = new NutrientInfo { CaloriesKcal = 200, ProteinG = 18, FatG = 12, CarbsG = 2 },
+            YieldsQuantity = 14,
+            YieldsUnit = "serving",
+            ServingSizeQuantity = 120,
+            ServingSizeUnit = "g",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert — per-serving card with gram subtitle shown; no duplicate "Per Serving (14 total)" card
+        Assert.Contains("Per Serving", cut.Markup);
+        Assert.Contains("120 g", cut.Markup);
+        Assert.DoesNotContain("14 total", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithServingYieldsAndNoServingSize_ShowsPerServingCard()
+    {
+        // Arrange — Kebab Meat style: yields in servings, no serving_size
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 2006 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 250.8, ProteinG = 22.9, FatG = 17.3, CarbsG = 1.4 },
+            YieldsQuantity = 8,
+            YieldsUnit = "serving",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert — "Per Serving (8 total)" shown (no serving_size means per-unit card displays)
+        Assert.Contains("Per Serving", cut.Markup);
+        Assert.Contains("8 total", cut.Markup);
+    }
+
+    [Fact]
     public void NutritionPanel_WithGramServingSize_ShowsUnitWithoutPluralS()
     {
         // Arrange

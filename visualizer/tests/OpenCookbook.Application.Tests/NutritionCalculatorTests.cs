@@ -613,4 +613,37 @@ public class NutritionCalculatorTests
         Assert.NotNull(result.PerUnitNutrients);
     }
 
+    [Fact]
+    public async Task CalculateAsync_WithYieldsAndMismatchedServingSizeUnit_UsesPerUnitNutrientsForPerServing()
+    {
+        // Arrange — Shawarma style: yields in "serving", serving_size in "g" (different units)
+        var calculator = CreateCalculator();
+        var recipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 480, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ],
+            Yields = new RecipeYield { Quantity = 8, Unit = "serving" },
+            ServingSize = new RecipeServingSize { Quantity = 120, Unit = "g" }
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(recipe);
+
+        // Assert — PerServingNutrients must equal PerUnitNutrients (no cross-unit multiplication)
+        Assert.NotNull(result.PerUnitNutrients);
+        Assert.NotNull(result.PerServingNutrients);
+        Assert.Equal(result.PerUnitNutrients!.CaloriesKcal, result.PerServingNutrients!.CaloriesKcal);
+        Assert.Equal(result.PerUnitNutrients.ProteinG, result.PerServingNutrients.ProteinG);
+        Assert.Equal(120, result.ServingSizeQuantity);
+        Assert.Equal("g", result.ServingSizeUnit);
+    }
+
 }

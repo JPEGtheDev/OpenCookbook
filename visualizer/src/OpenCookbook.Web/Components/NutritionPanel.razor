@@ -40,7 +40,12 @@ else if (Nutrition is not null)
                 </div>
             </div>
 
-            @if (Nutrition.PerUnitNutrients is not null && Nutrition.YieldsQuantity is not null && Nutrition.YieldsUnit is not null)
+            @if (Nutrition.PerUnitNutrients is not null
+                && Nutrition.YieldsQuantity is not null
+                && Nutrition.YieldsUnit is not null
+                && !NonPluralizableUnits.Contains(Nutrition.YieldsUnit)
+                && !(string.Equals(Nutrition.YieldsUnit, "serving", StringComparison.OrdinalIgnoreCase)
+                     && Nutrition.ServingSizeQuantity is not null))
             {
                 <div class="nutrition-card">
                     <h3>Per @Capitalize(Nutrition.YieldsUnit) <span class="nutrition-servings">(@Nutrition.YieldsQuantity total)</span></h3>

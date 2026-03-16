@@ -110,13 +110,25 @@ public class NutritionCalculator
             {
                 result.ServingSizeQuantity = recipe.ServingSize.Quantity;
                 result.ServingSizeUnit = recipe.ServingSize.Unit;
-                result.PerServingNutrients = new NutrientInfo
+
+                // Only multiply when the serving-size unit matches the yields unit
+                // (e.g. 4 meatballs from 24 meatballs yields a meaningful per-serving value).
+                // When units differ (e.g. 120 g from 14 servings), the serving_size is
+                // informational — use PerUnitNutrients directly to avoid cross-unit multiplication.
+                if (string.Equals(recipe.ServingSize.Unit, recipe.Yields.Unit, StringComparison.OrdinalIgnoreCase))
                 {
-                    CaloriesKcal = Math.Round(totalCalories / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
-                    ProteinG = Math.Round(totalProtein / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
-                    FatG = Math.Round(totalFat / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
-                    CarbsG = Math.Round(totalCarbs / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1)
-                };
+                    result.PerServingNutrients = new NutrientInfo
+                    {
+                        CaloriesKcal = Math.Round(totalCalories / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        ProteinG = Math.Round(totalProtein / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        FatG = Math.Round(totalFat / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                        CarbsG = Math.Round(totalCarbs / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1)
+                    };
+                }
+                else
+                {
+                    result.PerServingNutrients = result.PerUnitNutrients;
+                }
             }
         }
         else if (servings > 0)
