@@ -652,7 +652,7 @@ public class YamlRecipeParserTests
 
             yields:
               quantity: 24
-              unit: meatballs
+              unit: meatball
 
             ingredients:
               - heading: null
@@ -670,7 +670,7 @@ public class YamlRecipeParserTests
         // Assert
         Assert.NotNull(recipe.Yields);
         Assert.Equal(24, recipe.Yields!.Quantity);
-        Assert.Equal("meatballs", recipe.Yields.Unit);
+        Assert.Equal("meatball", recipe.Yields.Unit);
     }
 
     [Fact]
@@ -686,11 +686,11 @@ public class YamlRecipeParserTests
 
             yields:
               quantity: 24
-              unit: meatballs
+              unit: meatball
 
             serving_size:
               quantity: 3
-              unit: meatballs
+              unit: meatball
 
             ingredients:
               - heading: null
@@ -708,7 +708,7 @@ public class YamlRecipeParserTests
         // Assert
         Assert.NotNull(recipe.ServingSize);
         Assert.Equal(3, recipe.ServingSize!.Quantity);
-        Assert.Equal("meatballs", recipe.ServingSize.Unit);
+        Assert.Equal("meatball", recipe.ServingSize.Unit);
     }
 
     [Fact]

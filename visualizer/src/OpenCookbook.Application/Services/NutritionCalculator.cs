@@ -112,10 +112,10 @@ public class NutritionCalculator
                 result.ServingSizeUnit = recipe.ServingSize.Unit;
                 result.PerServingNutrients = new NutrientInfo
                 {
-                    CaloriesKcal = Math.Round(result.PerUnitNutrients.CaloriesKcal * recipe.ServingSize.Quantity, 1),
-                    ProteinG = Math.Round(result.PerUnitNutrients.ProteinG * recipe.ServingSize.Quantity, 1),
-                    FatG = Math.Round(result.PerUnitNutrients.FatG * recipe.ServingSize.Quantity, 1),
-                    CarbsG = Math.Round(result.PerUnitNutrients.CarbsG * recipe.ServingSize.Quantity, 1)
+                    CaloriesKcal = Math.Round(totalCalories / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                    ProteinG = Math.Round(totalProtein / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                    FatG = Math.Round(totalFat / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1),
+                    CarbsG = Math.Round(totalCarbs / recipe.Yields.Quantity * recipe.ServingSize.Quantity, 1)
                 };
             }
         }

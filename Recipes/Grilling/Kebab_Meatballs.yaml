@@ -1,5 +1,5 @@
 name: Kebab Meatballs
-version: "1.6"
+version: "1.7"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A continuation of the Kebab Meat recipe. Forms the kebab mixture into meatballs
@@ -8,7 +8,11 @@ status: stable
 
 yields:
   quantity: 24
-  unit: meatballs
+  unit: meatball
+
+serving_size:
+  quantity: 3
+  unit: meatball
 
 ingredients:
   - heading: null

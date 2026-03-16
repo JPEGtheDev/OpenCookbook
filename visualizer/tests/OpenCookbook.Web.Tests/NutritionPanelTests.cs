@@ -282,7 +282,7 @@ public class NutritionPanelTests : BunitContext
             TotalNutrients = new NutrientInfo { CaloriesKcal = 960 },
             PerUnitNutrients = new NutrientInfo { CaloriesKcal = 40, ProteinG = 4, FatG = 2.4, CarbsG = 0 },
             YieldsQuantity = 24,
-            YieldsUnit = "meatballs",
+            YieldsUnit = "meatball",
             Servings = 1
         };
 
@@ -306,9 +306,9 @@ public class NutritionPanelTests : BunitContext
             PerUnitNutrients = new NutrientInfo { CaloriesKcal = 40, ProteinG = 4, FatG = 2.4, CarbsG = 0 },
             PerServingNutrients = new NutrientInfo { CaloriesKcal = 120, ProteinG = 12, FatG = 7.2, CarbsG = 0 },
             YieldsQuantity = 24,
-            YieldsUnit = "meatballs",
+            YieldsUnit = "meatball",
             ServingSizeQuantity = 3,
-            ServingSizeUnit = "meatballs",
+            ServingSizeUnit = "meatball",
             Servings = 1
         };
 

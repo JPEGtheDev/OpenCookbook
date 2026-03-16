@@ -510,7 +510,7 @@ public class NutritionCalculatorTests
                     ]
                 }
             ],
-            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" }
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatball" }
         };
 
         // Act
@@ -518,7 +518,7 @@ public class NutritionCalculatorTests
 
         // Assert
         Assert.Equal(24, result.YieldsQuantity);
-        Assert.Equal("meatballs", result.YieldsUnit);
+        Assert.Equal("meatball", result.YieldsUnit);
         Assert.NotNull(result.PerUnitNutrients);
         Assert.Equal(40, result.PerUnitNutrients!.CaloriesKcal);  // 960kcal total / 24
         Assert.Null(result.PerServingNutrients);
@@ -541,8 +541,8 @@ public class NutritionCalculatorTests
                     ]
                 }
             ],
-            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" },
-            ServingSize = new RecipeServingSize { Quantity = 3, Unit = "meatballs" }
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatball" },
+            ServingSize = new RecipeServingSize { Quantity = 3, Unit = "meatball" }
         };
 
         // Act
@@ -552,9 +552,9 @@ public class NutritionCalculatorTests
         Assert.NotNull(result.PerUnitNutrients);
         Assert.Equal(40, result.PerUnitNutrients!.CaloriesKcal);  // 960kcal / 24
         Assert.NotNull(result.PerServingNutrients);
-        Assert.Equal(120, result.PerServingNutrients!.CaloriesKcal);  // 40 * 3
+        Assert.Equal(120, result.PerServingNutrients!.CaloriesKcal);  // 960 / 24 * 3
         Assert.Equal(3, result.ServingSizeQuantity);
-        Assert.Equal("meatballs", result.ServingSizeUnit);
+        Assert.Equal("meatball", result.ServingSizeUnit);
     }
 
     [Fact]
@@ -602,7 +602,7 @@ public class NutritionCalculatorTests
                     ]
                 }
             ],
-            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" }
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatball" }
         };
 
         // Act — passing servings=4 should be ignored because Yields is set

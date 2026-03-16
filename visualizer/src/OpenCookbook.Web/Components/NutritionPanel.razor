@@ -68,7 +68,7 @@ else if (Nutrition is not null)
             @if (Nutrition.PerServingNutrients is not null && Nutrition.ServingSizeQuantity is not null)
             {
                 <div class="nutrition-card">
-                    <h3>Per Serving <span class="nutrition-servings">(@Nutrition.ServingSizeQuantity @Nutrition.ServingSizeUnit)</span></h3>
+                    <h3>Per Serving <span class="nutrition-servings">(@Nutrition.ServingSizeQuantity @Pluralize(Nutrition.ServingSizeUnit, Nutrition.ServingSizeQuantity))</span></h3>
                     <div class="nutrition-grid">
                         <div class="nutrition-item nutrition-calories">
                             <span class="nutrition-value">@FormatValue(Nutrition.PerServingNutrients.CaloriesKcal)</span>
@@ -151,5 +151,11 @@ else if (Nutrition is not null)
         if (string.IsNullOrEmpty(value)) return string.Empty;
         if (value.Length == 1) return char.ToUpperInvariant(value[0]).ToString();
         return char.ToUpperInvariant(value[0]) + value[1..];
+    }
+
+    private static string Pluralize(string? unit, int? quantity)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        return quantity == 1 ? unit : unit + "s";
     }
 }

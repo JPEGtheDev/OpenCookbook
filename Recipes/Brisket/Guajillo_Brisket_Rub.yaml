@@ -1,10 +1,14 @@
 name: Guajillo Brisket Rub
-version: "1.0"
+version: "1.1"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A proven brisket rub that is a bit spicy and sweet. While it isn't a traditional
   brisket rub, it is amazing.
 status: stable
+
+yields:
+  quantity: 10
+  unit: serving
 
 ingredients:
   - heading: null
