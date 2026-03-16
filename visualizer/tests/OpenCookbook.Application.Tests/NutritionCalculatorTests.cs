@@ -493,4 +493,124 @@ public class NutritionCalculatorTests
         Assert.False(result.IsComplete);
     }
 
+    [Fact]
+    public async Task CalculateAsync_WithYields_ComputesPerUnitNutrients()
+    {
+        // Arrange
+        var calculator = CreateCalculator();
+        var recipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 480, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ],
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" }
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(recipe);
+
+        // Assert
+        Assert.Equal(24, result.YieldsQuantity);
+        Assert.Equal("meatballs", result.YieldsUnit);
+        Assert.NotNull(result.PerUnitNutrients);
+        Assert.Equal(40, result.PerUnitNutrients!.CaloriesKcal);  // 960kcal total / 24
+        Assert.Null(result.PerServingNutrients);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithYieldsAndServingSize_ComputesPerServingNutrients()
+    {
+        // Arrange
+        var calculator = CreateCalculator();
+        var recipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 480, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ],
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" },
+            ServingSize = new RecipeServingSize { Quantity = 3, Unit = "meatballs" }
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(recipe);
+
+        // Assert
+        Assert.NotNull(result.PerUnitNutrients);
+        Assert.Equal(40, result.PerUnitNutrients!.CaloriesKcal);  // 960kcal / 24
+        Assert.NotNull(result.PerServingNutrients);
+        Assert.Equal(120, result.PerServingNutrients!.CaloriesKcal);  // 40 * 3
+        Assert.Equal(3, result.ServingSizeQuantity);
+        Assert.Equal("meatballs", result.ServingSizeUnit);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithoutYields_PerUnitNutrientsIsNull()
+    {
+        // Arrange
+        var calculator = CreateCalculator();
+        var recipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 400, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(recipe);
+
+        // Assert
+        Assert.Null(result.PerUnitNutrients);
+        Assert.Null(result.YieldsQuantity);
+        Assert.Null(result.YieldsUnit);
+    }
+
+    [Fact]
+    public async Task CalculateAsync_WithYields_LegacyServingsParameterIsIgnored()
+    {
+        // Arrange
+        var calculator = CreateCalculator();
+        var recipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 480, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
+                    ]
+                }
+            ],
+            Yields = new RecipeYield { Quantity = 24, Unit = "meatballs" }
+        };
+
+        // Act — passing servings=4 should be ignored because Yields is set
+        var result = await calculator.CalculateAsync(recipe, servings: 4);
+
+        // Assert — PerServingNutrients must be null (no ServingSize defined), regardless of servings param
+        Assert.Null(result.PerServingNutrients);
+        Assert.NotNull(result.PerUnitNutrients);
+    }
+
 }

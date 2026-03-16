@@ -1,10 +1,14 @@
 name: Kiev Cutlet
-version: "1.1"
+version: "1.2"
 author: Jonathan Petz | JPEGtheDev
 description: >
   Chicken Kiev-style cutlets made from ground chicken thighs with an herb
   butter center, coated in panko. Assembled and frozen raw for cooking later.
 status: beta
+
+yields:
+  quantity: 18
+  unit: cutlets
 
 ingredients:
   - heading: Meat Mixture

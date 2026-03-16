@@ -272,4 +272,71 @@ public class NutritionPanelTests : BunitContext
         // Assert
         Assert.Contains("119.4", cut.Markup);
     }
+
+    [Fact]
+    public void NutritionPanel_WithPerUnitNutrients_ShowsPerUnitCard()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 960 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 40, ProteinG = 4, FatG = 2.4, CarbsG = 0 },
+            YieldsQuantity = 24,
+            YieldsUnit = "meatballs",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert
+        Assert.Contains("Per Meatball", cut.Markup);
+        Assert.Contains("24 total", cut.Markup);
+        Assert.Contains("40", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithPerUnitAndServingSize_ShowsPerServingCard()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 960 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 40, ProteinG = 4, FatG = 2.4, CarbsG = 0 },
+            PerServingNutrients = new NutrientInfo { CaloriesKcal = 120, ProteinG = 12, FatG = 7.2, CarbsG = 0 },
+            YieldsQuantity = 24,
+            YieldsUnit = "meatballs",
+            ServingSizeQuantity = 3,
+            ServingSizeUnit = "meatballs",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert
+        Assert.Contains("Per Serving", cut.Markup);
+        Assert.Contains("3 meatballs", cut.Markup);
+        Assert.Contains("120", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithoutYields_DoesNotShowPerUnitCard()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 960 },
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+            parameters.Add(p => p.Nutrition, nutrition));
+
+        // Assert
+        Assert.DoesNotContain("total)", cut.Markup);
+    }
 }

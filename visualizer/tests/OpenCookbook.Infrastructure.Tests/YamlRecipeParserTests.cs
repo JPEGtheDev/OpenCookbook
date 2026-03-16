@@ -638,4 +638,105 @@ public class YamlRecipeParserTests
         // Assert
         Assert.Null(recipe.Ingredients[0].Items[0].NutritionId);
     }
+
+    [Fact]
+    public void Parse_WithYields_ParsesQuantityAndUnit()
+    {
+        // Arrange
+        var yaml = """
+            name: Kebab Meatballs
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            yields:
+              quantity: 24
+              unit: meatballs
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions: []
+            """;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.NotNull(recipe.Yields);
+        Assert.Equal(24, recipe.Yields!.Quantity);
+        Assert.Equal("meatballs", recipe.Yields.Unit);
+    }
+
+    [Fact]
+    public void Parse_WithServingSize_ParsesQuantityAndUnit()
+    {
+        // Arrange
+        var yaml = """
+            name: Kebab Meatballs
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            yields:
+              quantity: 24
+              unit: meatballs
+
+            serving_size:
+              quantity: 3
+              unit: meatballs
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions: []
+            """;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.NotNull(recipe.ServingSize);
+        Assert.Equal(3, recipe.ServingSize!.Quantity);
+        Assert.Equal("meatballs", recipe.ServingSize.Unit);
+    }
+
+    [Fact]
+    public void Parse_WithoutYields_YieldsIsNull()
+    {
+        // Arrange
+        var yaml = """
+            name: Test Recipe
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions: []
+            """;
+
+        // Act
+        var recipe = _parser.Parse(yaml);
+
+        // Assert
+        Assert.Null(recipe.Yields);
+        Assert.Null(recipe.ServingSize);
+    }
 }
