@@ -16,6 +16,7 @@ ingredients:
       - quantity: 40
         unit: g
         name: Panko Bread Crumbs
+        nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
 
 utensils:
   - heading: null

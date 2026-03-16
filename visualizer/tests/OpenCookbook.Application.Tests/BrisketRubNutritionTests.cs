@@ -9,6 +9,15 @@ namespace OpenCookbook.Application.Tests;
 /// </summary>
 public class BrisketRubNutritionTests
 {
+    private static readonly Guid GuajilloChilesId = new("de2f4f3c-e40c-5c1c-a862-fdb070804391");
+    private static readonly Guid PasillaChilesId = new("fa672744-7a09-56f7-9ff6-99cca4fedfd7");
+    private static readonly Guid FineSeaSaltId = new("5c00ccf3-0bd6-5da0-8f97-a107d381609b");
+    private static readonly Guid BrownSugarId = new("6a128e75-ada9-53e5-b4f0-6f101aa16dc9");
+    private static readonly Guid GarlicPowderId = new("6fd97682-cd9c-54a6-a8a9-94273d4f6137");
+    private static readonly Guid OnionPowderId = new("5fd3cc2d-5d2a-56c1-90de-d30638cf3a45");
+    private static readonly Guid BlackPepperId = new("de21ba84-93f9-53e7-b961-aa1f6f04fe58");
+    private static readonly Guid MustardSeedId = new("7ee3a8f3-767f-54bd-8a0e-f8440467c11c");
+
     /// <summary>
     /// Real nutrition data for Brisket Rub ingredients, matching nutrition-db.json values.
     /// </summary>
@@ -16,56 +25,56 @@ public class BrisketRubNutritionTests
     [
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = GuajilloChilesId,
             Name = "Guajillo Chiles",
             Aliases = ["guajillo chile", "dried guajillo"],
             Per100g = new NutrientInfo { CaloriesKcal = 314, ProteinG = 11.0, FatG = 5.8, CarbsG = 56.0 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = PasillaChilesId,
             Name = "Pasilla Chiles",
             Aliases = ["pasilla chile", "dried pasilla"],
             Per100g = new NutrientInfo { CaloriesKcal = 314, ProteinG = 11.0, FatG = 5.8, CarbsG = 56.0 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = FineSeaSaltId,
             Name = "Fine Sea Salt",
             Aliases = ["salt", "sea salt"],
             Per100g = new NutrientInfo { CaloriesKcal = 0, ProteinG = 0, FatG = 0, CarbsG = 0 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = BrownSugarId,
             Name = "Brown Sugar",
             Aliases = ["light brown sugar", "dark brown sugar"],
             Per100g = new NutrientInfo { CaloriesKcal = 380, ProteinG = 0.1, FatG = 0, CarbsG = 98.1 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = GarlicPowderId,
             Name = "Garlic Powder",
             Aliases = ["garlic pwd"],
             Per100g = new NutrientInfo { CaloriesKcal = 331, ProteinG = 16.6, FatG = 0.7, CarbsG = 72.7 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = OnionPowderId,
             Name = "Onion Powder",
             Aliases = ["onion pwd"],
             Per100g = new NutrientInfo { CaloriesKcal = 341, ProteinG = 10.4, FatG = 1.0, CarbsG = 79.1 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = BlackPepperId,
             Name = "Black Pepper",
             Aliases = ["pepper", "ground black pepper"],
             Per100g = new NutrientInfo { CaloriesKcal = 251, ProteinG = 10.4, FatG = 3.3, CarbsG = 63.9 }
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = MustardSeedId,
             Name = "Mustard Seed",
             Aliases = ["mustard seeds", "yellow mustard seed"],
             Per100g = new NutrientInfo { CaloriesKcal = 508, ProteinG = 26.1, FatG = 36.2, CarbsG = 28.1 }
@@ -86,14 +95,14 @@ public class BrisketRubNutritionTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Guajillo Chiles" },
-                        new Ingredient { Quantity = 50,  Unit = "g", Name = "Pasilla Chiles" },
-                        new Ingredient { Quantity = 300, Unit = "g", Name = "Fine Sea Salt" },
-                        new Ingredient { Quantity = 300, Unit = "g", Name = "Brown Sugar" },
-                        new Ingredient { Quantity = 20,  Unit = "g", Name = "Garlic Powder" },
-                        new Ingredient { Quantity = 35,  Unit = "g", Name = "Onion Powder" },
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Black Pepper" },
-                        new Ingredient { Quantity = 55,  Unit = "g", Name = "Mustard Seed" }
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Guajillo Chiles", NutritionId = GuajilloChilesId },
+                        new Ingredient { Quantity = 50,  Unit = "g", Name = "Pasilla Chiles",  NutritionId = PasillaChilesId },
+                        new Ingredient { Quantity = 300, Unit = "g", Name = "Fine Sea Salt",   NutritionId = FineSeaSaltId },
+                        new Ingredient { Quantity = 300, Unit = "g", Name = "Brown Sugar",     NutritionId = BrownSugarId },
+                        new Ingredient { Quantity = 20,  Unit = "g", Name = "Garlic Powder",   NutritionId = GarlicPowderId },
+                        new Ingredient { Quantity = 35,  Unit = "g", Name = "Onion Powder",    NutritionId = OnionPowderId },
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Black Pepper",    NutritionId = BlackPepperId },
+                        new Ingredient { Quantity = 55,  Unit = "g", Name = "Mustard Seed",    NutritionId = MustardSeedId }
                     ]
                 }
             ]

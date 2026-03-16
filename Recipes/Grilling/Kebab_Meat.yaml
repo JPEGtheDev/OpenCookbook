@@ -14,38 +14,47 @@ ingredients:
         unit: g
         name: 88/12 Ground Beef
         note: "88/12 is the recommended blend. For a balanced result, use 80/20. For the juiciest result, use 70/30."
+        nutrition_id: "2724c62f-1832-5ccf-97b0-d219812368d8"
       - quantity: 7
         unit: g
         name: Paprika
         volume_alt: "1 tbsp."
+        nutrition_id: "ffc59cf3-4d62-5b01-b14d-820ca9c88098"
       - quantity: 9
         unit: g
         name: Sumac
         volume_alt: "1 tbsp."
+        nutrition_id: "77b96513-2170-5f21-a7fb-16fd094b16be"
       - quantity: 1.6
         unit: g
         name: Garlic Powder
         volume_alt: "1/2 tsp."
+        nutrition_id: "6fd97682-cd9c-54a6-a8a9-94273d4f6137"
       - quantity: 0.6
         unit: g
         name: Black Pepper
         volume_alt: "1/4 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 1
         unit: g
         name: Red Pepper Flakes
         volume_alt: "1/2 tsp."
+        nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
       - quantity: 0.5
         unit: g
         name: Caraway Seed Powder
         volume_alt: "1/4 tsp."
+        nutrition_id: "5f93c38f-94bf-5663-b13c-bd53518b1273"
       - quantity: 9
         unit: g
         name: Fine Sea Salt
         volume_alt: "1 1/2 tsp."
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 1.2
         unit: g
         name: Cayenne Pepper
         volume_alt: "1/2 tsp."
+        nutrition_id: "90032c80-ba60-5844-b724-913bc7d45601"
       - quantity: 1
         unit: whole
         name: Yellow Onion

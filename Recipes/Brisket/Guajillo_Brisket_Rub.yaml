@@ -12,27 +12,35 @@ ingredients:
       - quantity: 100
         unit: g
         name: Guajillo Chiles
+        nutrition_id: "de2f4f3c-e40c-5c1c-a862-fdb070804391"
       - quantity: 50
         unit: g
         name: Pasilla Chiles
+        nutrition_id: "fa672744-7a09-56f7-9ff6-99cca4fedfd7"
       - quantity: 300
         unit: g
         name: Fine Sea Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 300
         unit: g
         name: Brown Sugar
+        nutrition_id: "6a128e75-ada9-53e5-b4f0-6f101aa16dc9"
       - quantity: 20
         unit: g
         name: Garlic Powder
+        nutrition_id: "6fd97682-cd9c-54a6-a8a9-94273d4f6137"
       - quantity: 35
         unit: g
         name: Onion Powder
+        nutrition_id: "5fd3cc2d-5d2a-56c1-90de-d30638cf3a45"
       - quantity: 100
         unit: g
         name: Black Pepper
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
       - quantity: 55
         unit: g
         name: Mustard Seed
+        nutrition_id: "7ee3a8f3-767f-54bd-8a0e-f8440467c11c"
 
 utensils:
   - heading: null

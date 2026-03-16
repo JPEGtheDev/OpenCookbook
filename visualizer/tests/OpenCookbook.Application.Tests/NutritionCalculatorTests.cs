@@ -5,11 +5,15 @@ namespace OpenCookbook.Application.Tests;
 
 public class NutritionCalculatorTests
 {
+    private static readonly Guid GroundBeefId = new("2724c62f-1832-5ccf-97b0-d219812368d8");
+    private static readonly Guid FineSeaSaltId = new("5c00ccf3-0bd6-5da0-8f97-a107d381609b");
+    private static readonly Guid BlackPepperId = new("de21ba84-93f9-53e7-b961-aa1f6f04fe58");
+
     private static readonly List<NutritionEntry> SampleEntries =
     [
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = GroundBeefId,
             Name = "Ground Beef",
             Aliases = ["beef", "minced beef"],
             Per100g = new NutrientInfo
@@ -22,7 +26,7 @@ public class NutritionCalculatorTests
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = FineSeaSaltId,
             Name = "Fine Sea Salt",
             Aliases = ["salt", "sea salt"],
             Per100g = new NutrientInfo
@@ -35,7 +39,7 @@ public class NutritionCalculatorTests
         },
         new NutritionEntry
         {
-            Id = Guid.NewGuid(),
+            Id = BlackPepperId,
             Name = "Black Pepper",
             Aliases = ["pepper"],
             Per100g = new NutrientInfo
@@ -66,7 +70,7 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef" }
+                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
                     ]
                 }
             ]
@@ -92,7 +96,7 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 200, Unit = "g", Name = "Ground Beef" }
+                        new Ingredient { Quantity = 200, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
                     ]
                 }
             ]
@@ -163,59 +167,6 @@ public class NutritionCalculatorTests
     }
 
     [Fact]
-    public async Task CalculateAsync_WithAlias_MatchesEntry()
-    {
-        // Arrange
-        var calculator = CreateCalculator();
-        var recipe = new Recipe
-        {
-            Ingredients =
-            [
-                new IngredientGroup
-                {
-                    Items =
-                    [
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Minced Beef" }
-                    ]
-                }
-            ]
-        };
-
-        // Act
-        var result = await calculator.CalculateAsync(recipe);
-
-        // Assert
-        Assert.Empty(result.MissingIngredients);
-        Assert.Equal(200, result.TotalNutrients.CaloriesKcal);
-    }
-
-    [Fact]
-    public async Task CalculateAsync_WithParenthetical_StripsAndMatches()
-    {
-        // Arrange
-        var calculator = CreateCalculator();
-        var recipe = new Recipe
-        {
-            Ingredients =
-            [
-                new IngredientGroup
-                {
-                    Items =
-                    [
-                        new Ingredient { Quantity = 18, Unit = "g", Name = "Fine Sea Salt (for the water)" }
-                    ]
-                }
-            ]
-        };
-
-        // Act
-        var result = await calculator.CalculateAsync(recipe);
-
-        // Assert
-        Assert.Empty(result.MissingIngredients);
-    }
-
-    [Fact]
     public async Task CalculateAsync_WithServings_ReturnsPerServingValues()
     {
         // Arrange
@@ -228,7 +179,7 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 400, Unit = "g", Name = "Ground Beef" }
+                        new Ingredient { Quantity = 400, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
                     ]
                 }
             ]
@@ -275,8 +226,8 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef" },
-                        new Ingredient { Quantity = 5, Unit = "g", Name = "Fine Sea Salt" }
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId },
+                        new Ingredient { Quantity = 5,   Unit = "g", Name = "Fine Sea Salt", NutritionId = FineSeaSaltId }
                     ]
                 }
             ]
@@ -302,7 +253,7 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef" },
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId },
                         new Ingredient { Quantity = 100, Unit = "g", Name = "Unknown Ingredient" }
                     ]
                 }
@@ -330,7 +281,7 @@ public class NutritionCalculatorTests
                     Heading = null,
                     Items =
                     [
-                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef" }
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId }
                     ]
                 },
                 new IngredientGroup
@@ -338,7 +289,7 @@ public class NutritionCalculatorTests
                     Heading = "Seasoning",
                     Items =
                     [
-                        new Ingredient { Quantity = 3, Unit = "g", Name = "Black Pepper" }
+                        new Ingredient { Quantity = 3, Unit = "g", Name = "Black Pepper", NutritionId = BlackPepperId }
                     ]
                 }
             ]
@@ -365,7 +316,7 @@ public class NutritionCalculatorTests
                 {
                     Items =
                     [
-                        new Ingredient { Quantity = 100, Unit = "ml", Name = "Ground Beef" }
+                        new Ingredient { Quantity = 100, Unit = "ml", Name = "Ground Beef", NutritionId = GroundBeefId }
                     ]
                 }
             ]
@@ -376,92 +327,6 @@ public class NutritionCalculatorTests
 
         // Assert
         Assert.Empty(result.MissingIngredients);
-    }
-
-    [Fact]
-    public void BuildLookup_PopulatesNamesAndAliases()
-    {
-        // Arrange
-        var entries = new List<NutritionEntry>
-        {
-            new NutritionEntry
-            {
-                Name = "Salt",
-                Aliases = ["sea salt", "table salt"]
-            }
-        };
-
-        // Act
-        var lookup = NutritionCalculator.BuildLookup(entries);
-
-        // Assert
-        Assert.True(lookup.ContainsKey("salt"));
-        Assert.True(lookup.ContainsKey("sea salt"));
-        Assert.True(lookup.ContainsKey("table salt"));
-    }
-
-    [Fact]
-    public void BuildLookup_IsCaseInsensitive()
-    {
-        // Arrange
-        var entries = new List<NutritionEntry>
-        {
-            new NutritionEntry { Name = "Ground Beef", Aliases = [] }
-        };
-
-        // Act
-        var lookup = NutritionCalculator.BuildLookup(entries);
-
-        // Assert
-        Assert.True(lookup.ContainsKey("ground beef"));
-        Assert.True(lookup.ContainsKey("GROUND BEEF"));
-    }
-
-    [Fact]
-    public void FindEntry_ExactMatch_ReturnsEntry()
-    {
-        // Arrange
-        var entries = new List<NutritionEntry>
-        {
-            new NutritionEntry { Name = "Ground Beef", Aliases = [] }
-        };
-        var lookup = NutritionCalculator.BuildLookup(entries);
-
-        // Act
-        var result = NutritionCalculator.FindEntry(lookup, "Ground Beef");
-
-        // Assert
-        Assert.NotNull(result);
-    }
-
-    [Fact]
-    public void FindEntry_NoMatch_ReturnsNull()
-    {
-        // Arrange
-        var lookup = NutritionCalculator.BuildLookup([]);
-
-        // Act
-        var result = NutritionCalculator.FindEntry(lookup, "Unknown");
-
-        // Assert
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public void FindEntry_ParentheticalMatch_ReturnsEntry()
-    {
-        // Arrange
-        var entries = new List<NutritionEntry>
-        {
-            new NutritionEntry { Name = "Fine Sea Salt", Aliases = [] }
-        };
-        var lookup = NutritionCalculator.BuildLookup(entries);
-
-        // Act
-        var result = NutritionCalculator.FindEntry(lookup, "Fine Sea Salt (for the water)");
-
-        // Assert
-        Assert.NotNull(result);
     }
 
     [Fact]
@@ -515,7 +380,7 @@ public class NutritionCalculatorTests
     }
 
     [Fact]
-    public async Task CalculateAsync_WithNutritionId_PrefersIdLookupOverNameMatch()
+    public async Task CalculateAsync_WithNutritionId_UsesReferencedEntry()
     {
         // Arrange
         var groundBeefId = Guid.NewGuid();
@@ -569,7 +434,7 @@ public class NutritionCalculatorTests
     }
 
     [Fact]
-    public async Task CalculateAsync_WithoutNutritionId_FallsBackToNameMatch()
+    public async Task CalculateAsync_WithoutNutritionId_IsNotMatched()
     {
         // Arrange
         var calculator = CreateCalculator();
@@ -591,12 +456,12 @@ public class NutritionCalculatorTests
         var result = await calculator.CalculateAsync(recipe);
 
         // Assert
-        Assert.Empty(result.MissingIngredients);
-        Assert.Equal(200, result.TotalNutrients.CaloriesKcal);
+        Assert.Single(result.MissingIngredients);
+        Assert.False(result.IsComplete);
     }
 
     [Fact]
-    public async Task CalculateAsync_WithNutritionId_FallsBackToNameMatchWhenIdNotFound()
+    public async Task CalculateAsync_WithUnknownNutritionId_IsNotMatched()
     {
         // Arrange
         var calculator = CreateCalculator();
@@ -624,8 +489,8 @@ public class NutritionCalculatorTests
         var result = await calculator.CalculateAsync(recipe);
 
         // Assert
-        Assert.Empty(result.MissingIngredients);
-        Assert.Equal(200, result.TotalNutrients.CaloriesKcal);
+        Assert.Single(result.MissingIngredients);
+        Assert.False(result.IsComplete);
     }
 
 }
