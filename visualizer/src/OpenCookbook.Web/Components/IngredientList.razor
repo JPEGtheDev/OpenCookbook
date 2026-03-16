@@ -1,3 +1,5 @@
+@inject NavigationManager Nav
+
 <section class="ingredients-section">
     <h2>Ingredients</h2>
 
@@ -14,7 +16,14 @@
                 <li class="ingredient-item">
                     <span class="ingredient-qty">@FormatQuantity(item.Quantity) @item.Unit</span>
                     <span class="ingredient-name">
-                        @item.Name
+                        @if (item.DocLink is not null && GetDocLinkUrl(item.DocLink) is { } url)
+                        {
+                            <a href="@url">@item.Name</a>
+                        }
+                        else
+                        {
+                            @item.Name
+                        }
                         @if (item.VolumeAlt is not null)
                         {
                             <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
@@ -34,9 +43,29 @@
     [Parameter, EditorRequired]
     public List<IngredientGroup> Groups { get; set; } = [];
 
+    [Parameter]
+    public string? RecipePath { get; set; }
+
     private static string FormatQuantity(double qty)
     {
         // Display whole numbers without decimal places
         return qty == Math.Floor(qty) ? qty.ToString("F0") : qty.ToString("G");
+    }
+
+    private string? GetDocLinkUrl(string docLink)
+    {
+        if (RecipePath is null) return null;
+
+        var currentDir = RecipePath.Contains('/')
+            ? RecipePath[..RecipePath.LastIndexOf('/')]
+            : "";
+
+        var linkPath = docLink.StartsWith("./", StringComparison.Ordinal) ? docLink[2..] : docLink;
+
+        var fullPath = string.IsNullOrEmpty(currentDir)
+            ? linkPath
+            : $"{currentDir}/{linkPath}";
+
+        return $"{Nav.BaseUri}recipe/{Uri.EscapeDataString(fullPath)}";
     }
 }

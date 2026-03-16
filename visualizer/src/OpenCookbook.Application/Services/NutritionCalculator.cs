@@ -24,7 +24,7 @@ public class NutritionCalculator
         _recipeRepository = recipeRepository;
     }
 
-    public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, string? basePath = null, int servings = 1)
+    public async Task<RecipeNutrition> CalculateAsync(Recipe recipe, int servings = 1, string? basePath = null)
     {
         _cachedEntries ??= await _nutritionRepository.GetAllEntriesAsync();
         _cachedIdLookup ??= BuildIdLookup(_cachedEntries);
@@ -65,15 +65,23 @@ public class NutritionCalculator
                             totalFat += scaledNutrients.FatG;
                             totalCarbs += scaledNutrients.CarbsG;
 
+                            // Propagate any missing items from the sub-recipe so the parent
+                            // accurately reflects whether the full nutrition is known.
+                            foreach (var missing in subNutrition.MissingIngredients)
+                                result.MissingIngredients.Add($"{ingredient.Name} → {missing}");
+
                             result.Ingredients.Add(new IngredientNutrition
                             {
                                 IngredientName = ingredient.Name,
                                 QuantityG = 0,
-                                IsMatch = true,
+                                IsMatch = subNutrition.IsComplete,
                                 Nutrients = scaledNutrients
                             });
                         }
-                        catch
+                        catch (Exception ex) when (ex is ArgumentException
+                                                       or KeyNotFoundException
+                                                       or HttpRequestException
+                                                       or InvalidOperationException)
                         {
                             result.MissingIngredients.Add(ingredient.Name);
                             result.Ingredients.Add(new IngredientNutrition

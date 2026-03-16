@@ -823,6 +823,66 @@ public class NutritionCalculatorTests
         Assert.Contains("Missing Sub-Recipe", result.MissingIngredients);
     }
 
+    [Fact]
+    public async Task CalculateAsync_WithDocLink_IncompleteSubRecipe_PropagatesMissingIngredients()
+    {
+        // Arrange — sub-recipe has one matched and one unmatched ingredient
+        var subRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 500, Unit = "g", Name = "Ground Beef", NutritionId = GroundBeefId },
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Yellow Onion" } // no nutrition_id, not resolvable
+                    ]
+                }
+            ]
+        };
+
+        var recipeRepo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Grilling/Kebab_Meat.yaml"] = subRecipe
+        });
+
+        var calculator = new NutritionCalculator(new FakeNutritionRepository(SampleEntries), recipeRepo);
+
+        var parentRecipe = new Recipe
+        {
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 1,
+                            Unit = "whole",
+                            Name = "Kebab Meat Recipe (full batch)",
+                            DocLink = "./Kebab_Meat.yaml"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Act
+        var result = await calculator.CalculateAsync(parentRecipe, basePath: "Grilling");
+
+        // Assert — sub-recipe missing item is propagated with prefix; parent ingredient IsMatch is false
+        Assert.False(result.IsComplete);
+        Assert.Single(result.MissingIngredients);
+        Assert.Contains("Yellow Onion", result.MissingIngredients[0]);
+        Assert.Contains("Kebab Meat Recipe (full batch)", result.MissingIngredients[0]);
+        Assert.Single(result.Ingredients);
+        Assert.False(result.Ingredients[0].IsMatch);
+        // Calories from the matched Ground Beef still contribute even when incomplete
+        Assert.Equal(1000, result.TotalNutrients.CaloriesKcal);
+    }
+
     [Theory]
     [InlineData(null, "./Kebab_Meat.yaml", "Kebab_Meat.yaml")]
     [InlineData("Grilling", "./Kebab_Meat.yaml", "Grilling/Kebab_Meat.yaml")]
