@@ -233,7 +233,7 @@ public class NutritionCalculator
 
     /// <summary>
     /// Resolves a sub-recipe's <paramref name="docLink"/> relative to the parent recipe's
-    /// <paramref name="basePath"/> directory. Strips leading <c>./</c> and normalises
+    /// <paramref name="basePath"/> directory. Strips leading <c>./</c> and normalizes
     /// <c>..</c> segments so the result can be passed directly to
     /// <see cref="IRecipeRepository.GetRecipeAsync"/>.
     /// </summary>
@@ -245,7 +245,7 @@ public class NutritionCalculator
             ? linkPath
             : $"{basePath}/{linkPath}";
 
-        // Normalise .. components
+        // Normalize .. components
         var parts = combined.Split('/');
         var normalized = new List<string>();
         foreach (var part in parts)
