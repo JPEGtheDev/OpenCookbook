@@ -81,7 +81,7 @@ jobs:
             const repo = context.repo.repo;
 
             const ghCmd = [
-              `gh run download ${runId} --repo ${owner}/${repo} -n pr-preview-site`,
+              `gh run download ${runId} --repo ${owner}/${repo} -n pr-preview-site -D pr-preview-site`,
               `cd pr-preview-site && python3 serve.py`,
             ].join('\n');
 

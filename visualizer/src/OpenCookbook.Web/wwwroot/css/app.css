@@ -471,6 +471,142 @@ ul, ol {
     font-size: 0.95rem;
 }
 
+/* --- Export Section --- */
+.export-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.export-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+}
+
+.export-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.export-btn {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    font-family: var(--font-body);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.export-btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent-hover);
+}
+
+.export-btn-primary:hover {
+    background: var(--color-accent-hover);
+}
+
+.export-btn-copy {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent-hover);
+}
+
+.export-btn-copy:hover {
+    background: var(--color-accent-hover);
+}
+
+.export-btn-close {
+    background: transparent;
+    color: var(--color-text-muted);
+    border-color: var(--color-border);
+}
+
+.export-btn-close:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+}
+
+/* --- Export Modal --- */
+.export-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 36, 32, 0.55);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.export-modal {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 32px rgba(44, 36, 32, 0.18);
+    width: 100%;
+    max-width: 540px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.export-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.export-modal-title {
+    font-size: 1.15rem;
+    margin: 0;
+}
+
+.export-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    padding: 0 0.25rem;
+}
+
+.export-modal-close:hover {
+    color: var(--color-text);
+}
+
+.export-modal-hint {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+}
+
+.export-modal-textarea {
+    width: 100%;
+    min-height: 180px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.75rem;
+    background: var(--color-bg);
+    color: var(--color-text);
+    resize: vertical;
+}
+
+.export-modal-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .recipe-body {

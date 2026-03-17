@@ -1,0 +1,82 @@
+@inject IJSRuntime JS
+@implements IDisposable
+
+@if (IsOpen)
+{
+    <div class="export-modal-backdrop" @onclick="Close">
+        <div class="export-modal" @onclick:stopPropagation="true" role="dialog" aria-modal="true" aria-labelledby="@_titleId">
+            <div class="export-modal-header">
+                <h2 id="@_titleId" class="export-modal-title">@Title</h2>
+                <button class="export-modal-close" @onclick="Close" aria-label="Close">&times;</button>
+            </div>
+            <p class="export-modal-hint">@Hint</p>
+            <textarea class="export-modal-textarea" readonly>@Text</textarea>
+            <div class="export-modal-actions">
+                <button class="export-btn export-btn-copy" @onclick="CopyToClipboard">
+                    @(_copied ? "✓ Copied!" : "Copy to Clipboard")
+                </button>
+                <button class="export-btn export-btn-close" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Hint { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private readonly string _titleId = $"modal-title-{Guid.NewGuid():N}";
+    private bool _copied;
+    private CancellationTokenSource? _resetCts;
+
+    private async Task CopyToClipboard()
+    {
+        _resetCts?.Cancel();
+        _resetCts?.Dispose();
+        _resetCts = new CancellationTokenSource();
+        var cts = _resetCts;
+
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", Text);
+            _copied = true;
+            StateHasChanged();
+            await Task.Delay(2000, cts.Token);
+            _copied = false;
+            StateHasChanged();
+        }
+        catch (OperationCanceledException)
+        {
+            // A new copy was triggered — let the new operation manage the state
+        }
+        catch
+        {
+            // Clipboard write failed — leave _copied false so the button label stays unchanged
+        }
+    }
+
+    private async Task Close()
+    {
+        _resetCts?.Cancel();
+        _copied = false;
+        await OnClose.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        _resetCts?.Cancel();
+        _resetCts?.Dispose();
+    }
+}
