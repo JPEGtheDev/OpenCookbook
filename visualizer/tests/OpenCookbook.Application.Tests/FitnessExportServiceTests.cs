@@ -107,7 +107,7 @@ public class FitnessExportServiceTests
     }
 
     [Fact]
-    public async Task GenerateExport_UsesServingSizeWhenPresent()
+    public async Task GenerateExport_ShowsServingSizeOnly_WhenNoYields()
     {
         // Arrange
         var recipe = BuildRecipe(servingSize: 4);
@@ -116,11 +116,13 @@ public class FitnessExportServiceTests
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Servings: 4", result);
+        Assert.Contains("Serving Size: 4 serving", result);
+        Assert.DoesNotContain("Yield:", result);
+        Assert.DoesNotContain("Servings:", result);
     }
 
     [Fact]
-    public async Task GenerateExport_UsesYieldsWhenNoServingSize()
+    public async Task GenerateExport_ShowsYield_WhenNoServingSize()
     {
         // Arrange
         var recipe = BuildRecipe(yields: 12);
@@ -129,20 +131,23 @@ public class FitnessExportServiceTests
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Servings: 12", result);
+        Assert.Contains("Yield: 12 meatball", result);
+        Assert.DoesNotContain("Serving Size:", result);
     }
 
     [Fact]
-    public async Task GenerateExport_PrefersServingSizeOverYields()
+    public async Task GenerateExport_ShowsYieldAndServingSize_WhenBothPresent()
     {
         // Arrange
-        var recipe = BuildRecipe(servingSize: 4, yields: 12);
+        var recipe = BuildRecipe(servingSize: 4, yields: 24);
 
         // Act
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Servings: 4", result);
+        Assert.Contains("Yield: 24 meatball", result);
+        Assert.Contains("Serving Size: 4 serving", result);
+        Assert.DoesNotContain("Servings:", result);
     }
 
     [Fact]

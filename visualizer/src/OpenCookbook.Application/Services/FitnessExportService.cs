@@ -24,8 +24,22 @@ public class FitnessExportService
     {
         var sb = new StringBuilder();
         sb.AppendLine($"Name: {recipe.Name}");
-        var servings = recipe.ServingSize?.Quantity ?? recipe.Yields?.Quantity ?? 1;
-        sb.AppendLine($"Servings: {servings}");
+
+        if (recipe.Yields is { Quantity: > 0 })
+        {
+            sb.AppendLine($"Yield: {recipe.Yields.Quantity} {recipe.Yields.Unit}");
+            if (recipe.ServingSize is { Quantity: > 0 })
+                sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {recipe.ServingSize.Unit}");
+        }
+        else if (recipe.ServingSize is { Quantity: > 0 })
+        {
+            sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {recipe.ServingSize.Unit}");
+        }
+        else
+        {
+            sb.AppendLine("Servings: 1");
+        }
+
         sb.AppendLine();
         sb.AppendLine("Ingredients:");
 
