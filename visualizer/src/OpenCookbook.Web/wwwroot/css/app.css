@@ -511,16 +511,6 @@ ul, ol {
     background: var(--color-accent-hover);
 }
 
-.export-btn-secondary {
-    background: #5c6bc0;
-    color: #fff;
-    border-color: #3f51b5;
-}
-
-.export-btn-secondary:hover {
-    background: #3f51b5;
-}
-
 .export-btn-copy {
     background: var(--color-accent);
     color: #fff;

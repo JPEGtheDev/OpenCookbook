@@ -97,23 +97,16 @@ else if (_recipe is not null)
         <section class="export-section">
             <h2>Export for Fitness Tracking</h2>
             <div class="export-buttons">
-                <button class="export-btn export-btn-primary" @onclick="ShowQtyFirstModal">Export: Qty · Unit · Name</button>
-                <button class="export-btn export-btn-secondary" @onclick="ShowNameFirstModal">Export: Name · Qty · Unit</button>
+                <button class="export-btn export-btn-primary" @onclick="ShowExportModal">Export Ingredients</button>
             </div>
         </section>
     </article>
 
-    <ExportModal Title="Fitness Export — Quantity First"
+    <ExportModal Title="Export Ingredients"
                  Hint="Paste into your fitness app's recipe importer. Each ingredient is listed as: quantity unit name."
-                 Text="@_qtyFirstExport"
-                 IsOpen="@_showQtyFirstModal"
-                 OnClose="@(() => _showQtyFirstModal = false)" />
-
-    <ExportModal Title="Fitness Export — Name First"
-                 Hint="Paste into your fitness app's recipe importer. Each ingredient is listed as: name, quantity unit."
-                 Text="@_nameFirstExport"
-                 IsOpen="@_showNameFirstModal"
-                 OnClose="@(() => _showNameFirstModal = false)" />
+                 Text="@_exportText"
+                 IsOpen="@_showExportModal"
+                 OnClose="@(() => _showExportModal = false)" />
 }
 
 @code {
@@ -126,10 +119,8 @@ else if (_recipe is not null)
     private string? _error;
     private string? _decodedPath;
 
-    private bool _showQtyFirstModal;
-    private bool _showNameFirstModal;
-    private string _qtyFirstExport = string.Empty;
-    private string _nameFirstExport = string.Empty;
+    private bool _showExportModal;
+    private string _exportText = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -138,10 +129,8 @@ else if (_recipe is not null)
         _recipe = null;
         _nutrition = null;
         _decodedPath = null;
-        _showQtyFirstModal = false;
-        _showNameFirstModal = false;
-        _qtyFirstExport = string.Empty;
-        _nameFirstExport = string.Empty;
+        _showExportModal = false;
+        _exportText = string.Empty;
 
         try
         {
@@ -169,15 +158,13 @@ else if (_recipe is not null)
             }
         }
 
-        if (_recipe is not null)
+        if (_recipe is not null && _decodedPath is not null)
         {
-            _qtyFirstExport = ExportService.GenerateQtyFirstExport(_recipe);
-            _nameFirstExport = ExportService.GenerateNameFirstExport(_recipe);
+            _exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
         }
     }
 
-    private void ShowQtyFirstModal() => _showQtyFirstModal = true;
-    private void ShowNameFirstModal() => _showNameFirstModal = true;
+    private void ShowExportModal() => _showExportModal = true;
 
     private string GetRelatedRecipeUrl(string relativePath)
     {

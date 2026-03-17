@@ -64,29 +64,29 @@ public class FitnessExportServiceTests
 
     private readonly FitnessExportService _service = new();
 
-    // ── Qty-first (quantity unit name) ────────────────────────────────────────
+    // ── GenerateExportAsync ────────────────────────────────────────────────────
 
     [Fact]
-    public void GenerateQtyFirstExport_IncludesRecipeName()
+    public async Task GenerateExport_IncludesRecipeName()
     {
         // Arrange
         var recipe = BuildRecipe("Chicken Shawarma");
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
         Assert.Contains("Name: Chicken Shawarma", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_IncludesAllIngredients()
+    public async Task GenerateExport_IncludesAllIngredients()
     {
         // Arrange
         var recipe = BuildRecipe();
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
         Assert.Contains("400 g Ground Beef", result);
@@ -94,65 +94,65 @@ public class FitnessExportServiceTests
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_DefaultsToOneServing_WhenNoYieldsOrServingSize()
+    public async Task GenerateExport_DefaultsToOneServing_WhenNoYieldsOrServingSize()
     {
         // Arrange
         var recipe = BuildRecipe();
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Number of Servings: 1", result);
+        Assert.Contains("Servings: 1", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_UsesServingSizeWhenPresent()
+    public async Task GenerateExport_UsesServingSizeWhenPresent()
     {
         // Arrange
         var recipe = BuildRecipe(servingSize: 4);
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Number of Servings: 4", result);
+        Assert.Contains("Servings: 4", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_UsesYieldsWhenNoServingSize()
+    public async Task GenerateExport_UsesYieldsWhenNoServingSize()
     {
         // Arrange
         var recipe = BuildRecipe(yields: 12);
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Number of Servings: 12", result);
+        Assert.Contains("Servings: 12", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_PrefersServingSizeOverYields()
+    public async Task GenerateExport_PrefersServingSizeOverYields()
     {
         // Arrange
         var recipe = BuildRecipe(servingSize: 4, yields: 12);
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Number of Servings: 4", result);
+        Assert.Contains("Servings: 4", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_IncludesGroupHeadings()
+    public async Task GenerateExport_IncludesGroupHeadings()
     {
         // Arrange
         var recipe = BuildRecipeWithGroups();
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
         Assert.Contains("# Meat", result);
@@ -160,20 +160,34 @@ public class FitnessExportServiceTests
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_FormatsDecimalQuantityCorrectly()
+    public async Task GenerateExport_FormatsDecimalQuantityCorrectly()
     {
         // Arrange
         var recipe = BuildRecipeWithGroups();
 
         // Act
-        var result = _service.GenerateQtyFirstExport(recipe);
+        var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
         Assert.Contains("1.5 g Cumin", result);
     }
 
     [Fact]
-    public void GenerateQtyFirstExport_UsesInvariantDecimalSeparator_InCommaCulture()
+    public async Task GenerateExport_FormatsWholeNumberQuantityWithoutDecimal()
+    {
+        // Arrange
+        var recipe = BuildRecipe();
+
+        // Act
+        var result = await _service.GenerateExportAsync(recipe);
+
+        // Assert
+        Assert.Contains("400 g Ground Beef", result);
+        Assert.DoesNotContain("400.0 g", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_UsesInvariantDecimalSeparator_InCommaCulture()
     {
         // Arrange
         var recipe = BuildRecipeWithGroups();
@@ -183,7 +197,7 @@ public class FitnessExportServiceTests
             CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
 
             // Act
-            var result = _service.GenerateQtyFirstExport(recipe);
+            var result = await _service.GenerateExportAsync(recipe);
 
             // Assert — decimal must use '.' regardless of locale
             Assert.Contains("1.5 g Cumin", result);
@@ -195,136 +209,174 @@ public class FitnessExportServiceTests
         }
     }
 
-    // ── Name-first (name, quantity unit) ──────────────────────────────────────
+    // ── Sub-recipe inlining ────────────────────────────────────────────────────
 
     [Fact]
-    public void GenerateNameFirstExport_IncludesRecipeName()
+    public async Task GenerateExport_InlinesSubRecipeIngredients_WhenDocLinkPresent()
     {
         // Arrange
-        var recipe = BuildRecipe("Kebab Meatballs");
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Recipe: Kebab Meatballs", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_IncludesAllIngredients()
-    {
-        // Arrange
-        var recipe = BuildRecipe();
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Ground Beef, 400 g", result);
-        Assert.Contains("Black Pepper, 3 g", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_DefaultsToOneServing_WhenNoYieldsOrServingSize()
-    {
-        // Arrange
-        var recipe = BuildRecipe();
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Servings: 1", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_UsesServingSizeWhenPresent()
-    {
-        // Arrange
-        var recipe = BuildRecipe(servingSize: 6);
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Servings: 6", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_UsesYieldsWhenNoServingSize()
-    {
-        // Arrange
-        var recipe = BuildRecipe(yields: 8);
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Servings: 8", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_IncludesGroupHeadings()
-    {
-        // Arrange
-        var recipe = BuildRecipeWithGroups();
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("# Meat", result);
-        Assert.Contains("# Spices", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_FormatsDecimalQuantityCorrectly()
-    {
-        // Arrange
-        var recipe = BuildRecipeWithGroups();
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Cumin, 1.5 g", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_FormatsWholeNumberQuantityWithoutDecimal()
-    {
-        // Arrange
-        var recipe = BuildRecipe();
-
-        // Act
-        var result = _service.GenerateNameFirstExport(recipe);
-
-        // Assert
-        Assert.Contains("Ground Beef, 400 g", result);
-        Assert.DoesNotContain("400.0 g", result);
-    }
-
-    [Fact]
-    public void GenerateNameFirstExport_UsesInvariantDecimalSeparator_InCommaCulture()
-    {
-        // Arrange
-        var recipe = BuildRecipeWithGroups();
-        var original = CultureInfo.CurrentCulture;
-        try
+        var subRecipe = new Recipe
         {
-            CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+            Name = "Kebab Meat",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 907, Unit = "g", Name = "Ground Beef" },
+                        new Ingredient { Quantity = 7, Unit = "g", Name = "Paprika" },
+                    ]
+                }
+            ]
+        };
 
-            // Act
-            var result = _service.GenerateNameFirstExport(recipe);
-
-            // Assert — decimal must use '.' regardless of locale
-            Assert.Contains("Cumin, 1.5 g", result);
-            Assert.DoesNotContain("Cumin, 1,5 g", result);
-        }
-        finally
+        var parentRecipe = new Recipe
         {
-            CultureInfo.CurrentCulture = original;
-        }
+            Name = "Kebab Meatballs",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Kebab Meat Recipe (full batch)", DocLink = "./Kebab_Meat.yaml" },
+                        new Ingredient { Quantity = 40, Unit = "g", Name = "Panko Bread Crumbs" },
+                    ]
+                }
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Kebab_Meat.yaml"] = subRecipe
+        });
+        var service = new FitnessExportService(repo);
+
+        // Act
+        var result = await service.GenerateExportAsync(parentRecipe);
+
+        // Assert — sub-recipe ingredients are present
+        Assert.Contains("907 g Ground Beef", result);
+        Assert.Contains("7 g Paprika", result);
+        Assert.Contains("40 g Panko Bread Crumbs", result);
+        // Assert — the sub-recipe reference line itself is NOT present
+        Assert.DoesNotContain("Kebab Meat Recipe (full batch)", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_ScalesSubRecipeIngredients_ByParentQuantity()
+    {
+        // Arrange
+        var subRecipe = new Recipe
+        {
+            Name = "Spice Mix",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 10, Unit = "g", Name = "Cumin" },
+                    ]
+                }
+            ]
+        };
+
+        var parentRecipe = new Recipe
+        {
+            Name = "Seasoned Dish",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 2, Unit = "batch", Name = "Spice Mix", DocLink = "./Spice_Mix.yaml" },
+                    ]
+                }
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new Dictionary<string, Recipe>
+        {
+            ["Spice_Mix.yaml"] = subRecipe
+        });
+        var service = new FitnessExportService(repo);
+
+        // Act
+        var result = await service.GenerateExportAsync(parentRecipe);
+
+        // Assert — 2 batches × 10 g = 20 g
+        Assert.Contains("20 g Cumin", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_FallsBackToReferenceLine_WhenSubRecipeNotFound()
+    {
+        // Arrange
+        var parentRecipe = new Recipe
+        {
+            Name = "Test Recipe",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Missing Sub Recipe", DocLink = "./Missing.yaml" },
+                        new Ingredient { Quantity = 50, Unit = "g", Name = "Salt" },
+                    ]
+                }
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new Dictionary<string, Recipe>());
+        var service = new FitnessExportService(repo);
+
+        // Act
+        var result = await service.GenerateExportAsync(parentRecipe);
+
+        // Assert — falls back to showing the reference ingredient
+        Assert.Contains("1 whole Missing Sub Recipe", result);
+        Assert.Contains("50 g Salt", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_ListsDocLinkIngredientAsIs_WhenNoRepoProvided()
+    {
+        // Arrange
+        var recipe = new Recipe
+        {
+            Name = "Test Recipe",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items =
+                    [
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Kebab Meat Recipe", DocLink = "./Kebab_Meat.yaml" },
+                        new Ingredient { Quantity = 40, Unit = "g", Name = "Panko" },
+                    ]
+                }
+            ]
+        };
+
+        // No repo injected — service created without one
+        var service = new FitnessExportService();
+
+        // Act
+        var result = await service.GenerateExportAsync(recipe);
+
+        // Assert — without a repo, shows the reference line as-is
+        Assert.Contains("1 whole Kebab Meat Recipe", result);
+        Assert.Contains("40 g Panko", result);
     }
 }
 
