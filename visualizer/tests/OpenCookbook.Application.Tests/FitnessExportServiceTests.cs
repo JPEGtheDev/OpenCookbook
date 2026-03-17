@@ -116,7 +116,7 @@ public class FitnessExportServiceTests
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Serving Size: 4 serving", result);
+        Assert.Contains("Serving Size: 4 servings", result);
         Assert.DoesNotContain("Yield:", result);
         Assert.DoesNotContain("Servings:", result);
     }
@@ -131,7 +131,7 @@ public class FitnessExportServiceTests
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Yield: 12 meatball", result);
+        Assert.Contains("Yield: 12 meatballs", result);
         Assert.DoesNotContain("Serving Size:", result);
     }
 
@@ -145,9 +145,49 @@ public class FitnessExportServiceTests
         var result = await _service.GenerateExportAsync(recipe);
 
         // Assert
-        Assert.Contains("Yield: 24 meatball", result);
-        Assert.Contains("Serving Size: 4 serving", result);
+        Assert.Contains("Yield: 24 meatballs", result);
+        Assert.Contains("Serving Size: 4 servings", result);
         Assert.DoesNotContain("Servings:", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_DoesNotPluralizeUnit_WhenQuantityIsOne()
+    {
+        // Arrange
+        var recipe = BuildRecipe(yields: 1);
+
+        // Act
+        var result = await _service.GenerateExportAsync(recipe);
+
+        // Assert
+        Assert.Contains("Yield: 1 meatball", result);
+        Assert.DoesNotContain("meatballs", result);
+    }
+
+    [Fact]
+    public async Task GenerateExport_DoesNotPluralizeGrams_ForYieldUnit()
+    {
+        // Arrange
+        var recipe = new Recipe
+        {
+            Name = "Brisket Binder",
+            Yields = new RecipeYield { Quantity = 450, Unit = "g" },
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Heading = null,
+                    Items = [new Ingredient { Quantity = 450, Unit = "g", Name = "Molasses" }]
+                }
+            ]
+        };
+
+        // Act
+        var result = await _service.GenerateExportAsync(recipe);
+
+        // Assert
+        Assert.Contains("Yield: 450 g", result);
+        Assert.DoesNotContain("Yield: 450 gs", result);
     }
 
     [Fact]

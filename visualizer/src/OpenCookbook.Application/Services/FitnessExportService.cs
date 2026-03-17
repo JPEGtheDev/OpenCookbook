@@ -27,13 +27,13 @@ public class FitnessExportService
 
         if (recipe.Yields is { Quantity: > 0 })
         {
-            sb.AppendLine($"Yield: {recipe.Yields.Quantity} {recipe.Yields.Unit}");
+            sb.AppendLine($"Yield: {recipe.Yields.Quantity} {PluralizeUnit(recipe.Yields.Unit, recipe.Yields.Quantity)}");
             if (recipe.ServingSize is { Quantity: > 0 })
-                sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {recipe.ServingSize.Unit}");
+                sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {PluralizeUnit(recipe.ServingSize.Unit, recipe.ServingSize.Quantity)}");
         }
         else if (recipe.ServingSize is { Quantity: > 0 })
         {
-            sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {recipe.ServingSize.Unit}");
+            sb.AppendLine($"Serving Size: {recipe.ServingSize.Quantity} {PluralizeUnit(recipe.ServingSize.Unit, recipe.ServingSize.Quantity)}");
         }
         else
         {
@@ -87,6 +87,17 @@ public class FitnessExportService
         => qty == Math.Floor(qty)
             ? qty.ToString("F0", CultureInfo.InvariantCulture)
             : qty.ToString("0.###", CultureInfo.InvariantCulture);
+
+    private static readonly HashSet<string> NonPluralizableUnits =
+        new(StringComparer.OrdinalIgnoreCase) { "g", "ml", "kg", "l", "oz", "lb", "lbs" };
+
+    private static string PluralizeUnit(string? unit, int quantity)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        if (quantity == 1) return unit;
+        if (NonPluralizableUnits.Contains(unit)) return unit;
+        return unit + "s";
+    }
 
     private static string ResolveSubRecipePath(string? basePath, string docLink)
     {
