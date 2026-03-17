@@ -37,19 +37,36 @@
     public EventCallback OnClose { get; set; }
 
     private bool _copied;
+    private CancellationTokenSource? _resetCts;
 
     private async Task CopyToClipboard()
     {
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", Text);
-        _copied = true;
-        StateHasChanged();
-        await Task.Delay(2000);
-        _copied = false;
-        StateHasChanged();
+        _resetCts?.Cancel();
+        _resetCts = new CancellationTokenSource();
+        var cts = _resetCts;
+
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", Text);
+            _copied = true;
+            StateHasChanged();
+            await Task.Delay(2000, cts.Token);
+            _copied = false;
+            StateHasChanged();
+        }
+        catch (OperationCanceledException)
+        {
+            // A new copy was triggered — let the new operation manage the state
+        }
+        catch
+        {
+            // Clipboard write failed — leave _copied false so the button label stays unchanged
+        }
     }
 
     private async Task Close()
     {
+        _resetCts?.Cancel();
         _copied = false;
         await OnClose.InvokeAsync();
     }
