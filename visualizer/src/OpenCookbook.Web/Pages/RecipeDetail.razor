@@ -1,6 +1,7 @@
 @page "/recipe/{Path}"
 @inject RecipeService RecipeService
 @inject NutritionCalculator NutritionCalculator
+@inject FitnessExportService ExportService
 @inject NavigationManager Nav
 
 <PageTitle>@(_recipe?.Name ?? "Recipe") — OpenCookbook</PageTitle>
@@ -92,7 +93,27 @@ else if (_recipe is not null)
         </footer>
 
         <a href="@Nav.BaseUri" class="back-link">← Back to recipes</a>
+
+        <section class="export-section">
+            <h2>Export for Fitness Tracking</h2>
+            <div class="export-buttons">
+                <button class="export-btn export-btn-mfp" @onclick="ShowMfpModal">Export for MyFitnessPal</button>
+                <button class="export-btn export-btn-loseit" @onclick="ShowLoseItModal">Export for Lose It!</button>
+            </div>
+        </section>
     </article>
+
+    <ExportModal Title="Export for MyFitnessPal"
+                 Hint="Paste this into MyFitnessPal's recipe importer (one ingredient per line)."
+                 Text="@_mfpExport"
+                 IsOpen="@_showMfpModal"
+                 OnClose="@(() => _showMfpModal = false)" />
+
+    <ExportModal Title="Export for Lose It!"
+                 Hint="Paste this into Lose It!'s recipe importer."
+                 Text="@_loseItExport"
+                 IsOpen="@_showLoseItModal"
+                 OnClose="@(() => _showLoseItModal = false)" />
 }
 
 @code {
@@ -105,6 +126,11 @@ else if (_recipe is not null)
     private string? _error;
     private string? _decodedPath;
 
+    private bool _showMfpModal;
+    private bool _showLoseItModal;
+    private string _mfpExport = string.Empty;
+    private string _loseItExport = string.Empty;
+
     protected override async Task OnParametersSetAsync()
     {
         _loading = true;
@@ -112,6 +138,10 @@ else if (_recipe is not null)
         _recipe = null;
         _nutrition = null;
         _decodedPath = null;
+        _showMfpModal = false;
+        _showLoseItModal = false;
+        _mfpExport = string.Empty;
+        _loseItExport = string.Empty;
 
         try
         {
@@ -138,7 +168,16 @@ else if (_recipe is not null)
                 // Nutrition is optional — don't block the page if calculation fails
             }
         }
+
+        if (_recipe is not null)
+        {
+            _mfpExport = ExportService.GenerateMyFitnessPalExport(_recipe);
+            _loseItExport = ExportService.GenerateLoseItExport(_recipe);
+        }
     }
+
+    private void ShowMfpModal() => _showMfpModal = true;
+    private void ShowLoseItModal() => _showLoseItModal = true;
 
     private string GetRelatedRecipeUrl(string relativePath)
     {

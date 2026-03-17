@@ -1,0 +1,56 @@
+@inject IJSRuntime JS
+
+@if (IsOpen)
+{
+    <div class="export-modal-backdrop" @onclick="Close">
+        <div class="export-modal" @onclick:stopPropagation="true" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+            <div class="export-modal-header">
+                <h2 id="export-modal-title" class="export-modal-title">@Title</h2>
+                <button class="export-modal-close" @onclick="Close" aria-label="Close">&times;</button>
+            </div>
+            <p class="export-modal-hint">@Hint</p>
+            <textarea class="export-modal-textarea" readonly>@Text</textarea>
+            <div class="export-modal-actions">
+                <button class="export-btn export-btn-copy" @onclick="CopyToClipboard">
+                    @(_copied ? "✓ Copied!" : "Copy to Clipboard")
+                </button>
+                <button class="export-btn export-btn-close" @onclick="Close">Close</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Hint { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    private bool _copied;
+
+    private async Task CopyToClipboard()
+    {
+        await JS.InvokeVoidAsync("navigator.clipboard.writeText", Text);
+        _copied = true;
+        StateHasChanged();
+        await Task.Delay(2000);
+        _copied = false;
+        StateHasChanged();
+    }
+
+    private async Task Close()
+    {
+        _copied = false;
+        await OnClose.InvokeAsync();
+    }
+}
