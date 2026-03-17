@@ -97,23 +97,23 @@ else if (_recipe is not null)
         <section class="export-section">
             <h2>Export for Fitness Tracking</h2>
             <div class="export-buttons">
-                <button class="export-btn export-btn-mfp" @onclick="ShowMfpModal">Export for MyFitnessPal</button>
-                <button class="export-btn export-btn-loseit" @onclick="ShowLoseItModal">Export for Lose It!</button>
+                <button class="export-btn export-btn-primary" @onclick="ShowQtyFirstModal">Export: Qty · Unit · Name</button>
+                <button class="export-btn export-btn-secondary" @onclick="ShowNameFirstModal">Export: Name · Qty · Unit</button>
             </div>
         </section>
     </article>
 
-    <ExportModal Title="Export for MyFitnessPal"
-                 Hint="Paste this into MyFitnessPal's recipe importer (one ingredient per line)."
-                 Text="@_mfpExport"
-                 IsOpen="@_showMfpModal"
-                 OnClose="@(() => _showMfpModal = false)" />
+    <ExportModal Title="Fitness Export — Quantity First"
+                 Hint="Paste into your fitness app's recipe importer. Each ingredient is listed as: quantity unit name."
+                 Text="@_qtyFirstExport"
+                 IsOpen="@_showQtyFirstModal"
+                 OnClose="@(() => _showQtyFirstModal = false)" />
 
-    <ExportModal Title="Export for Lose It!"
-                 Hint="Paste this into Lose It!'s recipe importer."
-                 Text="@_loseItExport"
-                 IsOpen="@_showLoseItModal"
-                 OnClose="@(() => _showLoseItModal = false)" />
+    <ExportModal Title="Fitness Export — Name First"
+                 Hint="Paste into your fitness app's recipe importer. Each ingredient is listed as: name, quantity unit."
+                 Text="@_nameFirstExport"
+                 IsOpen="@_showNameFirstModal"
+                 OnClose="@(() => _showNameFirstModal = false)" />
 }
 
 @code {
@@ -126,10 +126,10 @@ else if (_recipe is not null)
     private string? _error;
     private string? _decodedPath;
 
-    private bool _showMfpModal;
-    private bool _showLoseItModal;
-    private string _mfpExport = string.Empty;
-    private string _loseItExport = string.Empty;
+    private bool _showQtyFirstModal;
+    private bool _showNameFirstModal;
+    private string _qtyFirstExport = string.Empty;
+    private string _nameFirstExport = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -138,10 +138,10 @@ else if (_recipe is not null)
         _recipe = null;
         _nutrition = null;
         _decodedPath = null;
-        _showMfpModal = false;
-        _showLoseItModal = false;
-        _mfpExport = string.Empty;
-        _loseItExport = string.Empty;
+        _showQtyFirstModal = false;
+        _showNameFirstModal = false;
+        _qtyFirstExport = string.Empty;
+        _nameFirstExport = string.Empty;
 
         try
         {
@@ -171,13 +171,13 @@ else if (_recipe is not null)
 
         if (_recipe is not null)
         {
-            _mfpExport = ExportService.GenerateMyFitnessPalExport(_recipe);
-            _loseItExport = ExportService.GenerateLoseItExport(_recipe);
+            _qtyFirstExport = ExportService.GenerateQtyFirstExport(_recipe);
+            _nameFirstExport = ExportService.GenerateNameFirstExport(_recipe);
         }
     }
 
-    private void ShowMfpModal() => _showMfpModal = true;
-    private void ShowLoseItModal() => _showLoseItModal = true;
+    private void ShowQtyFirstModal() => _showQtyFirstModal = true;
+    private void ShowNameFirstModal() => _showNameFirstModal = true;
 
     private string GetRelatedRecipeUrl(string relativePath)
     {

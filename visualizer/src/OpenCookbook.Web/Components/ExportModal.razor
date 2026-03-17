@@ -1,11 +1,12 @@
 @inject IJSRuntime JS
+@implements IDisposable
 
 @if (IsOpen)
 {
     <div class="export-modal-backdrop" @onclick="Close">
-        <div class="export-modal" @onclick:stopPropagation="true" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+        <div class="export-modal" @onclick:stopPropagation="true" role="dialog" aria-modal="true" aria-labelledby="@_titleId">
             <div class="export-modal-header">
-                <h2 id="export-modal-title" class="export-modal-title">@Title</h2>
+                <h2 id="@_titleId" class="export-modal-title">@Title</h2>
                 <button class="export-modal-close" @onclick="Close" aria-label="Close">&times;</button>
             </div>
             <p class="export-modal-hint">@Hint</p>
@@ -36,12 +37,14 @@
     [Parameter]
     public EventCallback OnClose { get; set; }
 
+    private readonly string _titleId = $"modal-title-{Guid.NewGuid():N}";
     private bool _copied;
     private CancellationTokenSource? _resetCts;
 
     private async Task CopyToClipboard()
     {
         _resetCts?.Cancel();
+        _resetCts?.Dispose();
         _resetCts = new CancellationTokenSource();
         var cts = _resetCts;
 
@@ -69,5 +72,11 @@
         _resetCts?.Cancel();
         _copied = false;
         await OnClose.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        _resetCts?.Cancel();
+        _resetCts?.Dispose();
     }
 }

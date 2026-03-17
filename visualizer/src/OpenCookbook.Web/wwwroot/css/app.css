@@ -501,24 +501,24 @@ ul, ol {
     transition: background 0.15s ease, color 0.15s ease;
 }
 
-.export-btn-mfp {
-    background: #0089cc;
+.export-btn-primary {
+    background: var(--color-accent);
     color: #fff;
-    border-color: #0077b3;
+    border-color: var(--color-accent-hover);
 }
 
-.export-btn-mfp:hover {
-    background: #0077b3;
+.export-btn-primary:hover {
+    background: var(--color-accent-hover);
 }
 
-.export-btn-loseit {
-    background: #e8501e;
+.export-btn-secondary {
+    background: #5c6bc0;
     color: #fff;
-    border-color: #c94018;
+    border-color: #3f51b5;
 }
 
-.export-btn-loseit:hover {
-    background: #c94018;
+.export-btn-secondary:hover {
+    background: #3f51b5;
 }
 
 .export-btn-copy {

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using OpenCookbook.Domain.Entities;
 
@@ -6,11 +7,10 @@ namespace OpenCookbook.Application.Services;
 public class FitnessExportService
 {
     /// <summary>
-    /// Generates a plain-text export formatted for MyFitnessPal's recipe importer.
-    /// Produces one ingredient per line as "quantity unit name", preceded by the
-    /// recipe name and followed by a serving count.
+    /// Generates a plain-text ingredient export in "quantity unit name" order,
+    /// compatible with fitness tracking apps that list quantity before ingredient name.
     /// </summary>
-    public string GenerateMyFitnessPalExport(Recipe recipe)
+    public string GenerateQtyFirstExport(Recipe recipe)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"Name: {recipe.Name}");
@@ -34,11 +34,10 @@ public class FitnessExportService
     }
 
     /// <summary>
-    /// Generates a plain-text export formatted for Lose It!'s recipe importer.
-    /// Produces one ingredient per line as "name, quantity unit", preceded by the
-    /// recipe name and serving count.
+    /// Generates a plain-text ingredient export in "name, quantity unit" order,
+    /// compatible with fitness tracking apps that list the ingredient name first.
     /// </summary>
-    public string GenerateLoseItExport(Recipe recipe)
+    public string GenerateNameFirstExport(Recipe recipe)
     {
         var sb = new StringBuilder();
         sb.AppendLine($"Recipe: {recipe.Name}");
@@ -60,5 +59,7 @@ public class FitnessExportService
     }
 
     private static string FormatQuantity(double qty)
-        => qty == Math.Floor(qty) ? qty.ToString("F0") : qty.ToString("G");
+        => qty == Math.Floor(qty)
+            ? qty.ToString("F0", CultureInfo.InvariantCulture)
+            : qty.ToString("0.###", CultureInfo.InvariantCulture);
 }
