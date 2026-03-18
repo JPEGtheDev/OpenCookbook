@@ -113,10 +113,9 @@ public class RecipeComposer
                 // can be referenced from a different parent (DAG reuse).
                 visited.Remove(resolvedPath);
 
-                // Scale sub-recipe ingredient quantities by the referencing ingredient's quantity
+                // Merge sub-recipe ingredients under a heading, scaled by the
+                // referencing ingredient's quantity (e.g. Quantity=2 → 2× amounts).
                 var scale = item.Quantity;
-
-                // Merge sub-recipe ingredients under a heading
                 foreach (var subGroup in subRecipe.Ingredients)
                 {
                     composedIngredients.Add(new IngredientGroup
@@ -215,7 +214,8 @@ public class RecipeComposer
                     }
                     else
                     {
-                        // Failed to load — remove so it doesn't block future refs
+                        // Recipe failed to load from repository — remove from visited
+                        // so it doesn't block future references to the same path.
                         visited.Remove(resolvedPath);
                     }
                 }
@@ -268,7 +268,8 @@ public class RecipeComposer
     /// </summary>
     private static List<Ingredient> ScaleIngredients(List<Ingredient> items, double scale)
     {
-        // ReSharper disable once CompareOfFloatsByEqualityOperator — exact 1.0 check intentional
+        // Exact 1.0 check is safe here — Quantity values come from YAML deserialization
+        // and are assigned as literal doubles, not computed via floating-point arithmetic.
         if (scale == 1.0)
             return items;
 
