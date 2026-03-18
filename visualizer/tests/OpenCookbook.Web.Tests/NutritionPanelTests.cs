@@ -459,4 +459,79 @@ public class NutritionPanelTests : BunitContext
         Assert.Contains("120 g", cut.Markup);
         Assert.DoesNotContain("120 gs", cut.Markup);
     }
+
+    [Fact]
+    public void NutritionPanel_WithMultiplier2X_ScalesTotalCalories()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo
+            {
+                CaloriesKcal = 500,
+                ProteinG = 25,
+                FatG = 10,
+                CarbsG = 60
+            },
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+        {
+            parameters.Add(p => p.Nutrition, nutrition);
+            parameters.Add(p => p.Multiplier, 2.0);
+        });
+
+        // Assert — calories should be 1000 (500 × 2)
+        Assert.Contains("1000", cut.Markup);
+        Assert.Contains("Per Recipe (2×)", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithMultiplier1X_DoesNotShowMultiplierLabel()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 500 },
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+        {
+            parameters.Add(p => p.Nutrition, nutrition);
+            parameters.Add(p => p.Multiplier, 1.0);
+        });
+
+        // Assert — no multiplier label at 1×
+        Assert.DoesNotContain("1×", cut.Markup);
+        Assert.Contains("Per Recipe", cut.Markup);
+    }
+
+    [Fact]
+    public void NutritionPanel_WithMultiplierAndYields_ShowsScaledYieldsTotal()
+    {
+        // Arrange
+        var nutrition = new RecipeNutrition
+        {
+            TotalNutrients = new NutrientInfo { CaloriesKcal = 960 },
+            PerUnitNutrients = new NutrientInfo { CaloriesKcal = 40, ProteinG = 4, FatG = 2.4, CarbsG = 0 },
+            YieldsQuantity = 24,
+            YieldsUnit = "meatball",
+            Servings = 1
+        };
+
+        // Act
+        var cut = Render<NutritionPanel>(parameters =>
+        {
+            parameters.Add(p => p.Nutrition, nutrition);
+            parameters.Add(p => p.Multiplier, 2.0);
+        });
+
+        // Assert — yields should be 48 total (24 × 2), per-unit stays unchanged
+        Assert.Contains("48", cut.Markup);
+        Assert.Contains("Per Meatball", cut.Markup);
+    }
 }

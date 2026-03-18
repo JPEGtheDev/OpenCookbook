@@ -25,6 +25,11 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-03-18 — Always pluralize units in rendered quantity strings
+
+**What happened:** The "Makes 24 Serving" yields display showed a singular unit regardless of quantity. The `Pluralize` helper existed in `NutritionPanel` but was not applied to the yields line in `IngredientList`.
+**Absorbed into:** recipe-rendering skill → Ingredient / Yield Display rules; see "Unit Pluralization" section.
+
 ### 2026-03-15 — Include self‑evaluation section at end of every response
 
 **What happened:** I responded without a consistent self‑evaluation format and the user pointed out the missing behavior.

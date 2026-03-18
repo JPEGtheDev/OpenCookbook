@@ -607,6 +607,120 @@ ul, ol {
     justify-content: flex-end;
 }
 
+/* --- Scaling Toolbar --- */
+.scale-toolbar {
+    display: flex;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.scale-yields {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
+}
+
+.scale-yields strong {
+    color: var(--color-text);
+}
+
+.scale-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.scale-btn:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+}
+
+.scale-btn-active {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent-hover);
+}
+
+.scale-btn-active:hover {
+    background: var(--color-accent-hover);
+    color: #fff;
+}
+
+/* --- Ingredient Lock --- */
+.ingredient-qty-lockable {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 5rem;
+    text-align: right;
+    flex-shrink: 0;
+    color: var(--color-text);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.2rem;
+    border: none;
+    background: none;
+    transition: background 0.15s;
+}
+
+.ingredient-qty-lockable:hover {
+    background: var(--color-beta-bg);
+}
+
+.ingredient-locked {
+    background: #fff8e1;
+    border-radius: var(--radius-sm);
+    margin: 0 -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.ingredient-qty-locked {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.lock-input {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 5rem;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid var(--color-beta);
+    border-radius: var(--radius-sm);
+    background: #fff;
+    color: var(--color-text);
+    text-align: right;
+}
+
+.lock-input:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.lock-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0.1rem;
+    line-height: 1;
+}
+
+.lock-icon:hover {
+    opacity: 0.7;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
     .recipe-body {

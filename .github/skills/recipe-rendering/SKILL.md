@@ -4,7 +4,7 @@ description: Data model and layout specification for rendering OpenCookbook reci
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Recipe Rendering
@@ -90,6 +90,30 @@ When `instructions` contains sections with `type: branch`:
 - Each ingredient: `quantity unit` in a fixed-width span, `name` in normal weight
 - If `volume_alt` exists, show it in parentheses: `3g Black Pepper (≈ 3/4 tsp.)`
 - Optional: checkbox prefix for shopping list mode
+
+### Yield / Serving Count Display
+
+When a recipe's `yields` field is present, render a summary line above the ingredient list:
+
+```
+Makes <scaled_quantity> <pluralized_unit>
+```
+
+**Unit Pluralization Rules (applies to all quantity + unit strings throughout the UI):**
+
+- If quantity is exactly `1`, use the singular unit as-is.
+- If quantity is any other value (including fractions), add `s` to the unit (e.g., `serving` → `servings`, `meatball` → `meatballs`).
+- **Exception — non-pluralizable metric/imperial units:** `g`, `ml`, `kg`, `l`, `oz`, `lb`, `lbs` are never pluralized.
+- Apply this rule consistently wherever a quantity + unit pair is displayed: yields line, per-unit card headings, serving size labels, etc.
+
+Examples:
+| Quantity | Unit | Rendered |
+|---|---|---|
+| 1 | serving | 1 serving |
+| 2 | serving | 2 servings |
+| 24 | meatball | 24 meatballs |
+| 0.5 | batch | 0.5 batchs *(known limitation — irregular plurals like "batches" are not handled)* |
+| 120 | g | 120 g *(not pluralized)* |
 
 ### Instruction Display
 

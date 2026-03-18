@@ -1,20 +1,68 @@
+@using System.Globalization
+@using OpenCookbook.Application.Services
 @inject NavigationManager Nav
 
 <section class="ingredients-section">
     <h2>Ingredients</h2>
 
-    @foreach (var group in Groups)
+    <div class="scale-toolbar">
+        @foreach (var preset in _presets)
+        {
+            <button class="scale-btn @(IsActivePreset(preset) ? "scale-btn-active" : "")"
+                    @onclick="() => ApplyMultiplier(preset)">
+                @FormatPresetLabel(preset)
+            </button>
+        }
+    </div>
+
+    @if (Yields is not null)
     {
+        var scaledYields = Math.Round(Yields.Quantity * Multiplier, 1);
+        <p class="scale-yields">Makes <strong>@FormatQuantity(scaledYields)</strong> @PluralizeUnit(Yields.Unit, scaledYields)</p>
+    }
+
+    @{ var displayGroups = GetDisplayGroups(); }
+
+    @for (var gi = 0; gi < displayGroups.Count; gi++)
+    {
+        var group = displayGroups[gi];
+        var groupIndex = gi;
+
         @if (group.Heading is not null)
         {
             <h3 class="group-heading">@group.Heading</h3>
         }
 
         <ul class="ingredient-list">
-            @foreach (var item in group.Items)
+            @for (var ii = 0; ii < group.Items.Count; ii++)
             {
-                <li class="ingredient-item">
-                    <span class="ingredient-qty">@FormatQuantity(item.Quantity) @item.Unit</span>
+                var item = group.Items[ii];
+                var itemIndex = ii;
+                var isLocked = _lockedGroupIndex == groupIndex && _lockedItemIndex == itemIndex;
+
+                <li class="ingredient-item @(isLocked ? "ingredient-locked" : "")">
+                    @if (isLocked)
+                    {
+                        <span class="ingredient-qty ingredient-qty-locked">
+                            <input type="number"
+                                   class="lock-input"
+                                   min="0.01"
+                                   step="any"
+                                   value="@_lockedInputValue"
+                                   @onchange="OnLockedInputChanged" />
+                            @item.Unit
+                            <button class="lock-icon" type="button" aria-label="Unlock ingredient" @onclick="Unlock">🔒</button>
+                        </span>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="ingredient-qty ingredient-qty-lockable"
+                                aria-label="Lock @item.Name quantity for scaling"
+                                @onclick="() => LockIngredient(groupIndex, itemIndex)">
+                            @FormatQuantity(item.Quantity) @item.Unit
+                        </button>
+                    }
                     <span class="ingredient-name">
                         @if (item.DocLink is not null && GetDocLinkUrl(item.DocLink) is { } url)
                         {
@@ -46,10 +94,121 @@
     [Parameter]
     public string? RecipePath { get; set; }
 
+    [Parameter]
+    public RecipeYield? Yields { get; set; }
+
+    [Parameter]
+    public double Multiplier { get; set; } = 1.0;
+
+    [Parameter]
+    public EventCallback<double> MultiplierChanged { get; set; }
+
+    private static readonly double[] _presets = [0.5, 1, 2, 3];
+
+    private int? _lockedGroupIndex;
+    private int? _lockedItemIndex;
+    private string _lockedInputValue = "";
+    private List<IngredientGroup>? _previousGroups;
+
+    protected override void OnParametersSet()
+    {
+        // Reset scaling state when the recipe changes (same component instance reused)
+        if (!ReferenceEquals(_previousGroups, Groups))
+        {
+            _previousGroups = Groups;
+            _lockedGroupIndex = null;
+            _lockedItemIndex = null;
+            _lockedInputValue = "";
+            // Multiplier is controlled by parent — no need to reset here
+        }
+    }
+
+    private async Task ApplyMultiplier(double multiplier)
+    {
+        _lockedGroupIndex = null;
+        _lockedItemIndex = null;
+        _lockedInputValue = "";
+        await MultiplierChanged.InvokeAsync(multiplier);
+    }
+
+    private void LockIngredient(int groupIndex, int itemIndex)
+    {
+        // Use the original (unscaled) quantity and apply current multiplier
+        // so the pre-fill matches the quantity currently shown to the user.
+        var item = Groups[groupIndex].Items[itemIndex];
+        if (item.Quantity == 0) return;
+
+        _lockedGroupIndex = groupIndex;
+        _lockedItemIndex = itemIndex;
+        var currentScaled = item.Quantity * Multiplier;
+        _lockedInputValue = FormatQuantity(currentScaled);
+    }
+
+    private async Task Unlock()
+    {
+        _lockedGroupIndex = null;
+        _lockedItemIndex = null;
+        _lockedInputValue = "";
+        await MultiplierChanged.InvokeAsync(Multiplier);
+    }
+
+    private async Task OnLockedInputChanged(ChangeEventArgs e)
+    {
+        if (_lockedGroupIndex is null || _lockedItemIndex is null) return;
+        if (!double.TryParse(e.Value?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var newQty)
+            || !double.IsFinite(newQty) || newQty <= 0) return;
+
+        var original = Groups[_lockedGroupIndex.Value].Items[_lockedItemIndex.Value].Quantity;
+        if (original == 0) return;
+
+        var newMultiplier = newQty / original;
+        if (!double.IsFinite(newMultiplier)) return;
+
+        _lockedInputValue = FormatQuantity(newQty);
+        await MultiplierChanged.InvokeAsync(newMultiplier);
+    }
+
+    private List<IngredientGroup> GetDisplayGroups()
+    {
+        if (Multiplier == 1.0)
+            return Groups;
+
+        return RecipeScaler.ScaleByMultiplier(Groups, Multiplier);
+    }
+
+    private bool IsActivePreset(double preset)
+    {
+        return _lockedGroupIndex is null && Math.Abs(Multiplier - preset) < 0.001;
+    }
+
+    private static string FormatPresetLabel(double preset)
+    {
+        return preset == Math.Floor(preset)
+            ? $"{preset:F0}×"
+            : $"{preset:G}×";
+    }
+
     private static string FormatQuantity(double qty)
     {
         // Display whole numbers without decimal places
-        return qty == Math.Floor(qty) ? qty.ToString("F0") : qty.ToString("G");
+        if (qty == Math.Floor(qty))
+            return qty.ToString("F0", CultureInfo.InvariantCulture);
+
+        // For scaled values, show up to 1 decimal place
+        return Math.Round(qty, 1) == qty
+            ? qty.ToString("F1", CultureInfo.InvariantCulture)
+            : qty.ToString("G4", CultureInfo.InvariantCulture);
+    }
+
+    private static readonly HashSet<string> _nonPluralizableUnits =
+        new(StringComparer.OrdinalIgnoreCase) { "g", "ml", "kg", "l", "oz", "lb", "lbs" };
+
+    private static string PluralizeUnit(string? unit, double quantity)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        if (quantity == 1.0) return unit;
+        if (_nonPluralizableUnits.Contains(unit)) return unit;
+        return unit + "s";
     }
 
     private string? GetDocLinkUrl(string docLink)

@@ -1,4 +1,5 @@
 @using OpenCookbook.Domain.Entities
+@using OpenCookbook.Application.Services
 
 @if (_loading)
 {
@@ -9,6 +10,10 @@
 }
 else if (Nutrition is not null)
 {
+    var total = Multiplier != 1.0
+        ? RecipeScaler.ScaleNutrients(Nutrition.TotalNutrients, Multiplier)
+        : Nutrition.TotalNutrients;
+
     <section class="nutrition-section">
         <h2>Nutrition</h2>
 
@@ -19,22 +24,22 @@ else if (Nutrition is not null)
 
         <div class="nutrition-summary">
             <div class="nutrition-card">
-                <h3>Per Recipe</h3>
+                <h3>Per Recipe @(Multiplier != 1.0 ? $"({FormatMultiplier(Multiplier)})" : "")</h3>
                 <div class="nutrition-grid">
                     <div class="nutrition-item nutrition-calories">
-                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.CaloriesKcal)</span>
+                        <span class="nutrition-value">@FormatValue(total.CaloriesKcal)</span>
                         <span class="nutrition-label">Calories</span>
                     </div>
                     <div class="nutrition-item">
-                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.ProteinG)g</span>
+                        <span class="nutrition-value">@FormatValue(total.ProteinG)g</span>
                         <span class="nutrition-label">Protein</span>
                     </div>
                     <div class="nutrition-item">
-                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.FatG)g</span>
+                        <span class="nutrition-value">@FormatValue(total.FatG)g</span>
                         <span class="nutrition-label">Fat</span>
                     </div>
                     <div class="nutrition-item">
-                        <span class="nutrition-value">@FormatValue(Nutrition.TotalNutrients.CarbsG)g</span>
+                        <span class="nutrition-value">@FormatValue(total.CarbsG)g</span>
                         <span class="nutrition-label">Carbs</span>
                     </div>
                 </div>
@@ -47,11 +52,12 @@ else if (Nutrition is not null)
                 && !(string.Equals(Nutrition.YieldsUnit, "serving", StringComparison.OrdinalIgnoreCase)
                      && Nutrition.ServingSizeQuantity is not null))
             {
+                var scaledYieldsQty = Math.Round(Nutrition.YieldsQuantity.Value * Multiplier, 1);
                 <div class="nutrition-card">
-                    <h3>Per @Capitalize(Nutrition.YieldsUnit) <span class="nutrition-servings">(@Nutrition.YieldsQuantity total)</span></h3>
+                    <h3>Per @Capitalize(Nutrition.YieldsUnit) <span class="nutrition-servings">(@FormatValue(scaledYieldsQty) total)</span></h3>
                     <div class="nutrition-grid">
                         <div class="nutrition-item nutrition-calories">
-                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients.CaloriesKcal)</span>
+                            <span class="nutrition-value">@FormatValue(Nutrition.PerUnitNutrients!.CaloriesKcal)</span>
                             <span class="nutrition-label">Calories</span>
                         </div>
                         <div class="nutrition-item">
@@ -139,6 +145,9 @@ else if (Nutrition is not null)
     [Parameter]
     public RecipeNutrition? Nutrition { get; set; }
 
+    [Parameter]
+    public double Multiplier { get; set; } = 1.0;
+
     private bool _loading;
 
     protected override void OnParametersSet()
@@ -149,6 +158,11 @@ else if (Nutrition is not null)
     private static string FormatValue(double value)
     {
         return value == Math.Floor(value) ? value.ToString("F0") : value.ToString("F1");
+    }
+
+    private static string FormatMultiplier(double m)
+    {
+        return m == Math.Floor(m) ? $"{m:F0}×" : $"{m:G3}×";
     }
 
     private static string Capitalize(string? value)
