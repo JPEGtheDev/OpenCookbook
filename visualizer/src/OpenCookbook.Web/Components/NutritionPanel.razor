@@ -14,10 +14,6 @@ else if (Nutrition is not null)
         ? RecipeScaler.ScaleNutrients(Nutrition.TotalNutrients, Multiplier)
         : Nutrition.TotalNutrients;
 
-    var perUnit = Nutrition.PerUnitNutrients is not null && Multiplier != 1.0
-        ? RecipeScaler.ScaleNutrients(Nutrition.PerUnitNutrients, Multiplier)
-        : Nutrition.PerUnitNutrients;
-
     <section class="nutrition-section">
         <h2>Nutrition</h2>
 
@@ -49,7 +45,7 @@ else if (Nutrition is not null)
                 </div>
             </div>
 
-            @if (perUnit is not null
+            @if (Nutrition.PerUnitNutrients is not null
                 && Nutrition.YieldsQuantity is not null
                 && Nutrition.YieldsUnit is not null
                 && !NonPluralizableUnits.Contains(Nutrition.YieldsUnit)
