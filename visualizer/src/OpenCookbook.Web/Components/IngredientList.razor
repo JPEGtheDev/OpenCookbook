@@ -25,7 +25,7 @@
                    min="0.01"
                    step="any"
                    value="@FormatQuantity(scaledYields)"
-                   aria-label="Target @PluralizeUnit(Yields.Unit, scaledYields) to make"
+                   aria-label="Target yield: how many @PluralizeUnit(ExpandUnitForAccessibility(Yields.Unit), scaledYields) to make"
                    @onchange="OnTargetYieldChanged" />
             @PluralizeUnit(Yields.Unit, scaledYields)
         </p>
@@ -234,6 +234,24 @@
         if (quantity == 1.0) return unit;
         if (_nonPluralizableUnits.Contains(unit)) return unit;
         return unit + "s";
+    }
+
+    private static readonly Dictionary<string, string> _unitAccessibilityNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "g",   "gram" },
+            { "ml",  "milliliter" },
+            { "kg",  "kilogram" },
+            { "l",   "liter" },
+            { "oz",  "ounce" },
+            { "lb",  "pound" },
+            { "lbs", "pound" },
+        };
+
+    private static string ExpandUnitForAccessibility(string? unit)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        return _unitAccessibilityNames.TryGetValue(unit, out var expanded) ? expanded : unit;
     }
 
     private string? GetDocLinkUrl(string docLink)

@@ -271,7 +271,6 @@ public class IngredientListTests : BunitContext
 
         // Assert — editable target yield input present
         var input = cut.Find(".target-yield-input");
-        Assert.NotNull(input);
         Assert.Equal("8", input.GetAttribute("value"));
     }
 
@@ -373,7 +372,7 @@ public class IngredientListTests : BunitContext
     }
 
     [Fact]
-    public void IngredientList_TargetYieldInput_HasAriaLabel()
+    public void IngredientList_TargetYieldInput_HasDescriptiveAriaLabel()
     {
         // Arrange
         var groups = CreateSampleGroups();
@@ -386,9 +385,32 @@ public class IngredientListTests : BunitContext
             p.Add(x => x.Yields, yields);
         });
 
-        // Assert — aria-label present for accessibility
+        // Assert — aria-label is descriptive and includes "yield"
         var input = cut.Find(".target-yield-input");
-        Assert.False(string.IsNullOrEmpty(input.GetAttribute("aria-label")));
+        var label = input.GetAttribute("aria-label") ?? "";
+        Assert.False(string.IsNullOrEmpty(label));
+        Assert.Contains("yield", label, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_MetricUnit_AriaLabelExpandsAbbreviation()
+    {
+        // Arrange — a recipe that yields in grams
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 200, Unit = "g" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+        });
+
+        // Assert — "g" is expanded to "gram(s)" in the aria-label, not left as bare "g"
+        var input = cut.Find(".target-yield-input");
+        var label = input.GetAttribute("aria-label") ?? "";
+        Assert.Contains("gram", label, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\" g\"", label);
     }
 
     [Fact]
