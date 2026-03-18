@@ -73,11 +73,11 @@ public static class RecipeScaler
     /// </summary>
     public static (double Multiplier, List<IngredientGroup> ScaledGroups) ScaleByTargetYield(
         List<IngredientGroup> groups,
-        int originalYieldQuantity,
+        double originalYieldQuantity,
         double targetYieldQuantity)
     {
-        if (originalYieldQuantity <= 0)
-            throw new ArgumentOutOfRangeException(nameof(originalYieldQuantity), "Original yield must be a positive number.");
+        if (!double.IsFinite(originalYieldQuantity) || originalYieldQuantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(originalYieldQuantity), "Original yield must be a finite positive number.");
 
         if (!double.IsFinite(targetYieldQuantity) || targetYieldQuantity <= 0)
             throw new ArgumentOutOfRangeException(nameof(targetYieldQuantity), "Target yield must be a finite positive number.");

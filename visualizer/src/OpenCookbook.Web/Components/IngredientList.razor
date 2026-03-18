@@ -166,7 +166,7 @@
     {
         if (Yields is null || Yields.Quantity <= 0) return;
         if (!double.TryParse(e.Value?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var newTarget)
-            || !double.IsFinite(newTarget) || newTarget <= 0) return;
+            || !double.IsFinite(newTarget) || newTarget < 0.01) return;
 
         var newMultiplier = newTarget / Yields.Quantity;
         if (!double.IsFinite(newMultiplier) || newMultiplier <= 0) return;

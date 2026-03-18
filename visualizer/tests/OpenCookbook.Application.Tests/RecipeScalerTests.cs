@@ -443,6 +443,28 @@ public class RecipeScalerTests
     }
 
     [Fact]
+    public void ScaleByTargetYield_NaNOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, double.NaN, 8));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_InfinityOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, double.PositiveInfinity, 8));
+    }
+
+    [Fact]
     public void ScaleByTargetYield_ZeroTargetYield_Throws()
     {
         // Arrange

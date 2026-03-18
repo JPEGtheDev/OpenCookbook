@@ -188,9 +188,9 @@ public class IngredientListTests : BunitContext
         });
 
         // Assert — 8 × 2 = 16 and unit must be pluralized
-        var yieldsSection = cut.Find(".scale-yields");
-        Assert.Contains("16", yieldsSection.GetAttribute("inner-text") ?? yieldsSection.InnerHtml);
-        Assert.Contains("servings", yieldsSection.TextContent);
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("16", input.GetAttribute("value"));
+        Assert.Contains("servings", cut.Find(".scale-yields").TextContent);
     }
 
     [Fact]
