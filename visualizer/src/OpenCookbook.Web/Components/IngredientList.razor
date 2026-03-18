@@ -73,37 +73,24 @@
                             @FormatQuantity(item.Quantity) @item.Unit
                         </button>
                     }
-                    @if (item.DocLink is not null)
-                    {
-                        <div class="ingredient-name">
-                            <SubRecipePanel DocLink="@item.DocLink"
-                                           RecipePath="@RecipePath"
-                                           IngredientName="@item.Name"
-                                           FallbackUrl="@GetDocLinkUrl(item.DocLink)" />
-                            @if (item.VolumeAlt is not null)
-                            {
-                                <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
-                            }
-                            @if (item.Note is not null)
-                            {
-                                <span class="ingredient-note">(@item.Note)</span>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <span class="ingredient-name">
+                    <span class="ingredient-name">
+                        @if (item.DocLink is not null && GetDocLinkUrl(item.DocLink) is { } url)
+                        {
+                            <a href="@url">@item.Name</a>
+                        }
+                        else
+                        {
                             @item.Name
-                            @if (item.VolumeAlt is not null)
-                            {
-                                <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
-                            }
-                            @if (item.Note is not null)
-                            {
-                                <span class="ingredient-note">(@item.Note)</span>
-                            }
-                        </span>
-                    }
+                        }
+                        @if (item.VolumeAlt is not null)
+                        {
+                            <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
+                        }
+                        @if (item.Note is not null)
+                        {
+                            <span class="ingredient-note">(@item.Note)</span>
+                        }
+                    </span>
                 </li>
             }
         </ul>

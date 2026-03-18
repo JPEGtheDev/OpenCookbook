@@ -1,5 +1,6 @@
 @page "/recipe/{Path}"
 @inject RecipeService RecipeService
+@inject RecipeComposer RecipeComposer
 @inject NutritionCalculator NutritionCalculator
 @inject FitnessExportService ExportService
 @inject NavigationManager Nav
@@ -150,6 +151,18 @@ else if (_recipe is not null)
         finally
         {
             _loading = false;
+        }
+
+        if (_recipe is not null && _decodedPath is not null)
+        {
+            try
+            {
+                _recipe = await RecipeComposer.ComposeAsync(_recipe, _decodedPath);
+            }
+            catch
+            {
+                // Composition is best-effort — show the raw recipe if it fails
+            }
         }
 
         if (_recipe is not null && _decodedPath is not null)
