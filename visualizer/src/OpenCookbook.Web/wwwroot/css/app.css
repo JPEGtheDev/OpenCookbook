@@ -619,10 +619,32 @@ ul, ol {
     font-size: 0.9rem;
     color: var(--color-text-muted);
     margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
 }
 
 .scale-yields strong {
     color: var(--color-text);
+}
+
+.target-yield-input {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 4.5rem;
+    padding: 0.1rem 0.3rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-align: right;
+}
+
+.target-yield-input:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
 }
 
 .scale-btn {
