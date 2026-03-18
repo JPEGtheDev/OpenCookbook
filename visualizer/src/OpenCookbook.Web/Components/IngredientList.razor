@@ -18,7 +18,7 @@
     @if (Yields is not null)
     {
         var scaledYields = Math.Round(Yields.Quantity * Multiplier, 1);
-        <p class="scale-yields">Makes <strong>@FormatQuantity(scaledYields)</strong> @Yields.Unit</p>
+        <p class="scale-yields">Makes <strong>@FormatQuantity(scaledYields)</strong> @PluralizeUnit(Yields.Unit, scaledYields)</p>
     }
 
     @{ var displayGroups = GetDisplayGroups(); }
@@ -198,6 +198,17 @@
         return Math.Round(qty, 1) == qty
             ? qty.ToString("F1", CultureInfo.InvariantCulture)
             : qty.ToString("G4", CultureInfo.InvariantCulture);
+    }
+
+    private static readonly HashSet<string> _nonPluralizableUnits =
+        new(StringComparer.OrdinalIgnoreCase) { "g", "ml", "kg", "l", "oz", "lb", "lbs" };
+
+    private static string PluralizeUnit(string? unit, double quantity)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        if (quantity == 1.0) return unit;
+        if (_nonPluralizableUnits.Contains(unit)) return unit;
+        return unit + "s";
     }
 
     private string? GetDocLinkUrl(string docLink)

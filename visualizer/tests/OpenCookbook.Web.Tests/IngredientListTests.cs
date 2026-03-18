@@ -173,7 +173,7 @@ public class IngredientListTests : BunitContext
     // ── Yields Display ────────────────────────────────
 
     [Fact]
-    public void IngredientList_WithYields_ShowsScaledYields()
+    public void IngredientList_WithYields_ShowsScaledAndPluralizedYields()
     {
         // Arrange
         var groups = CreateSampleGroups();
@@ -187,10 +187,54 @@ public class IngredientListTests : BunitContext
             p.Add(x => x.Multiplier, 2.0);
         });
 
-        // Assert
+        // Assert — 8 × 2 = 16 and unit must be pluralized
         var yieldsText = cut.Find(".scale-yields").TextContent;
         Assert.Contains("16", yieldsText);
-        Assert.Contains("serving", yieldsText);
+        Assert.Contains("servings", yieldsText);
+    }
+
+    [Fact]
+    public void IngredientList_WithYields_SingularAt1X_NotPluralized()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 1, Unit = "batch" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.Multiplier, 1.0);
+        });
+
+        // Assert — quantity is 1 so unit stays singular
+        var yieldsText = cut.Find(".scale-yields").TextContent;
+        Assert.Contains("1", yieldsText);
+        Assert.Contains("batch", yieldsText);
+        Assert.DoesNotContain("batchs", yieldsText);
+    }
+
+    [Fact]
+    public void IngredientList_WithMetricYields_NeverPluralized()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 500, Unit = "g" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.Multiplier, 2.0);
+        });
+
+        // Assert — metric units are never pluralized
+        var yieldsText = cut.Find(".scale-yields").TextContent;
+        Assert.Contains("1000", yieldsText);
+        Assert.Contains(" g", yieldsText);
+        Assert.DoesNotContain("gs", yieldsText);
     }
 
     [Fact]
