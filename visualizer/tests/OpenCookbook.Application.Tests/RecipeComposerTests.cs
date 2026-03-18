@@ -759,4 +759,193 @@ public class RecipeComposerTests
         // Assert — self-referencing instruction doc_link is skipped
         Assert.Single(composed.Instructions);
     }
+
+    // ── Quantity Scaling ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_ScalesSubRecipeIngredientsByDocLinkQuantity()
+    {
+        // Arrange — parent references sub-recipe with Quantity = 2
+        var sub = new Recipe
+        {
+            Name = "Spice Blend",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 5, Unit = "g", Name = "Paprika" },
+                        new Ingredient { Quantity = 3, Unit = "g", Name = "Cumin" },
+                    ]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix spices" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 2, Unit = "batch", Name = "Spice Blend", DocLink = "./Spice.yaml" },
+                        new Ingredient { Quantity = 100, Unit = "g", Name = "Flour" },
+                    ]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Combine" }] }]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["dir/Spice.yaml"] = sub
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — sub-recipe ingredients scaled by 2×
+        var allItems = composed.Ingredients.SelectMany(g => g.Items).ToList();
+        var paprika = allItems.First(i => i.Name == "Paprika");
+        var cumin = allItems.First(i => i.Name == "Cumin");
+        Assert.Equal(10, paprika.Quantity); // 5 × 2
+        Assert.Equal(6, cumin.Quantity);    // 3 × 2
+    }
+
+    [Fact]
+    public async Task ComposeAsync_Quantity1_NoScaling()
+    {
+        // Arrange — doc_link Quantity = 1 means no scaling
+        var sub = new Recipe
+        {
+            Name = "Sub",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 907, Unit = "g", Name = "Ground Beef" }] }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 1, Unit = "whole", Name = "Sub", DocLink = "./Sub.yaml" }]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Done" }] }]
+        };
+
+        var repo = new FakeRecipeRepository(new() { ["dir/Sub.yaml"] = sub });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — quantity unchanged at scale=1
+        var beef = composed.Ingredients.SelectMany(g => g.Items).First(i => i.Name == "Ground Beef");
+        Assert.Equal(907, beef.Quantity);
+    }
+
+    // ── DAG Reuse ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_SameSubRecipeReferencedTwice_BothResolved()
+    {
+        // Arrange — two different ingredients reference the same sub-recipe
+        var spice = new Recipe
+        {
+            Name = "Spice Blend",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 10, Unit = "g", Name = "Paprika" }] }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix spices" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 1, Unit = "batch", Name = "Spice for sauce", DocLink = "./Spice.yaml" },
+                        new Ingredient { Quantity = 2, Unit = "batch", Name = "Spice for rub", DocLink = "./Spice.yaml" },
+                    ]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Cook" }] }]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["dir/Spice.yaml"] = spice
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — both references resolved (DAG reuse, not erroneously skipped)
+        var paprikaItems = composed.Ingredients
+            .SelectMany(g => g.Items)
+            .Where(i => i.Name == "Paprika")
+            .ToList();
+        Assert.Equal(2, paprikaItems.Count);
+        Assert.Equal(10, paprikaItems[0].Quantity); // 10 × 1
+        Assert.Equal(20, paprikaItems[1].Quantity); // 10 × 2
+    }
+
+    // ── Utensil Mutation Safety ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_DoesNotMutateOriginalUtensils()
+    {
+        // Arrange
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = BuildSubRecipe()
+        });
+        var composer = new RecipeComposer(repo);
+        var parent = BuildParentRecipe();
+        var originalUtensilCount = parent.Utensils!
+            .SelectMany(g => g.Items).Count();
+
+        // Act
+        _ = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — original recipe utensils are not mutated
+        var currentUtensilCount = parent.Utensils!
+            .SelectMany(g => g.Items).Count();
+        Assert.Equal(originalUtensilCount, currentUtensilCount);
+    }
+
+    // ── DocLinkResolver ──────────────────────────
+
+    [Theory]
+    [InlineData("Grilling", "./Sub.yaml", "Grilling/Sub.yaml")]
+    [InlineData(null, "./Sub.yaml", "Sub.yaml")]
+    [InlineData("a/b", "../c/Sub.yaml", "a/c/Sub.yaml")]
+    public void DocLinkResolver_ResolvePath_MatchesResolveSubRecipePath(string? basePath, string docLink, string expected)
+    {
+        // Ensure the shared helper produces the same results as the original method
+        Assert.Equal(expected, DocLinkResolver.ResolvePath(basePath, docLink));
+    }
+
+    [Theory]
+    [InlineData("Grilling/Recipe.yaml", "Grilling")]
+    [InlineData("Recipe.yaml", null)]
+    [InlineData(null, null)]
+    public void DocLinkResolver_GetDirectory_ReturnsExpected(string? path, string? expected)
+    {
+        Assert.Equal(expected, DocLinkResolver.GetDirectory(path));
+    }
 }

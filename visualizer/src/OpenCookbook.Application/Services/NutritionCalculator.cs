@@ -46,9 +46,9 @@ public class NutritionCalculator
                     {
                         try
                         {
-                            var resolvedPath = ResolveSubRecipePath(basePath, ingredient.DocLink);
+                            var resolvedPath = DocLinkResolver.ResolvePath(basePath, ingredient.DocLink);
                             var subRecipe = await _recipeRepository.GetRecipeAsync(resolvedPath);
-                            var subBasePath = GetDirectoryFromPath(resolvedPath);
+                            var subBasePath = DocLinkResolver.GetDirectory(resolvedPath);
                             var subNutrition = await CalculateAsync(subRecipe, basePath: subBasePath);
 
                             var scale = ingredient.Quantity;
@@ -240,42 +240,16 @@ public class NutritionCalculator
     }
 
     /// <summary>
-    /// Resolves a sub-recipe's <paramref name="docLink"/> relative to the parent recipe's
-    /// <paramref name="basePath"/> directory. Strips leading <c>./</c> and normalizes
-    /// <c>..</c> segments so the result can be passed directly to
-    /// <see cref="IRecipeRepository.GetRecipeAsync"/>.
+    /// Kept for backward compatibility with existing tests that call this method directly.
+    /// Delegates to <see cref="DocLinkResolver.ResolvePath"/>.
     /// </summary>
     internal static string ResolveSubRecipePath(string? basePath, string docLink)
-    {
-        var linkPath = docLink.StartsWith("./", StringComparison.Ordinal) ? docLink[2..] : docLink;
+        => DocLinkResolver.ResolvePath(basePath, docLink);
 
-        var combined = string.IsNullOrEmpty(basePath)
-            ? linkPath
-            : $"{basePath}/{linkPath}";
-
-        // Normalize .. components
-        var parts = combined.Split('/');
-        var normalized = new List<string>();
-        foreach (var part in parts)
-        {
-            if (part == "..")
-            {
-                if (normalized.Count > 0)
-                    normalized.RemoveAt(normalized.Count - 1);
-            }
-            else if (part != "." && part.Length > 0)
-            {
-                normalized.Add(part);
-            }
-        }
-
-        return string.Join("/", normalized);
-    }
-
-    /// <summary>Returns the directory portion of a recipe path, or <c>null</c> if the path has no directory.</summary>
+    /// <summary>
+    /// Kept for backward compatibility with existing tests that call this method directly.
+    /// Delegates to <see cref="DocLinkResolver.GetDirectory"/>.
+    /// </summary>
     internal static string? GetDirectoryFromPath(string path)
-    {
-        var lastSlash = path.LastIndexOf('/');
-        return lastSlash > 0 ? path[..lastSlash] : null;
-    }
+        => DocLinkResolver.GetDirectory(path);
 }

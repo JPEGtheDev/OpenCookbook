@@ -32,7 +32,7 @@ public class RecipeComposer
         if (recipePath is not null)
             visited.Add(recipePath);
 
-        return await ComposeRecursiveAsync(recipe, GetDirectoryFromPath(recipePath), visited);
+        return await ComposeRecursiveAsync(recipe, DocLinkResolver.GetDirectory(recipePath), visited);
     }
 
     private async Task<Recipe> ComposeRecursiveAsync(
@@ -42,7 +42,9 @@ public class RecipeComposer
     {
         var composedIngredients = new List<IngredientGroup>();
         var prependedInstructions = new List<Section>();
-        var mergedUtensils = new List<UtensilGroup>(recipe.Utensils ?? []);
+
+        // Deep-clone parent utensils so MergeUtensils never mutates the original recipe
+        var mergedUtensils = DeepCloneUtensils(recipe.Utensils);
 
         foreach (var group in recipe.Ingredients)
         {
@@ -84,9 +86,9 @@ public class RecipeComposer
                     remainingItems = [];
                 }
 
-                var resolvedPath = ResolveSubRecipePath(basePath, item.DocLink);
+                var resolvedPath = DocLinkResolver.ResolvePath(basePath, item.DocLink);
 
-                // Cycle detection: skip if already visited
+                // Cycle detection: skip if currently on the recursion stack
                 if (!visited.Add(resolvedPath))
                     continue;
 
@@ -104,8 +106,15 @@ public class RecipeComposer
                 }
 
                 // Recursively compose the sub-recipe first
-                var subBasePath = GetDirectoryFromPath(resolvedPath);
+                var subBasePath = DocLinkResolver.GetDirectory(resolvedPath);
                 subRecipe = await ComposeRecursiveAsync(subRecipe, subBasePath, visited);
+
+                // Remove from recursion stack after processing so the same sub-recipe
+                // can be referenced from a different parent (DAG reuse).
+                visited.Remove(resolvedPath);
+
+                // Scale sub-recipe ingredient quantities by the referencing ingredient's quantity
+                var scale = item.Quantity;
 
                 // Merge sub-recipe ingredients under a heading
                 foreach (var subGroup in subRecipe.Ingredients)
@@ -113,7 +122,7 @@ public class RecipeComposer
                     composedIngredients.Add(new IngredientGroup
                     {
                         Heading = subGroup.Heading ?? subRecipe.Name,
-                        Items = subGroup.Items
+                        Items = ScaleIngredients(subGroup.Items, scale)
                     });
                 }
 
@@ -156,7 +165,7 @@ public class RecipeComposer
         {
             if (instrSection.DocLink is not null)
             {
-                var resolvedPath = ResolveSubRecipePath(basePath, instrSection.DocLink);
+                var resolvedPath = DocLinkResolver.ResolvePath(basePath, instrSection.DocLink);
 
                 if (visited.Add(resolvedPath))
                 {
@@ -172,8 +181,11 @@ public class RecipeComposer
 
                     if (linkedRecipe is not null)
                     {
-                        var subBasePath = GetDirectoryFromPath(resolvedPath);
+                        var subBasePath = DocLinkResolver.GetDirectory(resolvedPath);
                         linkedRecipe = await ComposeRecursiveAsync(linkedRecipe, subBasePath, visited);
+
+                        // Remove from recursion stack after processing (DAG reuse)
+                        visited.Remove(resolvedPath);
 
                         // Merge ingredients from instruction-level doc_link
                         foreach (var subGroup in linkedRecipe.Ingredients)
@@ -200,6 +212,11 @@ public class RecipeComposer
 
                         MergeUtensils(mergedUtensils, linkedRecipe.Utensils);
                         hasSubRecipeInstructions = true;
+                    }
+                    else
+                    {
+                        // Failed to load — remove so it doesn't block future refs
+                        visited.Remove(resolvedPath);
                     }
                 }
 
@@ -244,6 +261,45 @@ public class RecipeComposer
         };
     }
 
+    /// <summary>
+    /// Returns new <see cref="Ingredient"/> instances with quantities scaled by the
+    /// given <paramref name="scale"/> factor. When scale is 1 the original list is
+    /// returned without allocation.
+    /// </summary>
+    private static List<Ingredient> ScaleIngredients(List<Ingredient> items, double scale)
+    {
+        // ReSharper disable once CompareOfFloatsByEqualityOperator — exact 1.0 check intentional
+        if (scale == 1.0)
+            return items;
+
+        return items.Select(i => new Ingredient
+        {
+            Quantity = i.Quantity * scale,
+            Unit = i.Unit,
+            Name = i.Name,
+            VolumeAlt = i.VolumeAlt,
+            Note = i.Note,
+            NutritionId = i.NutritionId,
+            DocLink = i.DocLink,
+        }).ToList();
+    }
+
+    /// <summary>
+    /// Deep-clones the utensil groups so that <see cref="MergeUtensils"/> never
+    /// mutates the original recipe's data.
+    /// </summary>
+    private static List<UtensilGroup> DeepCloneUtensils(List<UtensilGroup>? source)
+    {
+        if (source is null || source.Count == 0)
+            return [];
+
+        return source.Select(g => new UtensilGroup
+        {
+            Heading = g.Heading,
+            Items = new List<string>(g.Items)
+        }).ToList();
+    }
+
     private static void MergeUtensils(List<UtensilGroup> target, List<UtensilGroup>? source)
     {
         if (source is null) return;
@@ -284,36 +340,10 @@ public class RecipeComposer
         }
     }
 
+    /// <summary>
+    /// Kept for backward compatibility with existing tests that call this method directly.
+    /// Delegates to <see cref="DocLinkResolver.ResolvePath"/>.
+    /// </summary>
     internal static string ResolveSubRecipePath(string? basePath, string docLink)
-    {
-        var linkPath = docLink.StartsWith("./", StringComparison.Ordinal) ? docLink[2..] : docLink;
-
-        var combined = string.IsNullOrEmpty(basePath)
-            ? linkPath
-            : $"{basePath}/{linkPath}";
-
-        var parts = combined.Split('/');
-        var normalized = new List<string>();
-        foreach (var part in parts)
-        {
-            if (part == "..")
-            {
-                if (normalized.Count > 0)
-                    normalized.RemoveAt(normalized.Count - 1);
-            }
-            else if (part != "." && part.Length > 0)
-            {
-                normalized.Add(part);
-            }
-        }
-
-        return string.Join("/", normalized);
-    }
-
-    private static string? GetDirectoryFromPath(string? path)
-    {
-        if (path is null) return null;
-        var lastSlash = path.LastIndexOf('/');
-        return lastSlash > 0 ? path[..lastSlash] : null;
-    }
+        => DocLinkResolver.ResolvePath(basePath, docLink);
 }
