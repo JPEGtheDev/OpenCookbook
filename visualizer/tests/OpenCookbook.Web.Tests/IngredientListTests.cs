@@ -1,4 +1,5 @@
 using Bunit;
+using Microsoft.AspNetCore.Components;
 using OpenCookbook.Domain.Entities;
 using OpenCookbook.Web.Components;
 
@@ -21,6 +22,19 @@ public class IngredientListTests : BunitContext
                 ]
             }
         ];
+    }
+
+    private static List<string> GetRenderedQuantities(IRenderedComponent<IngredientList> cut)
+    {
+        // Collect text from all quantity-displaying elements (both lockable buttons and locked spans)
+        var lockable = cut.FindAll("button.ingredient-qty-lockable");
+        var locked = cut.FindAll(".ingredient-qty-locked");
+        var result = new List<string>();
+        foreach (var el in lockable)
+            result.Add(el.TextContent.Trim());
+        foreach (var el in locked)
+            result.Add(el.TextContent.Trim());
+        return result;
     }
 
     // ── Multiplier Toolbar ─────────────────────────────
@@ -54,10 +68,11 @@ public class IngredientListTests : BunitContext
         var cut = Render<IngredientList>(p =>
             p.Add(x => x.Groups, groups));
 
-        // Assert
-        Assert.Contains("500", cut.Markup);
-        Assert.Contains("200", cut.Markup);
-        Assert.Contains("5", cut.Markup);
+        // Assert — verify exact text of each quantity element
+        var quantities = GetRenderedQuantities(cut);
+        Assert.Contains("500 g", quantities);
+        Assert.Contains("200 ml", quantities);
+        Assert.Contains("5 g", quantities);
     }
 
     [Fact]
@@ -77,62 +92,65 @@ public class IngredientListTests : BunitContext
     }
 
     [Fact]
-    public void IngredientList_Clicking2X_DoublesQuantities()
+    public void IngredientList_WithMultiplier2X_DoublesQuantities()
     {
         // Arrange
         var groups = CreateSampleGroups();
 
         // Act
         var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Multiplier, 2.0);
+        });
+
+        // Assert — verify exact text of each quantity element
+        var quantities = GetRenderedQuantities(cut);
+        Assert.Contains("1000 g", quantities);
+        Assert.Contains("400 ml", quantities);
+        Assert.Contains("10 g", quantities);
+    }
+
+    [Fact]
+    public void IngredientList_WithMultiplierHalf_HalvesQuantities()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Multiplier, 0.5);
+        });
+
+        // Assert — verify exact text of each quantity element
+        var quantities = GetRenderedQuantities(cut);
+        Assert.Contains("250 g", quantities);
+        Assert.Contains("100 ml", quantities);
+        Assert.Contains("2.5 g", quantities);
+    }
+
+    [Fact]
+    public void IngredientList_ClickingPreset_RaisesMultiplierChanged()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        double? receivedMultiplier = null;
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
 
         var twoXBtn = cut.FindAll(".scale-btn")[2]; // "2×"
         twoXBtn.Click();
 
         // Assert
-        Assert.Contains("1000", cut.Markup);
-        Assert.Contains("400", cut.Markup);
-        Assert.Contains("10", cut.Markup);
-    }
-
-    [Fact]
-    public void IngredientList_ClickingHalfX_HalvesQuantities()
-    {
-        // Arrange
-        var groups = CreateSampleGroups();
-
-        // Act
-        var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
-
-        var halfXBtn = cut.FindAll(".scale-btn")[0]; // "0.5×"
-        halfXBtn.Click();
-
-        // Assert
-        Assert.Contains("250", cut.Markup);
-        Assert.Contains("100", cut.Markup);
-    }
-
-    [Fact]
-    public void IngredientList_ResetTo1X_RestoresOriginalQuantities()
-    {
-        // Arrange
-        var groups = CreateSampleGroups();
-
-        // Act
-        var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
-
-        // Scale to 2×
-        cut.FindAll(".scale-btn")[2].Click();
-        Assert.Contains("1000", cut.Markup);
-
-        // Reset to 1×
-        cut.FindAll(".scale-btn")[1].Click();
-
-        // Assert — original quantities restored
-        Assert.Contains("500", cut.Markup);
-        Assert.Contains("200", cut.Markup);
+        Assert.Equal(2.0, receivedMultiplier);
     }
 
     [Fact]
@@ -143,12 +161,50 @@ public class IngredientListTests : BunitContext
 
         // Act
         var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
-
-        cut.FindAll(".scale-btn")[2].Click(); // 2×
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Multiplier, 2.0);
+        });
 
         // Assert — volume_alt stays as reference, not scaled
         Assert.Contains("≈ 1 tsp.", cut.Markup);
+    }
+
+    // ── Yields Display ────────────────────────────────
+
+    [Fact]
+    public void IngredientList_WithYields_ShowsScaledYields()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.Multiplier, 2.0);
+        });
+
+        // Assert
+        var yieldsText = cut.Find(".scale-yields").TextContent;
+        Assert.Contains("16", yieldsText);
+        Assert.Contains("serving", yieldsText);
+    }
+
+    [Fact]
+    public void IngredientList_WithoutYields_DoesNotShowYieldsLine()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+            p.Add(x => x.Groups, groups));
+
+        // Assert
+        Assert.Empty(cut.FindAll(".scale-yields"));
     }
 
     // ── Ingredient Locking ─────────────────────────────
@@ -163,8 +219,8 @@ public class IngredientListTests : BunitContext
         var cut = Render<IngredientList>(p =>
             p.Add(x => x.Groups, groups));
 
-        var qtySpans = cut.FindAll(".ingredient-qty-lockable");
-        qtySpans[0].Click(); // Lock chicken
+        var qtyButtons = cut.FindAll("button.ingredient-qty-lockable");
+        qtyButtons[0].Click(); // Lock chicken
 
         // Assert — lock icon and input should appear
         Assert.Contains("🔒", cut.Markup);
@@ -183,7 +239,7 @@ public class IngredientListTests : BunitContext
             p.Add(x => x.Groups, groups));
 
         // Lock chicken
-        cut.FindAll(".ingredient-qty-lockable")[0].Click();
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
         Assert.Contains("🔒", cut.Markup);
 
         // Unlock
@@ -194,25 +250,30 @@ public class IngredientListTests : BunitContext
     }
 
     [Fact]
-    public void IngredientList_ChangingLockedQty_ScalesOtherIngredients()
+    public void IngredientList_ChangingLockedQty_RaisesMultiplierChanged()
     {
         // Arrange
         var groups = CreateSampleGroups();
+        double? receivedMultiplier = null;
 
         // Act
         var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
 
         // Lock chicken (500g)
-        cut.FindAll(".ingredient-qty-lockable")[0].Click();
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
 
-        // Change locked value to 1000 (2× multiplier)
+        // Change locked value to 1000 (expect 2× multiplier raised to parent)
         var lockInput = cut.Find(".lock-input");
         lockInput.Change("1000");
 
-        // Assert — yogurt should be 400, cumin should be 10
-        Assert.Contains("400", cut.Markup);
-        Assert.Contains("10", cut.Markup);
+        // Assert — parent should receive multiplier of 2.0
+        Assert.NotNull(receivedMultiplier);
+        Assert.Equal(2.0, receivedMultiplier!.Value, precision: 10);
     }
 
     [Fact]
@@ -223,10 +284,14 @@ public class IngredientListTests : BunitContext
 
         // Act
         var cut = Render<IngredientList>(p =>
-            p.Add(x => x.Groups, groups));
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, _ => { }));
+        });
 
         // Lock an ingredient
-        cut.FindAll(".ingredient-qty-lockable")[0].Click();
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
         Assert.Contains("🔒", cut.Markup);
 
         // Click 1× preset
@@ -234,7 +299,6 @@ public class IngredientListTests : BunitContext
 
         // Assert — lock cleared
         Assert.DoesNotContain("🔒", cut.Markup);
-        Assert.Contains("500", cut.Markup);
     }
 
     [Fact]
@@ -247,10 +311,43 @@ public class IngredientListTests : BunitContext
         var cut = Render<IngredientList>(p =>
             p.Add(x => x.Groups, groups));
 
-        cut.FindAll(".ingredient-qty-lockable")[0].Click();
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
 
         // Assert
         var lockedItems = cut.FindAll(".ingredient-locked");
         Assert.Single(lockedItems);
+    }
+
+    [Fact]
+    public void IngredientList_LockButton_HasAriaLabel()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+            p.Add(x => x.Groups, groups));
+
+        // Assert — lockable buttons have aria-label for accessibility
+        var qtyButtons = cut.FindAll("button.ingredient-qty-lockable");
+        Assert.All(qtyButtons, btn =>
+            Assert.False(string.IsNullOrEmpty(btn.GetAttribute("aria-label"))));
+    }
+
+    [Fact]
+    public void IngredientList_UnlockButton_HasAriaLabel()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+            p.Add(x => x.Groups, groups));
+
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
+
+        // Assert
+        var unlockBtn = cut.Find(".lock-icon");
+        Assert.False(string.IsNullOrEmpty(unlockBtn.GetAttribute("aria-label")));
     }
 }

@@ -12,8 +12,8 @@ public static class RecipeScaler
     public static List<IngredientGroup> ScaleByMultiplier(
         List<IngredientGroup> groups, double multiplier)
     {
-        if (multiplier <= 0)
-            throw new ArgumentOutOfRangeException(nameof(multiplier), "Multiplier must be positive.");
+        if (!double.IsFinite(multiplier) || multiplier <= 0)
+            throw new ArgumentOutOfRangeException(nameof(multiplier), "Multiplier must be a finite positive number.");
 
         return groups.Select(g => new IngredientGroup
         {
@@ -42,8 +42,8 @@ public static class RecipeScaler
         int itemIndex,
         double newQuantity)
     {
-        if (newQuantity <= 0)
-            throw new ArgumentOutOfRangeException(nameof(newQuantity), "Locked quantity must be positive.");
+        if (!double.IsFinite(newQuantity) || newQuantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(newQuantity), "Locked quantity must be a finite positive number.");
 
         if (groupIndex < 0 || groupIndex >= groups.Count)
             throw new ArgumentOutOfRangeException(nameof(groupIndex), "Group index is out of range.");
@@ -57,8 +57,28 @@ public static class RecipeScaler
             throw new InvalidOperationException("Cannot lock an ingredient with zero quantity.");
 
         var multiplier = newQuantity / originalQuantity;
+        if (!double.IsFinite(multiplier))
+            throw new ArgumentOutOfRangeException(nameof(newQuantity), "Computed multiplier is not finite.");
+
         var scaled = ScaleByMultiplier(groups, multiplier);
 
         return (multiplier, scaled);
+    }
+
+    /// <summary>
+    /// Scale a <see cref="NutrientInfo"/> by the given multiplier. Returns a new instance.
+    /// </summary>
+    public static NutrientInfo ScaleNutrients(NutrientInfo nutrients, double multiplier)
+    {
+        if (!double.IsFinite(multiplier) || multiplier <= 0)
+            throw new ArgumentOutOfRangeException(nameof(multiplier), "Multiplier must be a finite positive number.");
+
+        return new NutrientInfo
+        {
+            CaloriesKcal = Math.Round(nutrients.CaloriesKcal * multiplier, 1),
+            ProteinG = Math.Round(nutrients.ProteinG * multiplier, 1),
+            FatG = Math.Round(nutrients.FatG * multiplier, 1),
+            CarbsG = Math.Round(nutrients.CarbsG * multiplier, 1)
+        };
     }
 }

@@ -163,6 +163,28 @@ public class RecipeScalerTests
     }
 
     [Fact]
+    public void ScaleByMultiplier_NaNMultiplier_ThrowsArgumentOutOfRange()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByMultiplier(groups, double.NaN));
+    }
+
+    [Fact]
+    public void ScaleByMultiplier_InfinityMultiplier_ThrowsArgumentOutOfRange()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByMultiplier(groups, double.PositiveInfinity));
+    }
+
+    [Fact]
     public void ScaleByMultiplier_EmptyGroups_ReturnsEmptyList()
     {
         // Arrange
@@ -285,5 +307,97 @@ public class RecipeScalerTests
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() =>
             RecipeScaler.ScaleByLockedIngredient(groups, 0, 0, 100));
+    }
+
+    [Fact]
+    public void ScaleByLockedIngredient_NaNNewQuantity_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByLockedIngredient(groups, 0, 0, double.NaN));
+    }
+
+    [Fact]
+    public void ScaleByLockedIngredient_InfinityNewQuantity_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByLockedIngredient(groups, 0, 0, double.PositiveInfinity));
+    }
+
+    // ── ScaleNutrients ─────────────────────────────────
+
+    [Fact]
+    public void ScaleNutrients_AtTwoX_DoublesAllValues()
+    {
+        // Arrange
+        var nutrients = new NutrientInfo
+        {
+            CaloriesKcal = 500,
+            ProteinG = 25,
+            FatG = 10,
+            CarbsG = 60
+        };
+
+        // Act
+        var scaled = RecipeScaler.ScaleNutrients(nutrients, 2.0);
+
+        // Assert
+        Assert.Equal(1000, scaled.CaloriesKcal);
+        Assert.Equal(50, scaled.ProteinG);
+        Assert.Equal(20, scaled.FatG);
+        Assert.Equal(120, scaled.CarbsG);
+    }
+
+    [Fact]
+    public void ScaleNutrients_AtHalfX_HalvesAllValues()
+    {
+        // Arrange
+        var nutrients = new NutrientInfo
+        {
+            CaloriesKcal = 500,
+            ProteinG = 25,
+            FatG = 10,
+            CarbsG = 60
+        };
+
+        // Act
+        var scaled = RecipeScaler.ScaleNutrients(nutrients, 0.5);
+
+        // Assert
+        Assert.Equal(250, scaled.CaloriesKcal);
+        Assert.Equal(12.5, scaled.ProteinG);
+        Assert.Equal(5, scaled.FatG);
+        Assert.Equal(30, scaled.CarbsG);
+    }
+
+    [Fact]
+    public void ScaleNutrients_DoesNotMutateOriginal()
+    {
+        // Arrange
+        var nutrients = new NutrientInfo { CaloriesKcal = 500 };
+
+        // Act
+        _ = RecipeScaler.ScaleNutrients(nutrients, 3.0);
+
+        // Assert
+        Assert.Equal(500, nutrients.CaloriesKcal);
+    }
+
+    [Fact]
+    public void ScaleNutrients_NaN_ThrowsArgumentOutOfRange()
+    {
+        // Arrange
+        var nutrients = new NutrientInfo { CaloriesKcal = 500 };
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleNutrients(nutrients, double.NaN));
     }
 }

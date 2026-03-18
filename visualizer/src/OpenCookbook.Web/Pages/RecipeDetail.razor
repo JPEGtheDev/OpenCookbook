@@ -32,7 +32,11 @@ else if (_recipe is not null)
 
         <div class="recipe-body">
             <aside class="recipe-sidebar">
-                <IngredientList Groups="@_recipe.Ingredients" RecipePath="@_decodedPath" />
+                <IngredientList Groups="@_recipe.Ingredients"
+                               RecipePath="@_decodedPath"
+                               Yields="@_recipe.Yields"
+                               Multiplier="@_multiplier"
+                               MultiplierChanged="@OnMultiplierChanged" />
 
                 @if (_recipe.Utensils is { Count: > 0 })
                 {
@@ -54,7 +58,7 @@ else if (_recipe is not null)
                     </section>
                 }
 
-                <NutritionPanel Nutrition="@_nutrition" />
+                <NutritionPanel Nutrition="@_nutrition" Multiplier="@_multiplier" />
             </aside>
 
             <div class="recipe-instructions">
@@ -118,6 +122,7 @@ else if (_recipe is not null)
     private bool _loading = true;
     private string? _error;
     private string? _decodedPath;
+    private double _multiplier = 1.0;
 
     private bool _showExportModal;
     private string _exportText = string.Empty;
@@ -129,6 +134,7 @@ else if (_recipe is not null)
         _recipe = null;
         _nutrition = null;
         _decodedPath = null;
+        _multiplier = 1.0;
         _showExportModal = false;
         _exportText = string.Empty;
 
@@ -165,6 +171,8 @@ else if (_recipe is not null)
     }
 
     private void ShowExportModal() => _showExportModal = true;
+
+    private void OnMultiplierChanged(double multiplier) => _multiplier = multiplier;
 
     private string GetRelatedRecipeUrl(string relativePath)
     {

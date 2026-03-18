@@ -615,6 +615,16 @@ ul, ol {
     flex-wrap: wrap;
 }
 
+.scale-yields {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.75rem;
+}
+
+.scale-yields strong {
+    color: var(--color-text);
+}
+
 .scale-btn {
     font-family: var(--font-mono);
     font-size: 0.85rem;
@@ -647,9 +657,18 @@ ul, ol {
 
 /* --- Ingredient Lock --- */
 .ingredient-qty-lockable {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 5rem;
+    text-align: right;
+    flex-shrink: 0;
+    color: var(--color-text);
     cursor: pointer;
     border-radius: var(--radius-sm);
     padding: 0.1rem 0.2rem;
+    border: none;
+    background: none;
     transition: background 0.15s;
 }
 
