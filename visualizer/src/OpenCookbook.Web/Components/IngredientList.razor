@@ -18,7 +18,17 @@
     @if (Yields is not null)
     {
         var scaledYields = Math.Round(Yields.Quantity * Multiplier, 1);
-        <p class="scale-yields">Makes <strong>@FormatQuantity(scaledYields)</strong> @PluralizeUnit(Yields.Unit, scaledYields)</p>
+        <p class="scale-yields">
+            Makes
+            <input type="number"
+                   class="target-yield-input"
+                   min="0.01"
+                   step="any"
+                   value="@FormatQuantity(scaledYields)"
+                   aria-label="Target yield: how many @PluralizeUnit(ExpandUnitForAccessibility(Yields.Unit), scaledYields) to make"
+                   @onchange="OnTargetYieldChanged" />
+            @PluralizeUnit(Yields.Unit, scaledYields)
+        </p>
     }
 
     @{ var displayGroups = GetDisplayGroups(); }
@@ -152,6 +162,21 @@
         await MultiplierChanged.InvokeAsync(Multiplier);
     }
 
+    private async Task OnTargetYieldChanged(ChangeEventArgs e)
+    {
+        if (Yields is null || Yields.Quantity <= 0) return;
+        if (!double.TryParse(e.Value?.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out var newTarget)
+            || !double.IsFinite(newTarget) || newTarget < 0.01) return;
+
+        var newMultiplier = newTarget / Yields.Quantity;
+        if (!double.IsFinite(newMultiplier) || newMultiplier <= 0) return;
+
+        _lockedGroupIndex = null;
+        _lockedItemIndex = null;
+        _lockedInputValue = "";
+        await MultiplierChanged.InvokeAsync(newMultiplier);
+    }
+
     private async Task OnLockedInputChanged(ChangeEventArgs e)
     {
         if (_lockedGroupIndex is null || _lockedItemIndex is null) return;
@@ -209,6 +234,24 @@
         if (quantity == 1.0) return unit;
         if (_nonPluralizableUnits.Contains(unit)) return unit;
         return unit + "s";
+    }
+
+    private static readonly Dictionary<string, string> _unitAccessibilityNames =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "g",   "gram" },
+            { "ml",  "milliliter" },
+            { "kg",  "kilogram" },
+            { "l",   "liter" },
+            { "oz",  "ounce" },
+            { "lb",  "pound" },
+            { "lbs", "pound" },
+        };
+
+    private static string ExpandUnitForAccessibility(string? unit)
+    {
+        if (string.IsNullOrEmpty(unit)) return string.Empty;
+        return _unitAccessibilityNames.TryGetValue(unit, out var expanded) ? expanded : unit;
     }
 
     private string? GetDocLinkUrl(string docLink)

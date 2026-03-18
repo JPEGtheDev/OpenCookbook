@@ -331,6 +331,172 @@ public class RecipeScalerTests
             RecipeScaler.ScaleByLockedIngredient(groups, 0, 0, double.PositiveInfinity));
     }
 
+    // ── ScaleByTargetYield ─────────────────────────────
+
+    [Fact]
+    public void ScaleByTargetYield_HalvesYield_HalvesAllQuantities()
+    {
+        // Arrange
+        var groups = CreateSampleGroups(); // 500g chicken, 200ml yogurt, etc.
+
+        // Act — original yield 8, target 4 → 0.5× multiplier
+        var (multiplier, scaled) = RecipeScaler.ScaleByTargetYield(groups, 8, 4);
+
+        // Assert
+        Assert.Equal(0.5, multiplier, precision: 10);
+        Assert.Equal(250, scaled[0].Items[0].Quantity);
+        Assert.Equal(100, scaled[0].Items[1].Quantity);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_DoublesYield_DoublesAllQuantities()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act — original yield 8, target 16 → 2× multiplier
+        var (multiplier, scaled) = RecipeScaler.ScaleByTargetYield(groups, 8, 16);
+
+        // Assert
+        Assert.Equal(2.0, multiplier, precision: 10);
+        Assert.Equal(1000, scaled[0].Items[0].Quantity);
+        Assert.Equal(400, scaled[0].Items[1].Quantity);
+        Assert.Equal(60, scaled[1].Items[0].Quantity);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_SameAsOriginal_ReturnsMultiplierOne()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act — target equals original → multiplier = 1.0
+        var (multiplier, scaled) = RecipeScaler.ScaleByTargetYield(groups, 8, 8);
+
+        // Assert
+        Assert.Equal(1.0, multiplier, precision: 10);
+        Assert.Equal(500, scaled[0].Items[0].Quantity);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_FractionalTarget_ScalesCorrectly()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act — original yield 4, target 10 → 2.5× multiplier
+        var (multiplier, scaled) = RecipeScaler.ScaleByTargetYield(groups, 4, 10);
+
+        // Assert
+        Assert.Equal(2.5, multiplier, precision: 10);
+        Assert.Equal(1250, scaled[0].Items[0].Quantity);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_PreservesVolumeAlt()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        var (_, scaled) = RecipeScaler.ScaleByTargetYield(groups, 8, 16);
+
+        // Assert — volume_alt should NOT be scaled
+        Assert.Equal("1 tsp.", scaled[0].Items[2].VolumeAlt);
+        Assert.Equal("3/4 tsp.", scaled[0].Items[3].VolumeAlt);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_DoesNotMutateOriginal()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act
+        _ = RecipeScaler.ScaleByTargetYield(groups, 8, 16);
+
+        // Assert — original is unchanged
+        Assert.Equal(500, groups[0].Items[0].Quantity);
+        Assert.Equal(200, groups[0].Items[1].Quantity);
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_ZeroOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, 0, 8));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_NegativeOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, -1, 8));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_NaNOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, double.NaN, 8));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_InfinityOriginalYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, double.PositiveInfinity, 8));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_ZeroTargetYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, 8, 0));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_NaNTargetYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, 8, double.NaN));
+    }
+
+    [Fact]
+    public void ScaleByTargetYield_InfinityTargetYield_Throws()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            RecipeScaler.ScaleByTargetYield(groups, 8, double.PositiveInfinity));
+    }
+
     // ── ScaleNutrients ─────────────────────────────────
 
     [Fact]

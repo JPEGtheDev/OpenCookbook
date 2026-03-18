@@ -66,6 +66,31 @@ public static class RecipeScaler
     }
 
     /// <summary>
+    /// Calculate the multiplier needed to reach a target yield quantity,
+    /// then scale all ingredient quantities proportionally.
+    /// Returns the computed multiplier and the new scaled groups.
+    /// volume_alt values are kept as-is (reference only).
+    /// </summary>
+    public static (double Multiplier, List<IngredientGroup> ScaledGroups) ScaleByTargetYield(
+        List<IngredientGroup> groups,
+        double originalYieldQuantity,
+        double targetYieldQuantity)
+    {
+        if (!double.IsFinite(originalYieldQuantity) || originalYieldQuantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(originalYieldQuantity), "Original yield must be a finite positive number.");
+
+        if (!double.IsFinite(targetYieldQuantity) || targetYieldQuantity <= 0)
+            throw new ArgumentOutOfRangeException(nameof(targetYieldQuantity), "Target yield must be a finite positive number.");
+
+        var multiplier = targetYieldQuantity / originalYieldQuantity;
+        if (!double.IsFinite(multiplier))
+            throw new ArgumentOutOfRangeException(nameof(targetYieldQuantity), "Computed multiplier is not finite.");
+
+        var scaled = ScaleByMultiplier(groups, multiplier);
+        return (multiplier, scaled);
+    }
+
+    /// <summary>
     /// Scale a <see cref="NutrientInfo"/> by the given multiplier. Returns a new instance.
     /// </summary>
     public static NutrientInfo ScaleNutrients(NutrientInfo nutrients, double multiplier)

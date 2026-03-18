@@ -188,9 +188,9 @@ public class IngredientListTests : BunitContext
         });
 
         // Assert — 8 × 2 = 16 and unit must be pluralized
-        var yieldsText = cut.Find(".scale-yields").TextContent;
-        Assert.Contains("16", yieldsText);
-        Assert.Contains("servings", yieldsText);
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("16", input.GetAttribute("value"));
+        Assert.Contains("servings", cut.Find(".scale-yields").TextContent);
     }
 
     [Fact]
@@ -209,10 +209,11 @@ public class IngredientListTests : BunitContext
         });
 
         // Assert — quantity is 1 so unit stays singular
-        var yieldsText = cut.Find(".scale-yields").TextContent;
-        Assert.Contains("1", yieldsText);
-        Assert.Contains("batch", yieldsText);
-        Assert.DoesNotContain("batchs", yieldsText);
+        var yieldsSection = cut.Find(".scale-yields");
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("1", input.GetAttribute("value"));
+        Assert.Contains("batch", yieldsSection.TextContent);
+        Assert.DoesNotContain("batchs", yieldsSection.TextContent);
     }
 
     [Fact]
@@ -231,10 +232,11 @@ public class IngredientListTests : BunitContext
         });
 
         // Assert — metric units are never pluralized
-        var yieldsText = cut.Find(".scale-yields").TextContent;
-        Assert.Contains("1000", yieldsText);
-        Assert.Contains(" g", yieldsText);
-        Assert.DoesNotContain("gs", yieldsText);
+        var yieldsSection = cut.Find(".scale-yields");
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("1000", input.GetAttribute("value"));
+        Assert.Contains(" g", yieldsSection.TextContent);
+        Assert.DoesNotContain("gs", yieldsSection.TextContent);
     }
 
     [Fact]
@@ -249,6 +251,192 @@ public class IngredientListTests : BunitContext
 
         // Assert
         Assert.Empty(cut.FindAll(".scale-yields"));
+    }
+
+    // ── Target Yield Input ────────────────────────────
+
+    [Fact]
+    public void IngredientList_WithYields_ShowsEditableTargetInput()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+        });
+
+        // Assert — editable target yield input present
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("8", input.GetAttribute("value"));
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_ReflectsMultiplier()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+
+        // Act — 2× multiplier → target input should show 16
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.Multiplier, 2.0);
+        });
+
+        // Assert
+        var input = cut.Find(".target-yield-input");
+        Assert.Equal("16", input.GetAttribute("value"));
+    }
+
+    [Fact]
+    public void IngredientList_ChangingTargetYield_RaisesMultiplierChanged()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+        double? receivedMultiplier = null;
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
+
+        // Change target to 16 (8 × 2 = 16 → multiplier = 2.0)
+        cut.Find(".target-yield-input").Change("16");
+
+        // Assert
+        Assert.NotNull(receivedMultiplier);
+        Assert.Equal(2.0, receivedMultiplier!.Value, precision: 10);
+    }
+
+    [Fact]
+    public void IngredientList_ChangingTargetYieldToHalf_RaisesHalfMultiplier()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+        double? receivedMultiplier = null;
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
+
+        cut.Find(".target-yield-input").Change("4");
+
+        // Assert — 4/8 = 0.5×
+        Assert.NotNull(receivedMultiplier);
+        Assert.Equal(0.5, receivedMultiplier!.Value, precision: 10);
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_ClearsIngredientLock()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+        double? receivedMultiplier = null;
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
+
+        // Lock an ingredient first
+        cut.FindAll("button.ingredient-qty-lockable")[0].Click();
+        Assert.Contains("🔒", cut.Markup);
+
+        // Change target yield — should clear the lock
+        cut.Find(".target-yield-input").Change("16");
+
+        // Assert — lock cleared
+        Assert.DoesNotContain("🔒", cut.Markup);
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_HasDescriptiveAriaLabel()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+        });
+
+        // Assert — aria-label is descriptive and includes "yield"
+        var input = cut.Find(".target-yield-input");
+        var label = input.GetAttribute("aria-label") ?? "";
+        Assert.False(string.IsNullOrEmpty(label));
+        Assert.Contains("yield", label, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_MetricUnit_AriaLabelExpandsAbbreviation()
+    {
+        // Arrange — a recipe that yields in grams
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 200, Unit = "g" };
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+        });
+
+        // Assert — "g" is expanded to "gram(s)" in the aria-label, not left as bare "g"
+        var input = cut.Find(".target-yield-input");
+        var label = input.GetAttribute("aria-label") ?? "";
+        Assert.Contains("gram", label, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("\" g\"", label);
+    }
+
+    [Fact]
+    public void IngredientList_TargetYieldInput_InvalidInput_DoesNotFireEvent()
+    {
+        // Arrange
+        var groups = CreateSampleGroups();
+        var yields = new RecipeYield { Quantity = 8, Unit = "serving" };
+        double? receivedMultiplier = null;
+
+        // Act
+        var cut = Render<IngredientList>(p =>
+        {
+            p.Add(x => x.Groups, groups);
+            p.Add(x => x.Yields, yields);
+            p.Add(x => x.MultiplierChanged,
+                EventCallback.Factory.Create<double>(this, m => receivedMultiplier = m));
+        });
+
+        // Try invalid inputs
+        cut.Find(".target-yield-input").Change("0");
+        cut.Find(".target-yield-input").Change("-5");
+        cut.Find(".target-yield-input").Change("abc");
+
+        // Assert — no event fired for invalid inputs
+        Assert.Null(receivedMultiplier);
     }
 
     // ── Ingredient Locking ─────────────────────────────
