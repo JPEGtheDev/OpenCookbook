@@ -525,4 +525,244 @@ public class RecipeComposerTests
         Assert.Equal(originalIngredientCount, parent.Ingredients.SelectMany(g => g.Items).Count());
         Assert.Equal(originalInstructionCount, parent.Instructions.Count);
     }
+
+    // ── Parent Instruction Heading ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_ParentNullHeadingSection_GetsRecipeName()
+    {
+        // Arrange — parent has heading: null on its first instruction section
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = BuildSubRecipe()
+        });
+        var composer = new RecipeComposer(repo);
+        var parent = BuildParentRecipe();
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — parent's null-headed section now has the recipe name as heading
+        var parentSection = composed.Instructions.Last();
+        Assert.Equal("Parent Recipe", parentSection.Heading);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_ParentWithExistingHeading_NotOverwritten()
+    {
+        // Arrange — parent has an explicit heading on its instruction section
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = BuildSubRecipe()
+        });
+        var composer = new RecipeComposer(repo);
+        var parent = BuildParentRecipe();
+        parent.Instructions[0].Heading = "Custom Heading";
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — the explicit heading is preserved
+        var parentSection = composed.Instructions.Last();
+        Assert.Equal("Custom Heading", parentSection.Heading);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_NoSubRecipes_NullHeadingPreserved()
+    {
+        // Arrange — recipe with no doc_links
+        var recipe = new Recipe
+        {
+            Name = "Simple",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 100, Unit = "g", Name = "Flour" }] }
+            ],
+            Instructions = [new Section { Heading = null, Steps = [new Step { Text = "Mix" }] }]
+        };
+        var repo = new FakeRecipeRepository(new());
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(recipe, "Simple.yaml");
+
+        // Assert — no sub-recipes means null heading stays null
+        Assert.Null(composed.Instructions[0].Heading);
+    }
+
+    // ── Instruction-Level DocLink ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_InsertsAtPosition()
+    {
+        // Arrange — recipe with doc_link on an instruction section (mid-flow)
+        var herbButter = new Recipe
+        {
+            Name = "Herb Butter",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 200, Unit = "g", Name = "Butter" }] }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix butter and herbs" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Kiev Cutlet",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 500, Unit = "g", Name = "Chicken" }] }
+            ],
+            Instructions =
+            [
+                new Section { Heading = "Chicken Prep", Steps = [new Step { Text = "Season chicken" }] },
+                new Section { DocLink = "./Herb_Butter.yaml" },
+                new Section { Heading = "Forming", Steps = [new Step { Text = "Form cutlets" }] },
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["dir/Herb_Butter.yaml"] = herbButter
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Kiev.yaml");
+
+        // Assert — instructions are in the right order
+        var allSteps = composed.Instructions.SelectMany(s => s.Steps).Select(s => s.Text).ToList();
+        var seasonIdx = allSteps.IndexOf("Season chicken");
+        var butterIdx = allSteps.IndexOf("Mix butter and herbs");
+        var formIdx = allSteps.IndexOf("Form cutlets");
+        Assert.True(seasonIdx < butterIdx, "Chicken prep should come before herb butter");
+        Assert.True(butterIdx < formIdx, "Herb butter should come before forming");
+    }
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_MergesIngredients()
+    {
+        // Arrange
+        var herbButter = new Recipe
+        {
+            Name = "Herb Butter",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 200, Unit = "g", Name = "Butter" }] }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix butter" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Test",
+            Ingredients =
+            [
+                new IngredientGroup { Items = [new Ingredient { Quantity = 500, Unit = "g", Name = "Chicken" }] }
+            ],
+            Instructions =
+            [
+                new Section { Heading = "Prep", Steps = [new Step { Text = "Prep" }] },
+                new Section { DocLink = "./HB.yaml" },
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["dir/HB.yaml"] = herbButter
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Test.yaml");
+
+        // Assert — sub-recipe ingredients from instruction doc_link are merged
+        var allItems = composed.Ingredients.SelectMany(g => g.Items).ToList();
+        Assert.Contains(allItems, i => i.Name == "Chicken");
+        Assert.Contains(allItems, i => i.Name == "Butter");
+    }
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_GetsHeading()
+    {
+        // Arrange
+        var sub = new Recipe
+        {
+            Name = "Herb Butter",
+            Ingredients = [new IngredientGroup { Items = [] }],
+            Instructions = [new Section { Heading = null, Steps = [new Step { Text = "Mix" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients = [new IngredientGroup { Items = [] }],
+            Instructions = [new Section { DocLink = "./Sub.yaml" }]
+        };
+
+        var repo = new FakeRecipeRepository(new() { ["dir/Sub.yaml"] = sub });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — inserted instruction section gets the sub-recipe name as heading
+        Assert.Equal("Herb Butter", composed.Instructions[0].Heading);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_MissingRecipe_SectionSkipped()
+    {
+        // Arrange — doc_link points to non-existent recipe
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients = [new IngredientGroup { Items = [] }],
+            Instructions =
+            [
+                new Section { Heading = "Step 1", Steps = [new Step { Text = "Do stuff" }] },
+                new Section { DocLink = "./Missing.yaml" },
+                new Section { Heading = "Step 3", Steps = [new Step { Text = "Finish" }] },
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new());
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — missing doc_link section is skipped, other sections preserved
+        Assert.Equal(2, composed.Instructions.Count);
+        Assert.Equal("Step 1", composed.Instructions[0].Heading);
+        Assert.Equal("Step 3", composed.Instructions[1].Heading);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_CycleDetected_SectionSkipped()
+    {
+        // Arrange — instruction doc_link points to already-visited recipe
+        var sub = new Recipe
+        {
+            Name = "Sub",
+            Ingredients = [new IngredientGroup { Items = [] }],
+            Instructions = [new Section { Steps = [new Step { Text = "Sub step" }] }]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients = [new IngredientGroup { Items = [] }],
+            Instructions =
+            [
+                new Section { Steps = [new Step { Text = "Parent step" }] },
+                new Section { DocLink = "./Parent.yaml" }, // Self-reference via instruction
+            ]
+        };
+
+        var repo = new FakeRecipeRepository(new() { ["dir/Parent.yaml"] = parent });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — self-referencing instruction doc_link is skipped
+        Assert.Single(composed.Instructions);
+    }
 }

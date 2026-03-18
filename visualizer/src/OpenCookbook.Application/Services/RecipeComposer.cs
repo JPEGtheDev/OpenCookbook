@@ -145,10 +145,87 @@ public class RecipeComposer
             }
         }
 
-        // Build composed instruction list: sub-recipe instructions first, then parent
+        // Build composed instruction list: sub-recipe instructions first, then parent.
+        // Resolve any instruction-level doc_link sections inline.
         var composedInstructions = new List<Section>(prependedInstructions.Count + recipe.Instructions.Count);
         composedInstructions.AddRange(prependedInstructions);
-        composedInstructions.AddRange(recipe.Instructions);
+
+        var hasSubRecipeInstructions = prependedInstructions.Count > 0;
+
+        foreach (var instrSection in recipe.Instructions)
+        {
+            if (instrSection.DocLink is not null)
+            {
+                var resolvedPath = ResolveSubRecipePath(basePath, instrSection.DocLink);
+
+                if (visited.Add(resolvedPath))
+                {
+                    Recipe? linkedRecipe = null;
+                    try
+                    {
+                        linkedRecipe = await _recipeRepository.GetRecipeAsync(resolvedPath);
+                    }
+                    catch
+                    {
+                        visited.Remove(resolvedPath);
+                    }
+
+                    if (linkedRecipe is not null)
+                    {
+                        var subBasePath = GetDirectoryFromPath(resolvedPath);
+                        linkedRecipe = await ComposeRecursiveAsync(linkedRecipe, subBasePath, visited);
+
+                        // Merge ingredients from instruction-level doc_link
+                        foreach (var subGroup in linkedRecipe.Ingredients)
+                        {
+                            composedIngredients.Add(new IngredientGroup
+                            {
+                                Heading = subGroup.Heading ?? linkedRecipe.Name,
+                                Items = subGroup.Items
+                            });
+                        }
+
+                        // Insert the sub-recipe instructions at this position
+                        foreach (var subInstr in linkedRecipe.Instructions)
+                        {
+                            composedInstructions.Add(new Section
+                            {
+                                Heading = subInstr.Heading ?? linkedRecipe.Name,
+                                Type = subInstr.Type,
+                                BranchGroup = subInstr.BranchGroup,
+                                Optional = subInstr.Optional,
+                                Steps = subInstr.Steps
+                            });
+                        }
+
+                        MergeUtensils(mergedUtensils, linkedRecipe.Utensils);
+                        hasSubRecipeInstructions = true;
+                    }
+                }
+
+                // doc_link sections are fully handled above — skip to next
+                continue;
+            }
+
+            // For parent sections: assign heading from recipe name when null
+            // and sub-recipe instructions exist, so there's a visual break.
+            if (hasSubRecipeInstructions && instrSection.Heading is null)
+            {
+                composedInstructions.Add(new Section
+                {
+                    Heading = recipe.Name,
+                    Type = instrSection.Type,
+                    BranchGroup = instrSection.BranchGroup,
+                    Optional = instrSection.Optional,
+                    Steps = instrSection.Steps
+                });
+                hasSubRecipeInstructions = false; // Only label the first null section
+            }
+            else
+            {
+                composedInstructions.Add(instrSection);
+            }
+        }
 
         return new Recipe
         {
