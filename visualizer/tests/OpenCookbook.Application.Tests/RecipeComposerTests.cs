@@ -739,12 +739,6 @@ public class RecipeComposerTests
     public async Task ComposeAsync_InstructionDocLink_CycleDetected_SectionSkipped()
     {
         // Arrange — instruction doc_link points to already-visited recipe
-        var sub = new Recipe
-        {
-            Name = "Sub",
-            Ingredients = [new IngredientGroup { Items = [] }],
-            Instructions = [new Section { Steps = [new Step { Text = "Sub step" }] }]
-        };
         var parent = new Recipe
         {
             Name = "Parent",

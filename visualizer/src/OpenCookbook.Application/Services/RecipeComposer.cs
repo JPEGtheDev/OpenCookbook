@@ -219,7 +219,7 @@ public class RecipeComposer
                     Optional = instrSection.Optional,
                     Steps = instrSection.Steps
                 });
-                hasSubRecipeInstructions = false; // Only label the first null section
+                hasSubRecipeInstructions = false; // Reset: only the first null-headed section after sub-recipe instructions gets labeled
             }
             else
             {
