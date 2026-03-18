@@ -103,12 +103,13 @@
 
     private void LockIngredient(int groupIndex, int itemIndex)
     {
+        // Use the original (unscaled) quantity and apply current multiplier
+        // so the pre-fill matches the quantity currently shown to the user.
         var item = Groups[groupIndex].Items[itemIndex];
         if (item.Quantity == 0) return;
 
         _lockedGroupIndex = groupIndex;
         _lockedItemIndex = itemIndex;
-        // Pre-fill with the current scaled value
         var currentScaled = item.Quantity * _multiplier;
         _lockedInputValue = FormatQuantity(currentScaled);
     }
