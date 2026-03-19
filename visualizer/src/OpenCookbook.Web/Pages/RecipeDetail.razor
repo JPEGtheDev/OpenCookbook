@@ -169,7 +169,9 @@ else if (_recipe is not null)
             }
             catch
             {
-                // Composition is best-effort — show the raw recipe if it fails
+                // Composition is best-effort — show the raw recipe if it fails.
+                // _composedRecipe points to the same instance as _recipe so that
+                // AlternateSelector.ApplySelections still has a base to work from.
                 _composedRecipe = _recipe;
             }
         }

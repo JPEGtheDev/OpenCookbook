@@ -80,13 +80,11 @@
                             var capturedIi = itemIndex;
                             var currentKey = new AlternateSelector.IngredientKey(capturedGi, capturedIi);
                             var selectedIdx = AlternateSelections.TryGetValue(currentKey, out var idx) ? idx : -1;
+                            var origItem = GetOriginalItem(capturedGi, capturedIi);
                             <select class="ingredient-alternate-select"
                                     aria-label="Select ingredient variant for @item.Name"
                                     value="@selectedIdx"
                                     @onchange="(e) => OnAlternateSelectChanged(e, capturedGi, capturedIi)">
-                                @{
-                                    var origItem = GetOriginalItem(capturedGi, capturedIi);
-                                }
                                 <option value="-1">@origItem.Name</option>
                                 @for (var ai = 0; ai < origItem.Alternates!.Count; ai++)
                                 {
