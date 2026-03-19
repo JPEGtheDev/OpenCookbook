@@ -279,6 +279,7 @@ public class RecipeComposer
             Unit = i.Unit,
             Name = i.Name,
             VolumeAlt = i.VolumeAlt,
+            WeightAlt = i.WeightAlt,
             Note = i.Note,
             NutritionId = i.NutritionId,
             DocLink = i.DocLink,

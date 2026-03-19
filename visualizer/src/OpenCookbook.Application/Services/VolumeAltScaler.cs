@@ -27,6 +27,11 @@ public static partial class VolumeAltScaler
 
         double scaled = quantity * multiplier;
 
+        // Guard: if scaling produced a non-finite result (e.g. Infinity or NaN),
+        // return the original string unchanged rather than producing garbage output.
+        if (!double.IsFinite(scaled))
+            return volumeAlt;
+
         return NormalizeUnit(unit) switch
         {
             "tsp"    => FormatFromTsp(scaled),
@@ -66,24 +71,37 @@ public static partial class VolumeAltScaler
 
     private static bool TryParseAlt(string s, out double quantity, out string unit)
     {
+        // Initialize out params to their defaults up front.
+        // Only the final caller-visible values matter when we return true.
+        quantity = 0;
+        unit     = string.Empty;
+
         s = s.Trim();
 
         var m = MixedFractionRegex().Match(s);
         if (m.Success)
         {
-            int whole = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            int num   = int.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture);
-            int den   = int.Parse(m.Groups[3].Value, CultureInfo.InvariantCulture);
-            quantity  = whole + (double)num / den;
-            unit      = m.Groups[4].Value.Trim();
+            if (!int.TryParse(m.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int whole) ||
+                !int.TryParse(m.Groups[2].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int num)   ||
+                !int.TryParse(m.Groups[3].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int den)   ||
+                den == 0)
+            {
+                return false;
+            }
+            quantity = whole + (double)num / den;
+            unit     = m.Groups[4].Value.Trim();
             return true;
         }
 
         m = SimpleFractionRegex().Match(s);
         if (m.Success)
         {
-            int num  = int.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
-            int den  = int.Parse(m.Groups[2].Value, CultureInfo.InvariantCulture);
+            if (!int.TryParse(m.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int num) ||
+                !int.TryParse(m.Groups[2].Value, NumberStyles.None, CultureInfo.InvariantCulture, out int den) ||
+                den == 0)
+            {
+                return false;
+            }
             quantity = (double)num / den;
             unit     = m.Groups[3].Value.Trim();
             return true;
@@ -97,8 +115,6 @@ public static partial class VolumeAltScaler
             return true;
         }
 
-        quantity = 0;
-        unit     = string.Empty;
         return false;
     }
 
@@ -229,11 +245,17 @@ public static partial class VolumeAltScaler
 
     /// <summary>
     /// Formats a value in pints.
+    /// Sub-1 values are down-converted to cups (1 pint = 2 cups) to avoid rounding up
+    /// (e.g. 0.5 pint → "1 cup", not "1 pint").
     /// Rounds to whole pints first, then promotes to quarts when the rounded value
     /// is an exact multiple of 2 pints.
     /// </summary>
     private static string FormatFromPint(double pintValue)
     {
+        // Sub-1 pint: down-convert to cups so we don't round small values up to 1 pint.
+        if (pintValue < 1.0 - Epsilon)
+            return FormatFromCup(pintValue * 2.0);
+
         // Round to whole pints first, then check for quart promotion.
         double rounded = Math.Round(pintValue, MidpointRounding.AwayFromZero);
 
@@ -245,11 +267,17 @@ public static partial class VolumeAltScaler
 
     /// <summary>
     /// Formats a value in quarts.
+    /// Sub-1 values are down-converted to pints (1 quart = 2 pints) to avoid rounding up
+    /// (e.g. 0.5 quart → "1 pint", not "1 quart").
     /// Rounds to whole quarts first, then promotes to gallons when the rounded value
     /// is an exact multiple of 4 quarts.
     /// </summary>
     private static string FormatFromQuart(double quartValue)
     {
+        // Sub-1 quart: down-convert to pints so we don't round small values up to 1 quart.
+        if (quartValue < 1.0 - Epsilon)
+            return FormatFromPint(quartValue * 2.0);
+
         // Round to whole quarts first, then check for gallon promotion.
         double rounded = Math.Round(quartValue, MidpointRounding.AwayFromZero);
 
@@ -259,9 +287,17 @@ public static partial class VolumeAltScaler
         return rounded == 1.0 ? "1 quart" : $"{(int)rounded} quarts";
     }
 
-    /// <summary>Formats a value in gallons (whole gallons only).</summary>
+    /// <summary>
+    /// Formats a value in gallons.
+    /// Sub-1 values are down-converted to quarts (1 gallon = 4 quarts) to avoid rounding up
+    /// (e.g. 0.5 gallon → "2 quarts", not "1 gallon").
+    /// </summary>
     private static string FormatFromGallon(double gallonValue)
     {
+        // Sub-1 gallon: down-convert to quarts so we don't round small values up to 1 gallon.
+        if (gallonValue < 1.0 - Epsilon)
+            return FormatFromQuart(gallonValue * 4.0);
+
         double rounded = Math.Round(gallonValue, MidpointRounding.AwayFromZero);
         return rounded == 1.0 ? "1 gallon" : $"{(int)rounded} gallons";
     }

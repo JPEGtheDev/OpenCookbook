@@ -257,7 +257,7 @@ public class VolumeAltScalerTests
     public void ScaleWeightAlt_Oz_RoundsToHalfOunce()
     {
         // 1 oz × 1.3 = 1.3 oz → rounded to nearest 0.5 oz = 1.5 oz
-        Assert.Equal("1 1/2 oz", VolumeAltScaler.ScaleWeightAlt("1 oz", 1.5));
+        Assert.Equal("1 1/2 oz", VolumeAltScaler.ScaleWeightAlt("1 oz", 1.3));
     }
 
     // ── 1× scale returns same value ───────────────────────────────────────────
@@ -278,6 +278,45 @@ public class VolumeAltScalerTests
         Assert.NotEmpty(result);
         // Verify by scaling the result at 1× again — should be stable
         Assert.Equal(result, VolumeAltScaler.ScaleVolumeAlt(result, 1.0));
+    }
+
+    // ── Parse guards ─────────────────────────────────────────────────────────
+
+    [Fact]
+    public void ScaleVolumeAlt_ZeroDenominator_ReturnsOriginalString()
+    {
+        // "1/0 tsp." has a zero denominator — must not crash or produce Infinity
+        Assert.Equal("1/0 tsp.", VolumeAltScaler.ScaleVolumeAlt("1/0 tsp.", 2.0));
+    }
+
+    [Fact]
+    public void ScaleVolumeAlt_ZeroDenominatorMixed_ReturnsOriginalString()
+    {
+        // "1 1/0 tsp." mixed fraction with zero denominator — must not crash
+        Assert.Equal("1 1/0 tsp.", VolumeAltScaler.ScaleVolumeAlt("1 1/0 tsp.", 2.0));
+    }
+
+    // ── Sub-1 unit down-conversion ────────────────────────────────────────────
+
+    [Fact]
+    public void ScaleVolumeAlt_Pint_DownConvertsToC_WhenResultIsHalfPint()
+    {
+        // 1 pint × 0.5 = 0.5 pint → should show "1 cup", not "1 pint"
+        Assert.Equal("1 cup", VolumeAltScaler.ScaleVolumeAlt("1 pint", 0.5));
+    }
+
+    [Fact]
+    public void ScaleVolumeAlt_Quart_DownConvertsToPint_WhenResultIsHalfQuart()
+    {
+        // 1 quart × 0.5 = 0.5 quart = 1 pint → should show "1 pint", not "1 quart"
+        Assert.Equal("1 pint", VolumeAltScaler.ScaleVolumeAlt("1 quart", 0.5));
+    }
+
+    [Fact]
+    public void ScaleVolumeAlt_Gallon_DownConvertsToQuart_WhenResultIsHalfGallon()
+    {
+        // 1 gallon × 0.5 = 0.5 gallon = 2 quarts → should show "2 quarts", not "1 gallon"
+        Assert.Equal("2 quarts", VolumeAltScaler.ScaleVolumeAlt("1 gallon", 0.5));
     }
 
     // ── No crash on no volume_alt ─────────────────────────────────────────────

@@ -309,6 +309,12 @@ ul, ol {
     margin-left: 0.25rem;
 }
 
+.ingredient-weight-alt {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-left: 0.25rem;
+}
+
 .ingredient-note {
     font-size: 0.85rem;
     font-style: italic;
