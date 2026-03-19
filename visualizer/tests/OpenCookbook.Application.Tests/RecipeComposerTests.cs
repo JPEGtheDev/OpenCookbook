@@ -948,4 +948,131 @@ public class RecipeComposerTests
     {
         Assert.Equal(expected, DocLinkResolver.GetDirectory(path));
     }
+
+    // ── Alternates Propagation ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_PropagatesAlternatesFromSubRecipe()
+    {
+        // Arrange — sub-recipe has an ingredient with alternates
+        var subRecipe = new Recipe
+        {
+            Name = "Sub With Alternates",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 907,
+                            Unit = "g",
+                            Name = "88/12 Ground Beef",
+                            NutritionId = Guid.Parse("2724c62f-1832-5ccf-97b0-d219812368d8"),
+                            Alternates =
+                            [
+                                new IngredientAlternate
+                                {
+                                    Name = "80/20 Ground Beef",
+                                    NutritionId = Guid.Parse("ca7b2dfc-90a9-57e5-995d-605dfef2baf8"),
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Mix" }] }]
+        };
+
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 1, Unit = "whole", Name = "Sub", DocLink = "./Sub.yaml" }]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Combine" }] }]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — alternates are propagated to the composed ingredient
+        var beef = composed.Ingredients.SelectMany(g => g.Items).First(i => i.Name == "88/12 Ground Beef");
+        Assert.NotNull(beef.Alternates);
+        Assert.Single(beef.Alternates);
+        Assert.Equal("80/20 Ground Beef", beef.Alternates[0].Name);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_ScalesAlternateQuantityByDocLinkQuantity()
+    {
+        // Arrange — sub-recipe with an alternate that has a quantity override
+        var subRecipe = new Recipe
+        {
+            Name = "Sub",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient
+                        {
+                            Quantity = 100,
+                            Unit = "g",
+                            Name = "Ingredient A",
+                            Alternates =
+                            [
+                                new IngredientAlternate
+                                {
+                                    Name = "Ingredient B",
+                                    Quantity = 150,
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Do something" }] }]
+        };
+
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 2, Unit = "whole", Name = "Sub", DocLink = "./Sub.yaml" }]
+                }
+            ],
+            Instructions = [new Section { Steps = [new Step { Text = "Combine" }] }]
+        };
+
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Parent.yaml");
+
+        // Assert — main quantity scaled by 2, alternate quantity also scaled by 2
+        var item = composed.Ingredients.SelectMany(g => g.Items).First(i => i.Name == "Ingredient A");
+        Assert.Equal(200, item.Quantity); // 100 * 2
+        Assert.NotNull(item.Alternates);
+        Assert.Equal(300, item.Alternates![0].Quantity); // 150 * 2
+    }
 }
