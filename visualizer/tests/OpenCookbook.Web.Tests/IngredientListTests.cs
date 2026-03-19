@@ -154,7 +154,7 @@ public class IngredientListTests : BunitContext
     }
 
     [Fact]
-    public void IngredientList_Scaling_PreservesVolumeAlt()
+    public void IngredientList_Scaling_ScalesVolumeAlt()
     {
         // Arrange
         var groups = CreateSampleGroups();
@@ -166,8 +166,8 @@ public class IngredientListTests : BunitContext
             p.Add(x => x.Multiplier, 2.0);
         });
 
-        // Assert — volume_alt stays as reference, not scaled
-        Assert.Contains("≈ 1 tsp.", cut.Markup);
+        // Assert — volume_alt is scaled: "1 tsp." × 2 → "2 tsp."
+        Assert.Contains("≈ 2 tsp.", cut.Markup);
     }
 
     // ── Yields Display ────────────────────────────────

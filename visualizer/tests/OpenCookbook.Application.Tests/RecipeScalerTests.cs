@@ -81,7 +81,7 @@ public class RecipeScalerTests
     }
 
     [Fact]
-    public void ScaleByMultiplier_PreservesVolumeAlt()
+    public void ScaleByMultiplier_ScalesVolumeAlt()
     {
         // Arrange
         var groups = CreateSampleGroups();
@@ -89,9 +89,11 @@ public class RecipeScalerTests
         // Act
         var scaled = RecipeScaler.ScaleByMultiplier(groups, 3.0);
 
-        // Assert — volume_alt should NOT be scaled, stays as reference
-        Assert.Equal("1 tsp.", scaled[0].Items[2].VolumeAlt);
-        Assert.Equal("3/4 tsp.", scaled[0].Items[3].VolumeAlt);
+        // Assert — volume_alt is scaled:
+        // "1 tsp." × 3 = 3 tsp = 1 tbsp → promoted to "1 tbsp."
+        // "3/4 tsp." × 3 = 2.25 tsp → "2 1/4 tsp."
+        Assert.Equal("1 tbsp.", scaled[0].Items[2].VolumeAlt);
+        Assert.Equal("2 1/4 tsp.", scaled[0].Items[3].VolumeAlt);
     }
 
     [Fact]
@@ -247,16 +249,16 @@ public class RecipeScalerTests
     }
 
     [Fact]
-    public void ScaleByLockedIngredient_PreservesVolumeAlt()
+    public void ScaleByLockedIngredient_ScalesVolumeAlt()
     {
         // Arrange
         var groups = CreateSampleGroups();
 
-        // Act
+        // Act — lock chicken at 1000g → 2× multiplier
         var (_, scaled) = RecipeScaler.ScaleByLockedIngredient(groups, 0, 0, 1000);
 
-        // Assert
-        Assert.Equal("1 tsp.", scaled[0].Items[2].VolumeAlt);
+        // Assert — "1 tsp." × 2 = "2 tsp."
+        Assert.Equal("2 tsp.", scaled[0].Items[2].VolumeAlt);
     }
 
     [Fact]
@@ -393,17 +395,17 @@ public class RecipeScalerTests
     }
 
     [Fact]
-    public void ScaleByTargetYield_PreservesVolumeAlt()
+    public void ScaleByTargetYield_ScalesVolumeAlt()
     {
         // Arrange
         var groups = CreateSampleGroups();
 
-        // Act
+        // Act — 2× yield
         var (_, scaled) = RecipeScaler.ScaleByTargetYield(groups, 8, 16);
 
-        // Assert — volume_alt should NOT be scaled
-        Assert.Equal("1 tsp.", scaled[0].Items[2].VolumeAlt);
-        Assert.Equal("3/4 tsp.", scaled[0].Items[3].VolumeAlt);
+        // Assert — "1 tsp." × 2 = "2 tsp.", "3/4 tsp." × 2 = "1 1/2 tsp."
+        Assert.Equal("2 tsp.", scaled[0].Items[2].VolumeAlt);
+        Assert.Equal("1 1/2 tsp.", scaled[0].Items[3].VolumeAlt);
     }
 
     [Fact]

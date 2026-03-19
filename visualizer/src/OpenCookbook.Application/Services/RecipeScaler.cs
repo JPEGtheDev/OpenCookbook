@@ -7,7 +7,8 @@ public static class RecipeScaler
     /// <summary>
     /// Scale all ingredient quantities by a multiplier.
     /// Returns a new list of groups with scaled quantities; original groups are not modified.
-    /// volume_alt values are kept as-is (reference only).
+    /// <c>volume_alt</c> and <c>weight_alt</c> values are scaled and reformatted
+    /// using <see cref="VolumeAltScaler"/>.
     /// </summary>
     public static List<IngredientGroup> ScaleByMultiplier(
         List<IngredientGroup> groups, double multiplier)
@@ -23,7 +24,8 @@ public static class RecipeScaler
                 Quantity = i.Quantity * multiplier,
                 Unit = i.Unit,
                 Name = i.Name,
-                VolumeAlt = i.VolumeAlt,
+                VolumeAlt = VolumeAltScaler.ScaleVolumeAlt(i.VolumeAlt, multiplier),
+                WeightAlt = VolumeAltScaler.ScaleWeightAlt(i.WeightAlt, multiplier),
                 Note = i.Note,
                 NutritionId = i.NutritionId,
                 DocLink = i.DocLink,
@@ -69,7 +71,7 @@ public static class RecipeScaler
     /// Calculate the multiplier needed to reach a target yield quantity,
     /// then scale all ingredient quantities proportionally.
     /// Returns the computed multiplier and the new scaled groups.
-    /// volume_alt values are kept as-is (reference only).
+    /// <c>volume_alt</c> and <c>weight_alt</c> values are scaled accordingly.
     /// </summary>
     public static (double Multiplier, List<IngredientGroup> ScaledGroups) ScaleByTargetYield(
         List<IngredientGroup> groups,
