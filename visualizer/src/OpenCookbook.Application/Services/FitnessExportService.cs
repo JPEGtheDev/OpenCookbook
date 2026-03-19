@@ -61,9 +61,9 @@ public class FitnessExportService
                 {
                     try
                     {
-                        var resolvedPath = ResolveSubRecipePath(basePath, item.DocLink);
+                        var resolvedPath = DocLinkResolver.ResolvePath(basePath, item.DocLink);
                         var subRecipe = await _recipeRepository.GetRecipeAsync(resolvedPath);
-                        var subBasePath = GetDirectoryFromPath(resolvedPath);
+                        var subBasePath = DocLinkResolver.GetDirectory(resolvedPath);
                         await AppendIngredients(sb, subRecipe, subBasePath, scale * item.Quantity);
                     }
                     catch (Exception ex) when (ex is ArgumentException
@@ -100,31 +100,8 @@ public class FitnessExportService
     }
 
     private static string ResolveSubRecipePath(string? basePath, string docLink)
-    {
-        var linkPath = docLink.StartsWith("./", StringComparison.Ordinal) ? docLink[2..] : docLink;
-        var combined = string.IsNullOrEmpty(basePath) ? linkPath : $"{basePath}/{linkPath}";
-
-        var parts = combined.Split('/');
-        var normalized = new List<string>();
-        foreach (var part in parts)
-        {
-            if (part == "..")
-            {
-                // Extra ".." beyond the root are silently dropped — traversal above root is not possible
-                if (normalized.Count > 0)
-                    normalized.RemoveAt(normalized.Count - 1);
-            }
-            else if (part != "." && part.Length > 0)
-            {
-                normalized.Add(part);
-            }
-        }
-        return string.Join("/", normalized);
-    }
+        => DocLinkResolver.ResolvePath(basePath, docLink);
 
     private static string? GetDirectoryFromPath(string path)
-    {
-        var lastSlash = path.LastIndexOf('/');
-        return lastSlash > 0 ? path[..lastSlash] : null;
-    }
+        => DocLinkResolver.GetDirectory(path);
 }
