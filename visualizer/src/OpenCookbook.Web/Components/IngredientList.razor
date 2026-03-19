@@ -86,6 +86,10 @@
                         {
                             <span class="ingredient-vol-alt">(≈ @item.VolumeAlt)</span>
                         }
+                        @if (item.WeightAlt is not null)
+                        {
+                            <span class="ingredient-weight-alt">(≈ @item.WeightAlt)</span>
+                        }
                         @if (item.Note is not null)
                         {
                             <span class="ingredient-note">(@item.Note)</span>
