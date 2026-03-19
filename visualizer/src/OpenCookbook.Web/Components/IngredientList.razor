@@ -123,6 +123,14 @@
     [Parameter, EditorRequired]
     public List<IngredientGroup> Groups { get; set; } = [];
 
+    /// <summary>
+    /// The pre-swap (composed) ingredient groups, used to populate the alternate
+    /// dropdown with original ingredient names regardless of the current selection.
+    /// Falls back to <see cref="Groups"/> when not set.
+    /// </summary>
+    [Parameter]
+    public List<IngredientGroup>? BaseGroups { get; set; }
+
     [Parameter]
     public string? RecipePath { get; set; }
 
@@ -230,12 +238,14 @@
     }
 
     /// <summary>
-    /// Returns the ingredient from the base (unscaled) Groups so that the alternate
-    /// options dropdown always shows the full original list regardless of scaling.
+    /// Returns the ingredient from the base (pre-swap, unscaled) groups so that the
+    /// alternate dropdown always shows the original ingredient names regardless of
+    /// the current alternate selection or scaling.
     /// </summary>
     private Ingredient GetOriginalItem(int groupIndex, int itemIndex)
     {
-        return Groups[groupIndex].Items[itemIndex];
+        var source = BaseGroups ?? Groups;
+        return source[groupIndex].Items[itemIndex];
     }
 
     private List<IngredientGroup> GetDisplayGroups()

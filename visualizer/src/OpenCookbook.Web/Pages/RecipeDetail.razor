@@ -34,6 +34,7 @@ else if (_recipe is not null)
         <div class="recipe-body">
             <aside class="recipe-sidebar">
                 <IngredientList Groups="@_recipe.Ingredients"
+                               BaseGroups="@_composedRecipe?.Ingredients"
                                RecipePath="@_decodedPath"
                                Yields="@_recipe.Yields"
                                Multiplier="@_multiplier"
