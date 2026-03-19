@@ -125,8 +125,10 @@ public static partial class VolumeAltScaler
 
     /// <summary>
     /// Formats a value that originated (or promotes from) teaspoons.
-    /// Rounds to nearest 1/8 tsp.  Values &lt; 1/8 tsp become "a pinch".
+    /// Rounds to nearest 1/8 tsp first, then checks for promotion.
+    /// Values &lt; 1/8 tsp become "a pinch".
     /// Promotes to tbsp when the rounded value is an exact multiple of 3 tsp.
+    /// Promotion chain caps at cup — tsp/tbsp-origin values never reach pint or larger.
     /// </summary>
     private static string FormatFromTsp(double tspValue)
     {
@@ -135,33 +137,47 @@ public static partial class VolumeAltScaler
         if (rounded < 0.125 - Epsilon)
             return "a pinch";
 
-        // Promote: exact multiple of 3 tsp → tablespoons (and further up the chain)
+        // Round first, then promote: exact multiple of 3 tsp → tablespoons
         if (IsNearMultipleOf(rounded, 3.0))
-            return FormatFromTbsp(rounded / 3.0);
+            return FormatFromTbspCapCup(rounded / 3.0);
 
         return FormatFraction(rounded, 8) + " tsp.";
     }
 
     /// <summary>
-    /// Formats a value in tablespoons.
-    /// Rounds to nearest 1/2 tbsp.
-    /// Promotes to cups when the value is an exact multiple of 4 tbsp (1/4 cup = 4 tbsp).
+    /// Formats a value that originated in tablespoons.
+    /// Delegates to <see cref="FormatFromTbspCapCup"/> so that tsp/tbsp-origin
+    /// values can promote as far as cups but no further.
     /// </summary>
     private static string FormatFromTbsp(double tbspValue)
-    {
-        // Promote: exact multiple of 4 tbsp → cups (1/4 cup = 4 tbsp, 1 cup = 16 tbsp)
-        if (IsNearMultipleOf(tbspValue, 4.0))
-            return FormatFromCup(tbspValue / 16.0);
+        => FormatFromTbspCapCup(tbspValue);
 
+    /// <summary>
+    /// Core tbsp formatter used by both the tsp and tbsp promotion paths.
+    /// Rounds to nearest 1/2 tbsp first, then checks for cup promotion.
+    /// Promotion caps at cup — never promotes to pint or larger.
+    /// This keeps dry-ingredient measurements (spices, flour, etc.) out of
+    /// liquid-only units like pint, quart, and gallon.
+    /// </summary>
+    private static string FormatFromTbspCapCup(double tbspValue)
+    {
+        // Round to nearest 1/2 tbsp first, then check promotion.
         double rounded = Math.Round(tbspValue * 2.0, MidpointRounding.AwayFromZero) / 2.0;
+
+        // Promote: exact multiple of 4 tbsp → cups (1/4 cup = 4 tbsp, 1 cup = 16 tbsp).
+        // Promotion stops at cup; tsp/tbsp-origin values are never promoted to pint+.
+        if (IsNearMultipleOf(rounded, 4.0))
+            return FormatCupLabel(rounded / 16.0);
+
         return FormatFraction(rounded, 2) + " tbsp.";
     }
 
     /// <summary>
     /// Formats a value in fluid ounces.
     /// When the scaled value is less than 1 fl oz, falls back to teaspoon formatting.
-    /// Otherwise rounds to nearest whole fl oz.
+    /// Otherwise rounds to nearest whole fl oz first, then checks for cup promotion.
     /// Promotes to cups when the rounded value is a multiple of 2 fl oz (1/4 cup = 2 fl oz).
+    /// Cup values from fl oz can continue to promote to pint+ (fl oz is a liquid unit).
     /// </summary>
     private static string FormatFromFlOz(double flOzValue)
     {
@@ -169,6 +185,7 @@ public static partial class VolumeAltScaler
         if (flOzValue < 1.0 - Epsilon)
             return FormatFromTsp(flOzValue * 6.0);
 
+        // Round first, then check for cup promotion.
         double rounded = Math.Round(flOzValue, MidpointRounding.AwayFromZero);
 
         // Promote: multiple of 2 fl oz → quarter-cup fractions
@@ -180,44 +197,65 @@ public static partial class VolumeAltScaler
 
     /// <summary>
     /// Formats a value in cups (1/4-cup fractions).
-    /// Promotes to pints when the value is an exact multiple of 2 cups.
+    /// Rounds to nearest 1/4 cup first, then checks for pint promotion.
+    /// Promotes to pints when the rounded value is an exact multiple of 2 cups.
+    /// Used for cup-origin and fl-oz-origin values; allows full liquid promotion chain.
     /// </summary>
     private static string FormatFromCup(double cupValue)
     {
-        // Promote: 2 cups → 1 pint (and further up the chain)
-        if (IsNearMultipleOf(cupValue, 2.0))
-            return FormatFromPint(cupValue / 2.0);
-
+        // Round to nearest 1/4 cup first, then check for pint promotion.
         double rounded = Math.Round(cupValue * 4.0, MidpointRounding.AwayFromZero) / 4.0;
-        string fraction = FormatFraction(rounded, 4);
+
+        // Promote: 2 cups → 1 pint (and further up the chain)
+        if (IsNearMultipleOf(rounded, 2.0))
+            return FormatFromPint(rounded / 2.0);
+
+        return FormatCupLabel(rounded);
+    }
+
+    /// <summary>
+    /// Formats a cup value as a label string (e.g., "1/4 cup", "1 1/2 cups").
+    /// Callers are responsible for rounding <paramref name="cupValue"/> to the
+    /// desired precision before calling this method.
+    /// Does not perform any promotion — use <see cref="FormatFromCup"/> for that.
+    /// </summary>
+    private static string FormatCupLabel(double cupValue)
+    {
+        string fraction = FormatFraction(cupValue, 4);
 
         // Plural for amounts greater than 1 cup
-        return rounded > 1.0 + Epsilon ? $"{fraction} cups" : $"{fraction} cup";
+        return cupValue > 1.0 + Epsilon ? $"{fraction} cups" : $"{fraction} cup";
     }
 
     /// <summary>
     /// Formats a value in pints.
-    /// Promotes to quarts when the value is an exact multiple of 2 pints.
+    /// Rounds to whole pints first, then promotes to quarts when the rounded value
+    /// is an exact multiple of 2 pints.
     /// </summary>
     private static string FormatFromPint(double pintValue)
     {
-        if (IsNearMultipleOf(pintValue, 2.0))
-            return FormatFromQuart(pintValue / 2.0);
-
+        // Round to whole pints first, then check for quart promotion.
         double rounded = Math.Round(pintValue, MidpointRounding.AwayFromZero);
+
+        if (IsNearMultipleOf(rounded, 2.0))
+            return FormatFromQuart(rounded / 2.0);
+
         return rounded == 1.0 ? "1 pint" : $"{(int)rounded} pints";
     }
 
     /// <summary>
     /// Formats a value in quarts.
-    /// Promotes to gallons when the value is an exact multiple of 4 quarts.
+    /// Rounds to whole quarts first, then promotes to gallons when the rounded value
+    /// is an exact multiple of 4 quarts.
     /// </summary>
     private static string FormatFromQuart(double quartValue)
     {
-        if (IsNearMultipleOf(quartValue, 4.0))
-            return FormatFromGallon(quartValue / 4.0);
-
+        // Round to whole quarts first, then check for gallon promotion.
         double rounded = Math.Round(quartValue, MidpointRounding.AwayFromZero);
+
+        if (IsNearMultipleOf(rounded, 4.0))
+            return FormatFromGallon(rounded / 4.0);
+
         return rounded == 1.0 ? "1 quart" : $"{(int)rounded} quarts";
     }
 

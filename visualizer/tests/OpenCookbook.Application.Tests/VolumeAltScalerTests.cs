@@ -116,7 +116,14 @@ public class VolumeAltScalerTests
         Assert.Equal("1 1/2 tbsp.", VolumeAltScaler.ScaleVolumeAlt("1 tbsp.", 1.5));
     }
 
-    // ── Cup → pint promotion ──────────────────────────────────────────────────
+    [Fact]
+    public void ScaleVolumeAlt_TspCapsAtCup_DoesNotPromoteToPint()
+    {
+        // 1 tsp × 48 = 48 tsp = 16 tbsp = 1 cup — tsp-origin caps at cup
+        Assert.Equal("1 cup", VolumeAltScaler.ScaleVolumeAlt("1 tsp.", 48.0));
+    }
+
+    // ── Cup → pint promotion (cup-origin allows full liquid chain) ────────────
 
     [Fact]
     public void ScaleVolumeAlt_CupPromotesToPint_AtExact2Cups()
@@ -126,10 +133,25 @@ public class VolumeAltScalerTests
     }
 
     [Fact]
-    public void ScaleVolumeAlt_TbspPromotesToPint_Via2Cups()
+    public void ScaleVolumeAlt_Tbsp_PromotesToCup_WhenNearBoundaryAfterRounding()
     {
-        // 1 tbsp × 32 = 32 tbsp = 2 cups = 1 pint
-        Assert.Equal("1 pint", VolumeAltScaler.ScaleVolumeAlt("1 tbsp.", 32.0));
+        // 1 tbsp × 4.125 = 4.125 tbsp, rounds to 4 tbsp → should promote to 1/4 cup
+        // This was the production bug visible in the Kebab recipe at 33/8 × scale
+        Assert.Equal("1/4 cup", VolumeAltScaler.ScaleVolumeAlt("1 tbsp.", 4.125));
+    }
+
+    [Fact]
+    public void ScaleVolumeAlt_Tbsp_PromotesToHalfCup_WhenNearBoundaryAfterRounding()
+    {
+        // 1 tbsp × 8.125 = 8.125 tbsp, rounds to 8 tbsp → 1/2 cup
+        Assert.Equal("1/2 cup", VolumeAltScaler.ScaleVolumeAlt("1 tbsp.", 8.125));
+    }
+
+    [Fact]
+    public void ScaleVolumeAlt_TbspCapsAtCup_DoesNotPromoteToPint()
+    {
+        // 1 tbsp × 32 = 32 tbsp = 2 cups, but tsp/tbsp-origin values cap at cup
+        Assert.Equal("2 cups", VolumeAltScaler.ScaleVolumeAlt("1 tbsp.", 32.0));
     }
 
     // ── Pint → quart promotion ────────────────────────────────────────────────
