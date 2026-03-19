@@ -29,6 +29,7 @@ public static class RecipeScaler
                 Note = i.Note,
                 NutritionId = i.NutritionId,
                 DocLink = i.DocLink,
+                Alternates = i.Alternates,
             }).ToList()
         }).ToList();
     }

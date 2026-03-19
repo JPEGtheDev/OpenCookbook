@@ -486,5 +486,19 @@
       "fat_g": 0.0,
       "carbs_g": 0.0
     }
+  },
+  {
+    "id": "ca7b2dfc-90a9-57e5-995d-605dfef2baf8",
+    "fdc_id": 174036,
+    "name": "80/20 Ground Beef",
+    "aliases": [
+      "ground beef 80/20"
+    ],
+    "per_100g": {
+      "calories_kcal": 254,
+      "protein_g": 17.2,
+      "fat_g": 20.0,
+      "carbs_g": 0.0
+    }
   }
 ]
