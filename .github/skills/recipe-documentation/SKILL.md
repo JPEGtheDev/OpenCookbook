@@ -101,33 +101,34 @@ Some ingredients are bought and used as distinct whole units. Follow the separab
 
 | Type | Definition | Example | How to Write |
 |---|---|---|---|
-| **Separable** | Can be stored after partial use | Yellow onion, lemon, bell pepper, garlic head | `unit: whole` (or appropriate count word) |
-| **Non-separable** | Container unusable after opening for partial use | Egg, canned tomatoes | `unit: g`, add `note` with whole-unit count |
+| **Separable** | Can be stored after partial use | Yellow onion, lemon, bell pepper, garlic head | `unit: g` + `weight_alt: "1 whole"` |
+| **Non-separable** | Container unusable after opening for partial use | Egg, canned tomatoes | `unit: g` + `weight_alt: "1 whole"` |
 
 **Separable whole ingredients** (onion, lemon, garlic clove, etc.):
-- Use `unit: whole` (or the appropriate count word such as `cloves`).
-- The **minimum practical increment is 1/4**. Scaled quantities will appear as `0.25`, `0.5`, `0.75`, `1.0`, `1.25`, etc. This is intentional and correct.
-- Add a `note` with the approximate gram weight so cooks with a scale can measure accurately.
+- Use `unit: g` as the primary quantity. Grams scale correctly and enable nutrition calculation.
+- Add `weight_alt: "1 whole"` (or `"1 clove"`, `"1 wedge"`, etc.) as the whole-unit display hint. It scales in **1/4 increments** — `1/4 whole`, `1/2 whole`, `1`, `1 1/4 whole`, `1 1/2 whole` — so cooks without a scale know how many to grab at any yield.
 
 ✅ **CORRECT — separable:**
 ```yaml
-- quantity: 1
-  unit: whole
+- quantity: 110
+  unit: g
   name: Yellow Onion
-  note: "approximately 110 g; use a medium yellow onion"
+  nutrition_id: "..."
+  weight_alt: "1 whole"
 ```
 
 **Non-separable ingredients** (egg, canned item):
 - Use `unit: g` with the gram weight of a **single standard unit** (e.g., 56g for 1 large egg).
-- Add a `note` with the whole-unit equivalent so the cook knows how many to crack/open.
-- **Why?** Once you crack an egg, the container (shell) is gone — you cannot put the remainder back. Using grams lets the recipe scale precisely and tells the cook exactly how many to use.
+- Add `weight_alt: "1 whole"` so the count scales with the recipe: 1× → `(≈ 1 whole)`, 2× → `(≈ 2 whole)`.
+- **Why not `note`?** A `note` field is static and does **not** scale — at 2× it would still show "approximately 1 large egg", which is wrong. Use `weight_alt` instead.
+- **Why grams and not `unit: whole`?** Once you crack an egg, the shell is gone — you cannot store the remainder. Grams let the recipe scale to any multiplier and the cook reads the `weight_alt` count to know how many to open.
 
 ✅ **CORRECT — non-separable:**
 ```yaml
 - quantity: 56
   unit: g
   name: Egg
-  note: "approximately 1 large egg"
+  weight_alt: "1 whole"
 ```
 
 ### The volume_alt Rule

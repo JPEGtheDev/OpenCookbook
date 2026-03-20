@@ -43,6 +43,7 @@ public static partial class VolumeAltScaler
             "gallon" => FormatFromGallon(scaled),
             "oz"     => FormatWeightOz(scaled),
             "lb"     => FormatFromLb(scaled),
+            "whole"  => FormatFromWhole(scaled),
             _        => volumeAlt,
         };
     }
@@ -131,6 +132,7 @@ public static partial class VolumeAltScaler
                      or "gal"           => "gallon",
             "oz"                        => "oz",
             "lb" or "lbs"               => "lb",
+            "whole" or "wholes"         => "whole",
             _                           => unit.ToLowerInvariant(),
         };
 
@@ -329,6 +331,19 @@ public static partial class VolumeAltScaler
 
         // Fractional result → display in ounces (1 lb = 16 oz)
         return FormatWeightOz(lbValue * 16.0);
+    }
+
+    /// <summary>
+    /// Formats a count expressed as whole units (e.g. "1 whole onion").
+    /// Rounds to the nearest 1/4, with a floor of 1/4 for near-zero values.
+    /// Produces fraction labels like "1/4 whole", "1/2 whole", "1 1/4 whole".
+    /// </summary>
+    private static string FormatFromWhole(double value)
+    {
+        double rounded = Math.Round(value * 4.0, MidpointRounding.AwayFromZero) / 4.0;
+        // Floor at 1/4 whole — the minimum practical increment for a whole unit.
+        if (rounded < 0.25 - Epsilon) rounded = 0.25;
+        return FormatFraction(rounded, 4) + " whole";
     }
 
     // ── Shared helpers ────────────────────────────────────────────────────────
