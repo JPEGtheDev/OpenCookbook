@@ -328,4 +328,43 @@ public class VolumeAltScalerTests
         Assert.Null(VolumeAltScaler.ScaleVolumeAlt(null, 3.0));
         Assert.Null(VolumeAltScaler.ScaleWeightAlt(null, 3.0));
     }
+
+    // ── Whole unit ────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_DoublesCorrectly()
+    {
+        Assert.Equal("2 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 2.0));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_HalfWhole()
+    {
+        Assert.Equal("1/2 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 0.5));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_QuarterWhole()
+    {
+        Assert.Equal("1/4 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 0.25));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_MixedFraction()
+    {
+        Assert.Equal("1 1/2 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 1.5));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_NearsZero_ReturnsQuarterMinimum()
+    {
+        // Very small multiplier rounds down to 0 quarters; floor kicks in → 1/4 whole
+        Assert.Equal("1/4 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 0.05));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Whole_ThreeOnions()
+    {
+        Assert.Equal("3 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 3.0));
+    }
 }

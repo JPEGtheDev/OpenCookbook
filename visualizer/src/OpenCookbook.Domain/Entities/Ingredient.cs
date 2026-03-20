@@ -10,4 +10,5 @@ public class Ingredient
     public string? Note { get; set; }
     public Guid? NutritionId { get; set; }
     public string? DocLink { get; set; }
+    public List<IngredientAlternate>? Alternates { get; set; }
 }

@@ -486,5 +486,48 @@
       "fat_g": 0.0,
       "carbs_g": 0.0
     }
+  },
+  {
+    "id": "ca7b2dfc-90a9-57e5-995d-605dfef2baf8",
+    "fdc_id": 174036,
+    "name": "80/20 Ground Beef",
+    "aliases": [
+      "ground beef 80/20"
+    ],
+    "per_100g": {
+      "calories_kcal": 254,
+      "protein_g": 17.2,
+      "fat_g": 20.0,
+      "carbs_g": 0.0
+    }
+  },
+  {
+    "id": "16611239-ee90-45aa-986f-7afb3b4dc897",
+    "fdc_id": 174034,
+    "name": "70/30 Ground Beef",
+    "aliases": [
+      "ground beef 70/30"
+    ],
+    "per_100g": {
+      "calories_kcal": 289,
+      "protein_g": 14.7,
+      "fat_g": 25.9,
+      "carbs_g": 0.0
+    }
+  },
+  {
+    "id": "62a41ce3-b227-4a59-a51f-d7e9e64388bb",
+    "fdc_id": 170000,
+    "name": "Yellow Onion",
+    "aliases": [
+      "onion",
+      "white onion"
+    ],
+    "per_100g": {
+      "calories_kcal": 40,
+      "protein_g": 1.1,
+      "fat_g": 0.1,
+      "carbs_g": 9.3
+    }
   }
 ]

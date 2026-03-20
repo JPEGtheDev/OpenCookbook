@@ -39,7 +39,7 @@ public class NutritionDbDeserializationTests
         var entries = await repository.GetAllEntriesAsync();
 
         // Assert
-        Assert.Equal(33, entries.Count);
+        Assert.Equal(36, entries.Count);
     }
 
     [Fact]

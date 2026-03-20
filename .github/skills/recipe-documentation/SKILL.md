@@ -4,7 +4,7 @@ description: How to format and structure a recipe YAML file in the OpenCookbook 
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Recipe Documentation
@@ -94,6 +94,42 @@ ingredients:
 | `oz.` or `oz` | Convert to `g` |
 | `cups` or `cup` | Convert to `g` or `ml` |
 | `tsp.` or `tbsp.` | Convert to `g` (use `volume_alt` for the fallback) |
+
+### Whole-Unit Ingredients
+
+Some ingredients are bought and used as distinct whole units. Follow the separability rule:
+
+| Type | Definition | Example | How to Write |
+|---|---|---|---|
+| **Separable** | Can be stored after partial use | Yellow onion, lemon, bell pepper, garlic head | `unit: g` + `weight_alt: "1 whole"` |
+| **Non-separable** | Container unusable after opening for partial use | Egg, canned tomatoes | `unit: g` + `weight_alt: "1 whole"` |
+
+**Separable whole ingredients** (onion, lemon, garlic clove, etc.):
+- Use `unit: g` as the primary quantity. Grams scale correctly and enable nutrition calculation.
+- Add `weight_alt: "1 whole"` (or `"1 clove"`, `"1 wedge"`, etc.) as the whole-unit display hint. It scales in **1/4 increments** — `1/4 whole`, `1/2 whole`, `1`, `1 1/4 whole`, `1 1/2 whole` — so cooks without a scale know how many to grab at any yield.
+
+✅ **CORRECT — separable:**
+```yaml
+- quantity: 110
+  unit: g
+  name: Yellow Onion
+  nutrition_id: "..."
+  weight_alt: "1 whole"
+```
+
+**Non-separable ingredients** (egg, canned item):
+- Use `unit: g` with the gram weight of a **single standard unit** (e.g., 56g for 1 large egg).
+- Add `weight_alt: "1 whole"` so the count scales with the recipe: 1× → `(≈ 1 whole)`, 2× → `(≈ 2 whole)`.
+- **Why not `note`?** A `note` field is static and does **not** scale — at 2× it would still show "approximately 1 large egg", which is wrong. Use `weight_alt` instead.
+- **Why grams and not `unit: whole`?** Once you crack an egg, the shell is gone — you cannot store the remainder. Grams let the recipe scale to any multiplier and the cook reads the `weight_alt` count to know how many to open.
+
+✅ **CORRECT — non-separable:**
+```yaml
+- quantity: 56
+  unit: g
+  name: Egg
+  weight_alt: "1 whole"
+```
 
 ### The volume_alt Rule
 

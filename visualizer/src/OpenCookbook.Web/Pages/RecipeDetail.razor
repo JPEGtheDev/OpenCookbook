@@ -34,10 +34,13 @@ else if (_recipe is not null)
         <div class="recipe-body">
             <aside class="recipe-sidebar">
                 <IngredientList Groups="@_recipe.Ingredients"
+                               BaseGroups="@_composedRecipe?.Ingredients"
                                RecipePath="@_decodedPath"
                                Yields="@_recipe.Yields"
                                Multiplier="@_multiplier"
-                               MultiplierChanged="@OnMultiplierChanged" />
+                               MultiplierChanged="@OnMultiplierChanged"
+                               AlternateSelections="@_alternateSelections"
+                               AlternateChanged="@OnAlternateChanged" />
 
                 @if (_recipe.Utensils is { Count: > 0 })
                 {
@@ -118,12 +121,15 @@ else if (_recipe is not null)
     [Parameter]
     public string Path { get; set; } = string.Empty;
 
+    private Recipe? _composedRecipe;
     private Recipe? _recipe;
     private RecipeNutrition? _nutrition;
     private bool _loading = true;
     private string? _error;
     private string? _decodedPath;
     private double _multiplier = 1.0;
+    private Dictionary<AlternateSelector.IngredientKey, int> _alternateSelections = new();
+    private int _recalcVersion;
 
     private bool _showExportModal;
     private string _exportText = string.Empty;
@@ -132,10 +138,12 @@ else if (_recipe is not null)
     {
         _loading = true;
         _error = null;
+        _composedRecipe = null;
         _recipe = null;
         _nutrition = null;
         _decodedPath = null;
         _multiplier = 1.0;
+        _alternateSelections = new();
         _showExportModal = false;
         _exportText = string.Empty;
 
@@ -158,19 +166,32 @@ else if (_recipe is not null)
             try
             {
                 var composed = await RecipeComposer.ComposeAsync(_recipe, _decodedPath);
+                _composedRecipe = composed;
                 _recipe = composed;
             }
             catch
             {
-                // Composition is best-effort — show the raw recipe if it fails
+                // Composition is best-effort — show the raw recipe if it fails.
+                // _composedRecipe points to the same instance as _recipe so that
+                // AlternateSelector.ApplySelections still has a base to work from.
+                _composedRecipe = _recipe;
             }
         }
+
+        await RecalculateNutritionAndExport();
+    }
+
+    private async Task RecalculateNutritionAndExport(int? requiredVersion = null)
+    {
+        _nutrition = null;
 
         if (_recipe is not null && _decodedPath is not null)
         {
             try
             {
-                _nutrition = await NutritionCalculator.CalculateAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+                var nutrition = await NutritionCalculator.CalculateAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+                if (requiredVersion is null || requiredVersion == _recalcVersion)
+                    _nutrition = nutrition;
             }
             catch
             {
@@ -180,13 +201,29 @@ else if (_recipe is not null)
 
         if (_recipe is not null && _decodedPath is not null)
         {
-            _exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+            var exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+            if (requiredVersion is null || requiredVersion == _recalcVersion)
+                _exportText = exportText;
         }
     }
 
     private void ShowExportModal() => _showExportModal = true;
 
     private void OnMultiplierChanged(double multiplier) => _multiplier = multiplier;
+
+    private async Task OnAlternateChanged((AlternateSelector.IngredientKey Key, int AlternateIndex) selection)
+    {
+        if (_composedRecipe is null) return;
+
+        if (selection.AlternateIndex < 0)
+            _alternateSelections.Remove(selection.Key);
+        else
+            _alternateSelections[selection.Key] = selection.AlternateIndex;
+
+        _recipe = AlternateSelector.ApplySelections(_composedRecipe, _alternateSelections);
+        var version = ++_recalcVersion;
+        await RecalculateNutritionAndExport(version);
+    }
 
     private string GetRelatedRecipeUrl(string relativePath)
     {

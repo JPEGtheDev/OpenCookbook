@@ -74,7 +74,25 @@
                         </button>
                     }
                     <span class="ingredient-name">
-                        @if (item.DocLink is not null && GetDocLinkUrl(item.DocLink) is { } url)
+                        @if (item.Alternates is { Count: > 0 })
+                        {
+                            var capturedGi = groupIndex;
+                            var capturedIi = itemIndex;
+                            var currentKey = new AlternateSelector.IngredientKey(capturedGi, capturedIi);
+                            var selectedIdx = AlternateSelections.TryGetValue(currentKey, out var idx) ? idx : -1;
+                            var origItem = GetOriginalItem(capturedGi, capturedIi);
+                            <select class="ingredient-alternate-select"
+                                    aria-label="Select ingredient variant for @item.Name"
+                                    value="@selectedIdx"
+                                    @onchange="(e) => OnAlternateSelectChanged(e, capturedGi, capturedIi)">
+                                <option value="-1">@origItem.Name</option>
+                                @for (var ai = 0; ai < origItem.Alternates!.Count; ai++)
+                                {
+                                    <option value="@ai">@origItem.Alternates[ai].Name</option>
+                                }
+                            </select>
+                        }
+                        else if (item.DocLink is not null && GetDocLinkUrl(item.DocLink) is { } url)
                         {
                             <a href="@url">@item.Name</a>
                         }
@@ -105,6 +123,14 @@
     [Parameter, EditorRequired]
     public List<IngredientGroup> Groups { get; set; } = [];
 
+    /// <summary>
+    /// The pre-swap (composed) ingredient groups, used to populate the alternate
+    /// dropdown with original ingredient names regardless of the current selection.
+    /// Falls back to <see cref="Groups"/> when not set.
+    /// </summary>
+    [Parameter]
+    public List<IngredientGroup>? BaseGroups { get; set; }
+
     [Parameter]
     public string? RecipePath { get; set; }
 
@@ -116,6 +142,12 @@
 
     [Parameter]
     public EventCallback<double> MultiplierChanged { get; set; }
+
+    [Parameter]
+    public Dictionary<AlternateSelector.IngredientKey, int> AlternateSelections { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<(AlternateSelector.IngredientKey Key, int AlternateIndex)> AlternateChanged { get; set; }
 
     private static readonly double[] _presets = [0.5, 1, 2, 3];
 
@@ -195,6 +227,25 @@
 
         _lockedInputValue = FormatQuantity(newQty);
         await MultiplierChanged.InvokeAsync(newMultiplier);
+    }
+
+    private async Task OnAlternateSelectChanged(ChangeEventArgs e, int groupIndex, int itemIndex)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var altIndex)) return;
+
+        var key = new AlternateSelector.IngredientKey(groupIndex, itemIndex);
+        await AlternateChanged.InvokeAsync((key, altIndex));
+    }
+
+    /// <summary>
+    /// Returns the ingredient from the base (pre-swap, unscaled) groups so that the
+    /// alternate dropdown always shows the original ingredient names regardless of
+    /// the current alternate selection or scaling.
+    /// </summary>
+    private Ingredient GetOriginalItem(int groupIndex, int itemIndex)
+    {
+        var source = BaseGroups ?? Groups;
+        return source[groupIndex].Items[itemIndex];
     }
 
     private List<IngredientGroup> GetDisplayGroups()

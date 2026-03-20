@@ -283,6 +283,18 @@ public class RecipeComposer
             Note = i.Note,
             NutritionId = i.NutritionId,
             DocLink = i.DocLink,
+            Alternates = i.Alternates is { Count: > 0 }
+                ? i.Alternates.Select(a => new IngredientAlternate
+                {
+                    Name = a.Name,
+                    NutritionId = a.NutritionId,
+                    Quantity = a.Quantity.HasValue ? a.Quantity.Value * scale : null,
+                    Unit = a.Unit,
+                    VolumeAlt = a.VolumeAlt,
+                    WeightAlt = a.WeightAlt,
+                    Note = a.Note,
+                }).ToList()
+                : null,
         }).ToList();
     }
 

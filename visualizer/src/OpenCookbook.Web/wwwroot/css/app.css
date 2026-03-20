@@ -322,6 +322,17 @@ ul, ol {
     margin-left: 0.25rem;
 }
 
+.ingredient-alternate-select {
+    font-size: 0.9rem;
+    padding: 0.15rem 0.3rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    max-width: 100%;
+}
+
 .utensil-list li {
     padding: 0.3rem 0;
     font-size: 0.95rem;
