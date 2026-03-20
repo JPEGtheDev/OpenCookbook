@@ -4,7 +4,7 @@ description: How to format and structure a recipe YAML file in the OpenCookbook 
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Recipe Documentation
@@ -94,6 +94,41 @@ ingredients:
 | `oz.` or `oz` | Convert to `g` |
 | `cups` or `cup` | Convert to `g` or `ml` |
 | `tsp.` or `tbsp.` | Convert to `g` (use `volume_alt` for the fallback) |
+
+### Whole-Unit Ingredients
+
+Some ingredients are bought and used as distinct whole units. Follow the separability rule:
+
+| Type | Definition | Example | How to Write |
+|---|---|---|---|
+| **Separable** | Can be stored after partial use | Yellow onion, lemon, bell pepper, garlic head | `unit: whole` (or appropriate count word) |
+| **Non-separable** | Container unusable after opening for partial use | Egg, canned tomatoes | `unit: g`, add `note` with whole-unit count |
+
+**Separable whole ingredients** (onion, lemon, garlic clove, etc.):
+- Use `unit: whole` (or the appropriate count word such as `cloves`).
+- The **minimum practical increment is 1/4**. Scaled quantities will appear as `0.25`, `0.5`, `0.75`, `1.0`, `1.25`, etc. This is intentional and correct.
+- Add a `note` with the approximate gram weight so cooks with a scale can measure accurately.
+
+✅ **CORRECT — separable:**
+```yaml
+- quantity: 1
+  unit: whole
+  name: Yellow Onion
+  note: "approximately 110 g; use a medium yellow onion"
+```
+
+**Non-separable ingredients** (egg, canned item):
+- Use `unit: g` with the gram weight of a **single standard unit** (e.g., 56g for 1 large egg).
+- Add a `note` with the whole-unit equivalent so the cook knows how many to crack/open.
+- **Why?** Once you crack an egg, the container (shell) is gone — you cannot put the remainder back. Using grams lets the recipe scale precisely and tells the cook exactly how many to use.
+
+✅ **CORRECT — non-separable:**
+```yaml
+- quantity: 56
+  unit: g
+  name: Egg
+  note: "approximately 1 large egg"
+```
 
 ### The volume_alt Rule
 
