@@ -1,5 +1,5 @@
 name: Kebab Meat
-version: "1.4"
+version: "1.5"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A general purpose recipe for beef kebab meat. This is a variation for simplicity's
@@ -23,6 +23,9 @@ ingredients:
           - name: 80/20 Ground Beef
             nutrition_id: "ca7b2dfc-90a9-57e5-995d-605dfef2baf8"
             note: "For a balanced result"
+          - name: 70/30 Ground Beef
+            nutrition_id: "16611239-ee90-45aa-986f-7afb3b4dc897"
+            note: "For a richer, more indulgent result"
       - quantity: 7
         unit: g
         name: Paprika
@@ -63,9 +66,11 @@ ingredients:
         name: Cayenne Pepper
         volume_alt: "1/2 tsp."
         nutrition_id: "90032c80-ba60-5844-b724-913bc7d45601"
-      - quantity: 1
-        unit: whole
+      - quantity: 110
+        unit: g
         name: Yellow Onion
+        note: "approximately 1 medium yellow onion"
+        nutrition_id: "62a41ce3-b227-4a59-a51f-d7e9e64388bb"
 
 utensils:
   - heading: null
