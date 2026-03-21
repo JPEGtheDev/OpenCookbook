@@ -17,9 +17,12 @@
     else if (_recipes is not null)
     {
         <div class="search-bar">
-            <input type="search"
+            <label for="recipe-search" class="visually-hidden">Search recipes</label>
+            <input id="recipe-search"
+                   type="search"
                    class="search-input"
                    placeholder="Search by ingredient or tag…"
+                   aria-label="Search recipes by ingredient or tag"
                    value="@_searchQuery"
                    @oninput="OnSearchInput" />
         </div>
@@ -71,7 +74,7 @@
             return;
         }
 
-        var term = _searchQuery;
+        var term = _searchQuery.Trim();
         _filteredRecipes = _recipes
             .Where(r =>
                 (r.Tags ?? []).Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||

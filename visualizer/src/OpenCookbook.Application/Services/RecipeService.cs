@@ -7,20 +7,22 @@ namespace OpenCookbook.Application.Services;
 public class RecipeService
 {
     private readonly IRecipeRepository _repository;
+    private IReadOnlyList<RecipeIndex>? _indexCache;
 
     public RecipeService(IRecipeRepository repository)
     {
         _repository = repository;
     }
 
-    public Task<IReadOnlyList<RecipeIndex>> GetAllRecipesAsync()
+    public async Task<IReadOnlyList<RecipeIndex>> GetAllRecipesAsync()
     {
-        return _repository.GetRecipeIndexAsync();
+        _indexCache ??= await _repository.GetRecipeIndexAsync();
+        return _indexCache;
     }
 
     public async Task<IReadOnlyList<RecipeIndex>> SearchRecipesAsync(string query)
     {
-        var all = await _repository.GetRecipeIndexAsync();
+        var all = await GetAllRecipesAsync();
 
         if (string.IsNullOrWhiteSpace(query))
             return all;
@@ -28,8 +30,13 @@ public class RecipeService
         var term = query.Trim();
         return all
             .Where(r =>
-                r.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
-                r.Ingredients.Any(i => i.Contains(term, StringComparison.OrdinalIgnoreCase)))
+            {
+                var tags = r.Tags ?? [];
+                var ingredients = r.Ingredients ?? [];
+
+                return tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                       ingredients.Any(i => i.Contains(term, StringComparison.OrdinalIgnoreCase));
+            })
             .ToList();
     }
 

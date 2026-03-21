@@ -229,6 +229,23 @@ public class RecipeServiceTests
         Assert.Empty(result);
     }
 
+    [Fact]
+    public async Task SearchRecipesAsync_RecipeWithNullTagsAndIngredients_DoesNotThrow()
+    {
+        // Arrange — simulate a legacy JSON entry where both fields deserialize as null
+        var index = new[]
+        {
+            new RecipeIndex { Name = "Legacy Recipe", Path = "Legacy.yaml", Tags = null!, Ingredients = null! }
+        };
+        var service = CreateService(index);
+
+        // Act
+        var result = await service.SearchRecipesAsync("garlic");
+
+        // Assert
+        Assert.Empty(result);
+    }
+
     // ── Stub ─────────────────────────────────────────────
 
     private sealed class StubIndexRepository(IReadOnlyList<RecipeIndex> index) : IRecipeRepository
