@@ -18,6 +18,21 @@ public class RecipeService
         return _repository.GetRecipeIndexAsync();
     }
 
+    public async Task<IReadOnlyList<RecipeIndex>> SearchRecipesAsync(string query)
+    {
+        var all = await _repository.GetRecipeIndexAsync();
+
+        if (string.IsNullOrWhiteSpace(query))
+            return all;
+
+        var term = query.Trim();
+        return all
+            .Where(r =>
+                r.Tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                r.Ingredients.Any(i => i.Contains(term, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+
     public Task<Recipe> GetRecipeByPathAsync(string path)
     {
         return _repository.GetRecipeAsync(path);

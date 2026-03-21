@@ -6,6 +6,12 @@ description: >
   when serving a large number of people. Marinated in a spiced buttermilk brine
   and cooked on the grill or in the oven.
 status: stable
+tags:
+  - chicken
+  - grilled
+  - baked
+  - shawarma
+  - middle eastern
 
 yields:
   quantity: 14

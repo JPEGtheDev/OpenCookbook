@@ -5,6 +5,10 @@ description: >
   Chicken Kiev-style cutlets made from ground chicken thighs with an herb
   butter center, coated in panko. Assembled and frozen raw for cooking later.
 status: beta
+tags:
+  - chicken
+  - freezer ready
+  - cutlet
 
 yields:
   quantity: 18

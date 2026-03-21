@@ -6,6 +6,11 @@ description: >
   Notably does not use butter — the result is better without it. The fancy version
   uses cream infused with garlic, thyme, and rosemary.
 status: stable
+tags:
+  - vegetarian
+  - side dish
+  - comfort food
+  - potatoes
 
 yields:
   quantity: 10

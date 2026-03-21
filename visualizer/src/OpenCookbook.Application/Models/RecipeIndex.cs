@@ -8,4 +8,6 @@ public class RecipeIndex
     public string Path { get; set; } = string.Empty;
     public RecipeStatus Status { get; set; }
     public string Description { get; set; } = string.Empty;
+    public List<string> Tags { get; set; } = [];
+    public List<string> Ingredients { get; set; } = [];
 }
