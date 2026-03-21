@@ -6,6 +6,11 @@ description: >
   sake but the overall flavor is the same. Texture wise it is completely different
   from traditional kebab.
 status: stable
+tags:
+  - beef
+  - grilled
+  - kebab
+  - middle eastern
 
 yields:
   quantity: 8

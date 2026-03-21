@@ -105,6 +105,32 @@ public class RecipeEntityTests
     }
 
     [Fact]
+    public void Recipe_DefaultTags_IsNull()
+    {
+        // Arrange & Act
+        var recipe = new Recipe();
+
+        // Assert
+        Assert.Null(recipe.Tags);
+    }
+
+    [Fact]
+    public void Recipe_SetTags_ReturnsSetValue()
+    {
+        // Arrange
+        var recipe = new Recipe { Tags = ["grilled", "beef"] };
+
+        // Act
+        var result = recipe.Tags;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Count);
+        Assert.Contains("grilled", result);
+        Assert.Contains("beef", result);
+    }
+
+    [Fact]
     public void Recipe_SetName_ReturnsSetValue()
     {
         // Arrange

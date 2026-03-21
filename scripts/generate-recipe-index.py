@@ -17,6 +17,17 @@ if not recipes_dir:
     print("Usage: generate-recipe-index.py <recipes_dir>", file=sys.stderr)
     sys.exit(1)
 
+
+def extract_ingredient_names(data):
+    names = []
+    for group in (data.get("ingredients") or []):
+        for item in (group.get("items") or []):
+            name = (item.get("name") or "").strip()
+            if name:
+                names.append(name)
+    return names
+
+
 entries = []
 for filepath in sorted(glob.glob(os.path.join(recipes_dir, "**/*.yaml"), recursive=True)):
     with open(filepath) as f:
@@ -26,7 +37,9 @@ for filepath in sorted(glob.glob(os.path.join(recipes_dir, "**/*.yaml"), recursi
         "name": data.get("name", ""),
         "path": rel_path,
         "status": data.get("status", ""),
-        "description": (data.get("description", "") or "").strip()
+        "description": (data.get("description", "") or "").strip(),
+        "tags": data.get("tags") or [],
+        "ingredients": extract_ingredient_names(data)
     })
 
 with open(os.path.join(recipes_dir, "recipe-index.json"), "w") as f:

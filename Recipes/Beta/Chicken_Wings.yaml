@@ -6,6 +6,10 @@ description: >
   are pending — this recipe is currently in draft while the spice mix and
   cooking method are being finalized.
 status: draft
+tags:
+  - chicken
+  - wings
+  - appetizer
 
 yields:
   quantity: 35
