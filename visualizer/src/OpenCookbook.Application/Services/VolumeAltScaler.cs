@@ -44,6 +44,7 @@ public static partial class VolumeAltScaler
             "oz"     => FormatWeightOz(scaled),
             "lb"     => FormatFromLb(scaled),
             "whole"  => FormatFromWhole(scaled),
+            "pcs"    => FormatFromIntegerCount(scaled, "pcs"),
             _        => volumeAlt,
         };
     }
@@ -133,6 +134,7 @@ public static partial class VolumeAltScaler
             "oz"                        => "oz",
             "lb" or "lbs"               => "lb",
             "whole" or "wholes"         => "whole",
+            "pcs" or "pc"               => "pcs",
             _                           => unit.ToLowerInvariant(),
         };
 
@@ -337,6 +339,8 @@ public static partial class VolumeAltScaler
     /// Formats a count expressed as whole units (e.g. "1 whole onion").
     /// Rounds to the nearest 1/4, with a floor of 1/4 for near-zero values.
     /// Produces fraction labels like "1/4 whole", "1/2 whole", "1 1/4 whole".
+    /// Use for separable ingredients (onion, lemon, bell pepper) where
+    /// partial units are practical.
     /// </summary>
     private static string FormatFromWhole(double value)
     {
@@ -344,6 +348,19 @@ public static partial class VolumeAltScaler
         // Floor at 1/4 whole — the minimum practical increment for a whole unit.
         if (rounded < 0.25 - Epsilon) rounded = 0.25;
         return FormatFraction(rounded, 4) + " whole";
+    }
+
+    /// <summary>
+    /// Formats a count of discrete indivisible items using the "pcs" (pieces) unit.
+    /// Rounds to the nearest whole number with a floor of 1 — never produces
+    /// fractional counts because splitting the item is not practical
+    /// (e.g. you cannot crack half an egg).
+    /// Use for non-separable ingredients where the container is unusable after opening.
+    /// </summary>
+    private static string FormatFromIntegerCount(double value, string label)
+    {
+        int count = Math.Max(1, (int)Math.Round(value, MidpointRounding.AwayFromZero));
+        return $"{count} {label}";
     }
 
     // ── Shared helpers ────────────────────────────────────────────────────────

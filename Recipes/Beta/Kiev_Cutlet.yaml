@@ -1,5 +1,5 @@
 name: Kiev Cutlet
-version: "1.2"
+version: "1.3"
 author: Jonathan Petz | JPEGtheDev
 description: >
   Chicken Kiev-style cutlets made from ground chicken thighs with an herb
@@ -75,8 +75,8 @@ ingredients:
         nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
       - quantity: 300
         unit: g
-        name: Eggs
-        weight_alt: "6 whole"
+        name: Large Eggs
+        weight_alt: "6 pcs"
         nutrition_id: "8b1ca5a3-aba2-5dfd-a3f5-57281d5cbdd9"
 
 utensils:

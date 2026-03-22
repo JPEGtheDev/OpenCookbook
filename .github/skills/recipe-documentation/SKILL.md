@@ -4,7 +4,7 @@ description: How to format and structure a recipe YAML file in the OpenCookbook 
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Recipe Documentation
@@ -119,17 +119,20 @@ Some ingredients are bought and used as distinct whole units. Follow the separab
 
 **Non-separable ingredients** (egg, canned item):
 - Use `unit: g` with the gram weight of a **single standard unit** (e.g., 56g for 1 large egg).
-- Add `weight_alt: "1 whole"` so the count scales with the recipe: 1× → `(≈ 1 whole)`, 2× → `(≈ 2 whole)`.
-- **Why not `note`?** A `note` field is static and does **not** scale — at 2× it would still show "approximately 1 large egg", which is wrong. Use `weight_alt` instead.
-- **Why grams and not `unit: whole`?** Once you crack an egg, the shell is gone — you cannot store the remainder. Grams let the recipe scale to any multiplier and the cook reads the `weight_alt` count to know how many to open.
+- Add `weight_alt` using `pcs` (pieces) as the unit together with the count for the recipe. This is an integer-only unit — the scaler always rounds to the nearest whole number (never shows "1 1/2 pcs"). The ingredient **name** carries the size/type (`Large Eggs`, `Medium Eggs`).
+- **Why not `"whole"`?** `"whole"` rounds in 1/4 steps (correct for onions). Non-separable items need integer rounding — once an egg is cracked the shell is gone.
+- **Why not `note`?** A `note` field is static and does **not** scale — at 2× it would still say "approximately 6 large eggs", which is wrong. Use `weight_alt` instead.
+- **Why grams and not a direct count?** Once you crack an egg, the shell is gone — you cannot store the remainder. Grams let the recipe scale to any multiplier and the cook reads the `weight_alt` count to know how many to open.
 
-✅ **CORRECT — non-separable:**
+✅ **CORRECT — non-separable (6 large eggs for full recipe):**
 ```yaml
-- quantity: 56
+- quantity: 300
   unit: g
-  name: Egg
-  weight_alt: "1 whole"
+  name: Large Eggs
+  weight_alt: "6 pcs"
 ```
+
+At 2×: displays `(≈ 12 pcs)`. At 0.5×: `(≈ 3 pcs)`. At 0.25×: `(≈ 2 pcs)` — rounds up from 1.5, never fractional.
 
 ### The volume_alt Rule
 

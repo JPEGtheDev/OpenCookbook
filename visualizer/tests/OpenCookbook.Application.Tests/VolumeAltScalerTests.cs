@@ -367,4 +367,48 @@ public class VolumeAltScalerTests
     {
         Assert.Equal("3 whole", VolumeAltScaler.ScaleWeightAlt("1 whole", 3.0));
     }
+
+    // ── Integer-count unit (pcs / pieces) ───────────────────────────────────
+
+    [Fact]
+    public void ScaleWeightAlt_Pcs_DoublesCorrectly()
+    {
+        // 6 pcs × 2 = 12 pcs
+        Assert.Equal("12 pcs", VolumeAltScaler.ScaleWeightAlt("6 pcs", 2.0));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Pcs_HalvesCorrectly()
+    {
+        // 6 pcs × 0.5 = 3 pcs (exact integer)
+        Assert.Equal("3 pcs", VolumeAltScaler.ScaleWeightAlt("6 pcs", 0.5));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Pcs_FractionRoundsToNearestInteger()
+    {
+        // 6 pcs × 0.25 = 1.5 → rounds to 2 (MidpointRounding.AwayFromZero)
+        Assert.Equal("2 pcs", VolumeAltScaler.ScaleWeightAlt("6 pcs", 0.25));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Pcs_SmallMultiplierFloorsAtOne()
+    {
+        // 1 pcs × 0.1 = 0.1 → rounds to 0, floor kicks in → 1 pcs
+        Assert.Equal("1 pcs", VolumeAltScaler.ScaleWeightAlt("1 pcs", 0.1));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Pcs_NeverShowsFraction()
+    {
+        // 6 pcs × 0.33 = 1.98 → rounds to 2 (integer, never "1 1/2" or "1 3/4")
+        Assert.Equal("2 pcs", VolumeAltScaler.ScaleWeightAlt("6 pcs", 0.33));
+    }
+
+    [Fact]
+    public void ScaleWeightAlt_Pc_SingularFormNormalisedToPcs()
+    {
+        // "pc" (singular) should normalise to the same path as "pcs"
+        Assert.Equal("2 pcs", VolumeAltScaler.ScaleWeightAlt("1 pc", 2.0));
+    }
 }
