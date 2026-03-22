@@ -190,6 +190,108 @@ public class RecipeServiceTests
         Assert.Equal("Kiev Cutlet", result[0].Name);
     }
 
+    // ── SearchRecipesAsync — search by name ─────────────
+
+    [Fact]
+    public async Task SearchRecipesAsync_NameExactMatch_ReturnsMatchingRecipe()
+    {
+        // Arrange
+        var index = new[]
+        {
+            MakeEntry("Kebab Meat", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Mashed Potatoes", ["vegetarian"], ["Yellow Potatoes"])
+        };
+        var service = CreateService(index);
+
+        // Act
+        var result = await service.SearchRecipesAsync("Kebab Meat");
+
+        // Assert
+        Assert.Single(result);
+        Assert.Equal("Kebab Meat", result[0].Name);
+    }
+
+    [Fact]
+    public async Task SearchRecipesAsync_NamePartialMatch_ReturnsMatchingRecipes()
+    {
+        // Arrange
+        var index = new[]
+        {
+            MakeEntry("Kebab Meat", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Kebab Meatballs", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Mashed Potatoes", ["vegetarian"], ["Yellow Potatoes"])
+        };
+        var service = CreateService(index);
+
+        // Act
+        var result = await service.SearchRecipesAsync("Kebab");
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Contains(result, r => r.Name == "Kebab Meat");
+        Assert.Contains(result, r => r.Name == "Kebab Meatballs");
+        Assert.DoesNotContain(result, r => r.Name == "Mashed Potatoes");
+    }
+
+    [Fact]
+    public async Task SearchRecipesAsync_NameSearch_IsCaseInsensitive()
+    {
+        // Arrange
+        var index = new[]
+        {
+            MakeEntry("Chicken Shawarma", ["chicken"], ["Chicken Thighs"])
+        };
+        var service = CreateService(index);
+
+        // Act
+        var resultLower = await service.SearchRecipesAsync("chicken shawarma");
+        var resultUpper = await service.SearchRecipesAsync("CHICKEN SHAWARMA");
+
+        // Assert
+        Assert.Single(resultLower);
+        Assert.Single(resultUpper);
+    }
+
+    [Fact]
+    public async Task SearchRecipesAsync_NameSearch_ReturnsExactMatchFirst()
+    {
+        // Arrange
+        var index = new[]
+        {
+            MakeEntry("Kebab Meatballs", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Kebab Meat", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Spicy Kebab Meat Sauce", ["grilled"], ["Ground Beef"])
+        };
+        var service = CreateService(index);
+
+        // Act
+        var result = await service.SearchRecipesAsync("Kebab Meat");
+
+        // Assert — exact match is first
+        Assert.Equal(3, result.Count);
+        Assert.Equal("Kebab Meat", result[0].Name);
+    }
+
+    [Fact]
+    public async Task SearchRecipesAsync_NameSearch_ReturnsStartsWithBeforeContains()
+    {
+        // Arrange
+        var index = new[]
+        {
+            MakeEntry("Spicy Kebab", ["grilled"], ["Ground Beef"]),
+            MakeEntry("Kebab Meat", ["grilled"], ["Ground Beef"])
+        };
+        var service = CreateService(index);
+
+        // Act
+        var result = await service.SearchRecipesAsync("Kebab");
+
+        // Assert — starts-with match comes before contains match
+        Assert.Equal(2, result.Count);
+        Assert.Equal("Kebab Meat", result[0].Name);
+        Assert.Equal("Spicy Kebab", result[1].Name);
+    }
+
     // ── SearchRecipesAsync — no results ─────────────────
 
     [Fact]
