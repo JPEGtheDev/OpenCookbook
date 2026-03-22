@@ -73,9 +73,11 @@ ingredients:
         unit: g
         name: Panko Bread Crumbs
         nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
-      - quantity: 6
-        unit: whole
+      - quantity: 288
+        unit: g
         name: Eggs
+        volume_alt: "6 whole"
+        nutrition_id: "8b1ca5a3-aba2-5dfd-a3f5-57281d5cbdd9"
 
 utensils:
   - heading: null
