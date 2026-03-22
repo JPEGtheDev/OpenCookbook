@@ -76,7 +76,7 @@ ingredients:
       - quantity: 300
         unit: g
         name: Eggs
-        volume_alt: "6 large"
+        weight_alt: "6 whole"
         nutrition_id: "8b1ca5a3-aba2-5dfd-a3f5-57281d5cbdd9"
 
 utensils:
