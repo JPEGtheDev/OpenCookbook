@@ -34,10 +34,24 @@ public class RecipeService
                 var tags = r.Tags ?? [];
                 var ingredients = r.Ingredients ?? [];
 
-                return tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                return r.Name.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+                       tags.Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
                        ingredients.Any(i => i.Contains(term, StringComparison.OrdinalIgnoreCase));
             })
+            .OrderBy(r => NameRelevanceScore(r.Name, term))
+            .ThenBy(r => r.Name, StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    private static int NameRelevanceScore(string name, string term)
+    {
+        if (name.Equals(term, StringComparison.OrdinalIgnoreCase))
+            return 0;
+        if (name.StartsWith(term, StringComparison.OrdinalIgnoreCase))
+            return 1;
+        if (name.Contains(term, StringComparison.OrdinalIgnoreCase))
+            return 2;
+        return 3;
     }
 
     public Task<Recipe> GetRecipeByPathAsync(string path)

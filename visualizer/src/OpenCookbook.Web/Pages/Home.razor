@@ -14,15 +14,15 @@
     {
         <p class="error-message">@_error</p>
     }
-    else if (_recipes is not null)
+    else if (_loaded)
     {
         <div class="search-bar">
             <label for="recipe-search" class="visually-hidden">Search recipes</label>
             <input id="recipe-search"
                    type="search"
                    class="search-input"
-                   placeholder="Search by ingredient or tag…"
-                   aria-label="Search recipes by ingredient or tag"
+                   placeholder="Search by name, ingredient or tag…"
+                   aria-label="Search recipes by name, ingredient or tag"
                    value="@_searchQuery"
                    @oninput="OnSearchInput" />
         </div>
@@ -48,46 +48,29 @@
 </div>
 
 @code {
-    private IReadOnlyList<RecipeIndex>? _recipes;
+    private bool _loaded;
     private List<RecipeIndex> _filteredRecipes = [];
     private bool _loading = true;
     private string? _error;
     private string _searchQuery = string.Empty;
 
-    private void OnSearchInput(ChangeEventArgs e)
+    private async Task OnSearchInput(ChangeEventArgs e)
     {
         _searchQuery = e.Value?.ToString() ?? string.Empty;
-        ApplyFilter();
+        await ApplyFilterAsync();
     }
 
-    private void ApplyFilter()
+    private async Task ApplyFilterAsync()
     {
-        if (_recipes is null)
-        {
-            _filteredRecipes = [];
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(_searchQuery))
-        {
-            _filteredRecipes = _recipes.ToList();
-            return;
-        }
-
-        var term = _searchQuery.Trim();
-        _filteredRecipes = _recipes
-            .Where(r =>
-                (r.Tags ?? []).Any(t => t.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
-                (r.Ingredients ?? []).Any(i => i.Contains(term, StringComparison.OrdinalIgnoreCase)))
-            .ToList();
+        _filteredRecipes = (await RecipeService.SearchRecipesAsync(_searchQuery)).ToList();
     }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            _recipes = await RecipeService.GetAllRecipesAsync();
-            ApplyFilter();
+            await ApplyFilterAsync();
+            _loaded = true;
         }
         catch (Exception ex)
         {
