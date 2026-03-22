@@ -14,7 +14,7 @@
     {
         <p class="error-message">@_error</p>
     }
-    else if (_recipes is not null)
+    else if (_loaded)
     {
         <div class="search-bar">
             <label for="recipe-search" class="visually-hidden">Search recipes</label>
@@ -48,7 +48,7 @@
 </div>
 
 @code {
-    private IReadOnlyList<RecipeIndex>? _recipes;
+    private bool _loaded;
     private List<RecipeIndex> _filteredRecipes = [];
     private bool _loading = true;
     private string? _error;
@@ -69,8 +69,8 @@
     {
         try
         {
-            _recipes = await RecipeService.GetAllRecipesAsync();
             await ApplyFilterAsync();
+            _loaded = true;
         }
         catch (Exception ex)
         {
