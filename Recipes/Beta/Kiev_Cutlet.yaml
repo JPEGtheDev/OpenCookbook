@@ -1,5 +1,5 @@
 name: Kiev Cutlet
-version: "1.3"
+version: "1.4"
 author: Jonathan Petz | JPEGtheDev
 description: >
   Chicken Kiev-style cutlets made from ground chicken thighs with an herb
@@ -69,7 +69,7 @@ ingredients:
 
   - heading: Breading
     items:
-      - quantity: 270
+      - quantity: 252
         unit: g
         name: Panko Bread Crumbs
         nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
@@ -157,6 +157,8 @@ instructions:
 notes:
   - "Breading test (6 cutlets): 78 g panko (13 g/cutlet), 75 g used with 3 g left. Last cutlet was frustrating to bread — increased to 15 g/cutlet (270 g for 18)."
   - "Breading test (6 cutlets): 3 eggs (144 g total), only 80 g used with 64 g remaining. Less egg wash gave a nicer result. Reduced from 8 to 6 eggs for 18 cutlets."
+  - "Breading test (6 cutlets) session note: used 89 g panko and 100 g eggs; 15 g egg and 17.5 g panko remained. This implies tight spreading of breading and room for a small safety margin in panko usage."
+  - "Updated target: 14 g panko per cutlet (252 g for 18) is the goldilocks zone that balances coverage with minimal waste."
   - "Breading test: Dijon mustard (5 g), black pepper (0.5 g), and salt (1.25 g) were tested in the egg wash — none added noticeable flavor. Omitted."
   - "Cooking time of 45 minutes at 204°C (400°F) convection is preliminary — awaiting final test results."
   - "Storage duration for frozen raw cutlets needs to be determined."
