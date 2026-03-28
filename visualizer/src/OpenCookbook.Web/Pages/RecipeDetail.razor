@@ -4,6 +4,8 @@
 @inject NutritionCalculator NutritionCalculator
 @inject FitnessExportService ExportService
 @inject NavigationManager Nav
+@inject IJSRuntime JS
+@implements IDisposable
 
 <PageTitle>@(_recipe?.Name ?? "Recipe") — OpenCookbook</PageTitle>
 
@@ -106,6 +108,15 @@ else if (_recipe is not null)
             <h2>Export for Fitness Tracking</h2>
             <div class="export-buttons">
                 <button class="export-btn export-btn-primary" @onclick="ShowExportModal">Export Ingredients</button>
+            </div>
+            <div class="share-url-section">
+                <p class="share-url-hint">To import into <strong>Lose It!</strong>, paste this URL into the app's "Import Recipe" feature:</p>
+                <div class="share-url-row">
+                    <code class="share-url-code">@ShareUrl</code>
+                    <button class="export-btn export-btn-copy" @onclick="CopyShareUrl">
+                        @(_shareUrlCopied ? "✓ Copied!" : "Copy URL")
+                    </button>
+                </div>
             </div>
         </section>
     </article>
@@ -252,5 +263,49 @@ else if (_recipe is not null)
     {
         var lastSlash = path.LastIndexOf('/');
         return lastSlash > 0 ? path[..lastSlash] : null;
+    }
+
+    private string ShareUrl
+    {
+        get
+        {
+            if (_decodedPath is null) return string.Empty;
+            var slug = _decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
+                ? _decodedPath[..^5]
+                : _decodedPath;
+            return $"{Nav.BaseUri}share/{slug}";
+        }
+    }
+
+    private bool _shareUrlCopied;
+    private CancellationTokenSource? _shareUrlCts;
+
+    private async Task CopyShareUrl()
+    {
+        _shareUrlCts?.Cancel();
+        _shareUrlCts?.Dispose();
+        _shareUrlCts = new CancellationTokenSource();
+        var cts = _shareUrlCts;
+
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", ShareUrl);
+            _shareUrlCopied = true;
+            StateHasChanged();
+            await Task.Delay(2000, cts.Token);
+            _shareUrlCopied = false;
+            StateHasChanged();
+        }
+        catch (OperationCanceledException) { }
+        catch
+        {
+            // Clipboard write failed — leave _shareUrlCopied false so the button label stays unchanged
+        }
+    }
+
+    public void Dispose()
+    {
+        _shareUrlCts?.Cancel();
+        _shareUrlCts?.Dispose();
     }
 }
