@@ -30,9 +30,7 @@
     <NutritionDbDest>$(MSBuildProjectDirectory)/wwwroot/data/nutrition-db.json</NutritionDbDest>
   </PropertyGroup>
 
-  <Target Name="CopyNutritionDb" BeforeTargets="BeforeBuild"
-          Inputs="$(NutritionDbSource)"
-          Outputs="$(NutritionDbDest)">
+  <Target Name="CopyNutritionDb" BeforeTargets="BeforeBuild">
     <MakeDir Directories="$(MSBuildProjectDirectory)/wwwroot/data" />
     <Copy SourceFiles="$(NutritionDbSource)" DestinationFiles="$(NutritionDbDest)" />
   </Target>

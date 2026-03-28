@@ -606,5 +606,54 @@
       "fat_g": 6.0,
       "carbs_g": 70.0
     }
+  },
+  {
+    "id": "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b",
+    "fdc_id": 169230,
+    "name": "Fresh Garlic",
+    "aliases": [
+      "garlic",
+      "garlic cloves",
+      "minced garlic",
+      "fresh garlic"
+    ],
+    "per_100g": {
+      "calories_kcal": 149,
+      "protein_g": 6.36,
+      "fat_g": 0.5,
+      "carbs_g": 33.07
+    }
+  },
+  {
+    "id": "9d4c3f5e-2b7a-4a1f-8e3d-7c9b1f6a2e5d",
+    "fdc_id": 170501,
+    "name": "Crushed Tomatoes (canned)",
+    "aliases": [
+      "crushed tomatoes",
+      "canned crushed tomatoes",
+      "tomatoes crushed canned"
+    ],
+    "per_100g": {
+      "calories_kcal": 32,
+      "protein_g": 1.64,
+      "fat_g": 0.2,
+      "carbs_g": 7.29
+    }
+  },
+  {
+    "id": "1e6f7a8b-3d4c-5e2a-9f1b-8c7d6e5f4a3b",
+    "fdc_id": 173660,
+    "name": "Vodka",
+    "aliases": [
+      "vodka",
+      "distilled spirits",
+      "80 proof vodka"
+    ],
+    "per_100g": {
+      "calories_kcal": 231,
+      "protein_g": 0.0,
+      "fat_g": 0.0,
+      "carbs_g": 0.0
+    }
   }
 ]
