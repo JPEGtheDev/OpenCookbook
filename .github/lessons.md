@@ -25,6 +25,16 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-04-01 — Imperial units must be checked in ALL text fields, not just ingredient units
+
+**What happened:** PR review flagged imperial units (`1 lb`, `6 oz`) in description, step text, and top-level notes. Validation only checked the ingredients section units.
+**Absorbed into:** recipe-validation skill → Consistency section; new checklist item added.
+
+### 2026-04-01 — nutrition_id references must have DB entries in the same PR
+
+**What happened:** Recipe introduced new ingredients (Fresh Garlic, Crushed Tomatoes, Vodka) with `nutrition_id` fields pointing to entries that didn't exist in `docs/data/nutrition-db.json`. PR reviewer caught the gap.
+**Absorbed into:** recipe-validation skill → Consistency section; new checklist item added.
+
 ### 2026-03-18 — Always pluralize units in rendered quantity strings
 
 **What happened:** The "Makes 24 Serving" yields display showed a singular unit regardless of quantity. The `Pluralize` helper existed in `NutritionPanel` but was not applied to the yields line in `IngredientList`.

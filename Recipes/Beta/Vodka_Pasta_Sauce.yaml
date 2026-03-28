@@ -1,0 +1,149 @@
+name: Vodka Pasta Sauce
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A classic red sauce featuring tomatoes, garlic, and a splash of vodka to bring
+  out the depth of flavor. This recipe yields enough sauce to pair with 454g of
+  spaghetti. Choose between a smooth blended sauce or rustic texture to your preference.
+status: beta
+tags:
+  - pasta
+  - sauce
+  - italian
+  - vegetarian
+  - red sauce
+
+yields:
+  quantity: 4
+  unit: serving
+
+serving_size:
+  quantity: 250
+  unit: g
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 43
+        unit: g
+        name: Unsalted Butter
+        nutrition_id: "cdbcd21f-80e1-549e-b6c9-bd23ade428df"
+      - quantity: 110
+        unit: g
+        name: Yellow Onion
+        nutrition_id: "62a41ce3-b227-4a59-a51f-d7e9e64388bb"
+        weight_alt: "1 whole"
+      - quantity: 18
+        unit: g
+        name: Fresh Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        note: "Approximately 4 cloves, minced"
+      - quantity: 7.2
+        unit: g
+        name: Fine Sea Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+      - quantity: 794
+        unit: g
+        name: Crushed Tomatoes (canned)
+        nutrition_id: "9d4c3f5e-2b7a-4a1f-8e3d-7c9b1f6a2e5d"
+        note: "Standard large can (~794g)"
+      - quantity: 1.2
+        unit: g
+        name: Black Pepper
+        volume_alt: "1/4 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
+      - quantity: 0.3
+        unit: g
+        name: Red Pepper Flakes
+        volume_alt: "1/8 tsp."
+        nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
+      - quantity: 1
+        unit: g
+        name: Dried Marjoram
+        volume_alt: "1/4 tsp."
+        nutrition_id: "8d2f5c1a-9b4e-4d2f-8c1a-3e5f7a2b9c4d"
+      - quantity: 1
+        unit: g
+        name: Dried Basil
+        volume_alt: "1/4 tsp."
+        nutrition_id: "7c3d4e2a-1b5f-4e3a-9c2d-5f8a1b3e6c7d"
+      - quantity: 52.5
+        unit: ml
+        name: Vodka
+        nutrition_id: "1e6f7a8b-3d4c-5e2a-9f1b-8c7d6e5f4a3b"
+        note: "80 proof"
+
+utensils:
+  - heading: null
+    items:
+      - Large Pan or Saucepan
+      - Wooden Spoon or Spatula
+      - Blender (optional, for smooth sauce)
+      - Knife for mincing
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Melt butter in a large pan over medium heat"
+      - text: "Add minced onion and salt, sauté until softened (approximately 3–4 minutes)"
+      - text: "Add minced garlic and cook for approximately 1 minute, stirring frequently"
+        notes:
+          - "Do not allow garlic to brown"
+      - text: "Add crushed tomatoes, stir well to combine"
+      - text: "Increase heat to medium-high and cook for approximately 5 minutes, stirring every 30 seconds"
+      - text: "Add vodka, stir to combine"
+      - text: "Reduce heat to low and simmer for 15 minutes, stirring every few minutes"
+        notes:
+          - "The sauce will thicken slightly and flavors will meld"
+          - "Alcohol will cook off during simmering"
+
+  - heading: Smooth Sauce
+    type: branch
+    branch_group: texture
+    steps:
+      - text: "Transfer sauce to a blender"
+      - text: "Blend on high speed until completely smooth"
+      - text: "Return to pan if additional cooking or warming is needed"
+
+  - heading: Rustic Sauce
+    type: branch
+    branch_group: texture
+    steps:
+      - text: "Serve sauce as-is without blending for a chunkier, more rustic texture"
+
+  - heading: Serving with Spaghetti
+    type: sequence
+    optional: true
+    steps:
+      - text: "Bring a large pot of salted water to a boil (salt until it tastes like seawater)"
+      - text: "Add 454g of spaghetti and cook according to package instructions until al dente"
+        notes:
+          - "Italian brands typically indicate al dente cooking time"
+          - "Test at the lower end of the suggested range"
+      - text: "Transfer hot spaghetti directly to the sauce using tongs (do not drain the pasta water)"
+      - text: "Add approximately 240 ml of pasta water to the sauce and combine"
+        notes:
+          - "The starchy water helps emulsify the sauce and coat the pasta"
+          - "Add additional pasta water as needed to achieve desired sauce consistency"
+      - text: "Using a medium ladle (~180 ml) and tongs, twirl a portion of spaghetti into a nest"
+      - text: "Plate the twirled spaghetti, holding the ladle underneath to catch sauce"
+      - text: "Pour sauce over the top and serve immediately"
+
+  - heading: Storage
+    type: sequence
+    optional: true
+    steps:
+      - text: "Allow sauce to cool to room temperature"
+      - text: "Store in an airtight container in the refrigerator"
+        notes:
+          - "Stores for up to 5 days"
+      - text: "To freeze, transfer to a freezer bag or container"
+        notes:
+          - "Stores frozen for up to 3 months"
+          - "Thaw in refrigerator before reheating"
+
+notes:
+  - "This recipe yields approximately 1000g of sauce, designed to pair with 454g of spaghetti"
+  - "Branching paths for texture (smooth vs rustic) are optional — choose the style you prefer"
+  - "See PASTA_COOKING.md reference guide for general pasta cooking techniques and al dente standards"
