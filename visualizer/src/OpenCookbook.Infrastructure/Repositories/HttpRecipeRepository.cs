@@ -42,21 +42,6 @@ public sealed class HttpRecipeRepository : IRecipeRepository
         return _parser.Parse(yamlContent);
     }
 
-    public async Task<Recipe> GetRecipeFromUrlAsync(string absoluteUrl)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(absoluteUrl);
-
-        if (!Uri.TryCreate(absoluteUrl, UriKind.Absolute, out var uri)
-            || !string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("Recipe URL must use HTTPS.", nameof(absoluteUrl));
-
-        if (!absoluteUrl.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
-            throw new ArgumentException("Recipe URL must point to a .yaml file.", nameof(absoluteUrl));
-
-        var yamlContent = await _httpClient.GetStringAsync(absoluteUrl);
-        return _parser.Parse(yamlContent);
-    }
-
     private static string SanitizeRecipePath(string path)
     {
         if (path.StartsWith('/') || path.StartsWith('\\'))

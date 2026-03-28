@@ -1,6 +1,5 @@
 ﻿@page "/"
 @inject RecipeService RecipeService
-@inject NavigationManager Nav
 
 <PageTitle>OpenCookbook</PageTitle>
 
@@ -46,27 +45,6 @@
             </div>
         }
     }
-
-    <div class="url-import-section">
-        <h2 class="url-import-heading">Open Recipe by URL</h2>
-        <p class="url-import-hint">Paste a recipe URL (e.g. from a shared link) to open it directly.</p>
-        <div class="url-import-form">
-            <label for="recipe-url" class="visually-hidden">Recipe URL</label>
-            <input id="recipe-url"
-                   type="url"
-                   class="url-import-input"
-                   placeholder="https://jpegthedev.github.io/OpenCookbook/recipe/Chicken.yaml"
-                   aria-label="Recipe URL"
-                   @bind="_urlInput"
-                   @bind:event="oninput"
-                   @onkeydown="OnUrlKeyDown" />
-            <button class="export-btn export-btn-primary url-import-btn" @onclick="OpenByUrl">Open</button>
-        </div>
-        @if (_urlError is not null)
-        {
-            <p class="url-import-error" role="alert">@_urlError</p>
-        }
-    </div>
 </div>
 
 @code {
@@ -75,9 +53,6 @@
     private bool _loading = true;
     private string? _error;
     private string _searchQuery = string.Empty;
-
-    private string _urlInput = string.Empty;
-    private string? _urlError;
 
     private async Task OnSearchInput(ChangeEventArgs e)
     {
@@ -105,42 +80,5 @@
         {
             _loading = false;
         }
-    }
-
-    private async Task OnUrlKeyDown(KeyboardEventArgs e)
-    {
-        if (e.Key == "Enter")
-            await OpenByUrl();
-    }
-
-    private Task OpenByUrl()
-    {
-        _urlError = null;
-        var input = _urlInput.Trim();
-
-        if (string.IsNullOrEmpty(input))
-        {
-            _urlError = "Please enter a recipe URL.";
-            return Task.CompletedTask;
-        }
-
-        // Same-site URL: extract local path and navigate via the existing recipe route
-        if (RecipeService.TryExtractLocalPath(input, Nav.BaseUri, out var localPath))
-        {
-            Nav.NavigateTo($"recipe/{Uri.EscapeDataString(localPath)}");
-            return Task.CompletedTask;
-        }
-
-        // External HTTPS .yaml URL: pass the full URL as the route parameter
-        if (Uri.TryCreate(input, UriKind.Absolute, out var uri)
-            && string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase)
-            && input.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
-        {
-            Nav.NavigateTo($"recipe/{Uri.EscapeDataString(input)}");
-            return Task.CompletedTask;
-        }
-
-        _urlError = "Enter a valid HTTPS URL ending in .yaml (e.g. https://example.com/recipe.yaml).";
-        return Task.CompletedTask;
     }
 }

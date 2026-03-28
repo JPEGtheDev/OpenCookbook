@@ -298,59 +298,6 @@ ul, ol {
     overflow: hidden;
 }
 
-/* --- URL Import Section (Home Page) --- */
-.url-import-section {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
-    max-width: 600px;
-}
-
-.url-import-heading {
-    font-size: 1.1rem;
-    margin-bottom: 0.4rem;
-}
-
-.url-import-hint {
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    margin-bottom: 0.75rem;
-}
-
-.url-import-form {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.url-import-input {
-    flex: 1;
-    min-width: 0;
-    padding: 0.55rem 0.9rem;
-    font-size: 0.95rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background: var(--color-surface);
-    color: var(--color-text);
-    outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.url-import-input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent);
-}
-
-.url-import-btn {
-    white-space: nowrap;
-}
-
-.url-import-error {
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-    color: var(--color-draft);
-}
-
 /* --- Recipe Detail Page --- */
 .recipe-detail {
     max-width: var(--max-width);

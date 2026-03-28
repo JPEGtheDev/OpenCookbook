@@ -56,30 +56,6 @@ public class RecipeService
 
     public Task<Recipe> GetRecipeByPathAsync(string path)
     {
-        if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
-            return _repository.GetRecipeFromUrlAsync(path);
-
         return _repository.GetRecipeAsync(path);
-    }
-
-    /// <summary>
-    /// Tries to extract a local recipe path from a full app URL.
-    /// Returns <see langword="true"/> when <paramref name="input"/> is a recipe URL
-    /// rooted at <paramref name="baseUrl"/> (e.g.
-    /// <c>https://jpegthedev.github.io/OpenCookbook/recipe/Chicken.yaml</c>).
-    /// </summary>
-    public static bool TryExtractLocalPath(string input, string baseUrl, out string localPath)
-    {
-        localPath = string.Empty;
-
-        if (string.IsNullOrWhiteSpace(input) || string.IsNullOrWhiteSpace(baseUrl))
-            return false;
-
-        var recipeBase = baseUrl.TrimEnd('/') + "/recipe/";
-        if (!input.StartsWith(recipeBase, StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        localPath = Uri.UnescapeDataString(input[recipeBase.Length..]);
-        return !string.IsNullOrEmpty(localPath);
     }
 }

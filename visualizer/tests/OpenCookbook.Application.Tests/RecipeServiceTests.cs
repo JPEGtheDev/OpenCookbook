@@ -357,8 +357,5 @@ public class RecipeServiceTests
 
         public Task<Recipe> GetRecipeAsync(string path) =>
             throw new NotImplementedException();
-
-        public Task<Recipe> GetRecipeFromUrlAsync(string absoluteUrl) =>
-            throw new NotImplementedException();
     }
 }
