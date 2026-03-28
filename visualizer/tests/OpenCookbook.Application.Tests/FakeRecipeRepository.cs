@@ -25,4 +25,12 @@ internal sealed class FakeRecipeRepository : IRecipeRepository
 
         throw new KeyNotFoundException($"Recipe not found: {path}");
     }
+
+    public Task<Recipe> GetRecipeFromUrlAsync(string absoluteUrl)
+    {
+        if (_recipes.TryGetValue(absoluteUrl, out var recipe))
+            return Task.FromResult(recipe);
+
+        throw new KeyNotFoundException($"Recipe not found at URL: {absoluteUrl}");
+    }
 }
