@@ -14,7 +14,14 @@
         // Apply OS colour-scheme immediately to avoid a flash of wrong theme.
         // No cookies or localStorage — resets to OS preference on every page load.
         (function () {
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var prefersDark = false;
+            if (window.matchMedia && typeof window.matchMedia === 'function') {
+                try {
+                    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                } catch (e) {
+                    prefersDark = false;
+                }
+            }
             document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
         })();
     </script>
@@ -45,7 +52,12 @@
                 return document.documentElement.getAttribute('data-theme') || 'light';
             },
             setTheme: function (theme) {
-                document.documentElement.setAttribute('data-theme', theme);
+                var normalized = (theme == null ? '' : String(theme)).toLowerCase();
+                if (normalized !== 'dark' && normalized !== 'light') {
+                    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    normalized = prefersDark ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', normalized);
             }
         };
 

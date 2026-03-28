@@ -12,15 +12,18 @@
     </main>
     <footer class="app-footer">
         <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · @_appVersion</p>
-        <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark ? "Switch to light mode" : "Switch to dark mode")">
-            @(_isDark ? "☀️ Light mode" : "🌙 Dark mode")
-        </button>
+        @if (_isDark.HasValue)
+        {
+            <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark.Value ? "Switch to light mode" : "Switch to dark mode")">
+                @(_isDark.Value ? "☀️ Light mode" : "🌙 Dark mode")
+            </button>
+        }
     </footer>
 </div>
 
 @code {
     private string _appVersion = "dev";
-    private bool _isDark;
+    private bool? _isDark;
 
     protected override void OnInitialized()
     {
@@ -56,8 +59,19 @@
 
     private async Task ToggleThemeAsync()
     {
-        _isDark = !_isDark;
-        await JS.InvokeVoidAsync("themeInterop.setTheme", _isDark ? "dark" : "light");
+        var desiredIsDark = !(_isDark ?? false);
+        var desiredTheme = desiredIsDark ? "dark" : "light";
+
+        try
+        {
+            await JS.InvokeVoidAsync("themeInterop.setTheme", desiredTheme);
+            _isDark = desiredIsDark;
+        }
+        catch
+        {
+            // If the JS interop call fails, leave _isDark unchanged so the UI
+            // remains consistent with the actual applied theme.
+        }
     }
 }
 
