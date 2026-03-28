@@ -1,0 +1,165 @@
+name: Italian Style Meatballs with Cheese
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  Tender Italian meatballs blended with cottage cheese for richness and binding.
+  These 12 meatballs are oven, grill, or pan-fried friendly, and freeze well for
+  longer storage.
+status: beta
+tags:
+  - beef
+  - italian
+  - meatballs
+  - cheese
+  - freezer ready
+
+yields:
+  quantity: 12
+  unit: meatball
+
+serving_size:
+  quantity: 3
+  unit: meatball
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 454
+        unit: g
+        name: 88/12 Ground Beef
+        nutrition_id: "2724c62f-1832-5ccf-97b0-d219812368d8"
+        note: "88/12 is the recommended blend for this recipe"
+        alternates:
+          - name: 80/20 Ground Beef
+            nutrition_id: "ca7b2dfc-90a9-57e5-995d-605dfef2baf8"
+            note: "For a balanced result"
+          - name: 70/30 Ground Beef
+            nutrition_id: "16611239-ee90-45aa-986f-7afb3b4dc897"
+            note: "For a richer, more indulgent result"
+      - quantity: 0.7
+        unit: g
+        name: Dried Marjoram
+        volume_alt: "1/8 tsp."
+        nutrition_id: "8d2f5c1a-9b4e-4d2f-8c1a-3e5f7a2b9c4d"
+      - quantity: 0.6
+        unit: g
+        name: Black Pepper
+        volume_alt: "1/8 tsp."
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
+      - quantity: 4.5
+        unit: g
+        name: Fine Sea Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+      - quantity: 0.8
+        unit: g
+        name: Dried Basil
+        volume_alt: "1/4 tsp."
+        nutrition_id: "7c3d4e2a-1b5f-4e3a-9c2d-5f8a1b3e6c7d"
+      - quantity: 0.2
+        unit: g
+        name: Red Pepper Flakes
+        volume_alt: "Pinch"
+        nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
+      - quantity: 20
+        unit: g
+        name: Gluten-Free Panko Breadcrumbs
+        nutrition_id: "5a4d6f8b-2c7e-4a1f-9b3d-8e2f5c7a1b4d"
+        alternates:
+          - name: Panko Bread Crumbs
+            nutrition_id: "59f40c33-8fb2-53c3-9ea0-0d6118f634ca"
+            note: "For regular (non-gluten-free) version"
+      - quantity: 124
+        unit: g
+        name: Cottage Cheese (2% Lowfat)
+        nutrition_id: "6b2c3f5d-9a1e-4f2b-8d3a-7c5e9b1f3e5a"
+        note: "Binds mixture and adds richness"
+        alternates:
+          - name: Cottage Cheese (4% Full Fat)
+            nutrition_id: "4c3a5f7d-2e8b-4a1f-9c3d-6f1e7a9b2c5d"
+            note: "For a richer, creamier result"
+
+utensils:
+  - heading: null
+    items:
+      - Mixing Bowl
+      - Baking Sheet
+      - Pan or Skillet
+      - Oil for cooking
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Combine all ingredients in a mixing bowl"
+      - text: "Mix by hand until the mixture is well combined and paste-like"
+        notes:
+          - "Do not overmix or the meatballs will become dense"
+          - "The mixture should hold together easily"
+      - text: "Using a cookie scoop or by hand, form into 12 equal-sized meatballs of approximately 50 g each (±2.5 g)"
+        notes:
+          - "Wetting your hands slightly makes shaping easier"
+          - "Target range: 47.5–52.5 g per meatball"
+      - text: "Space meatballs evenly on a baking sheet or work surface for cooking"
+
+  - heading: Pan-Fried
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: "Heat a skillet over medium-high heat and add oil to prevent sticking"
+      - text: "Place meatballs in the pan without crowding — work in batches if necessary"
+      - text: "Cook for approximately 8–10 minutes"
+      - text: "Flip the meatballs halfway through cooking to ensure even browning on both sides"
+      - text: "Meatballs are done when the internal temperature reaches at least 71°C (160°F)"
+        notes:
+          - "71°C (160°F) is the minimum safe internal temperature for ground beef"
+          - "For well-done, cook to 77°C (170°F)"
+
+  - heading: Oven
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: "Preheat oven to 204°C (400°F)"
+      - text: "Space meatballs evenly on a bare baking sheet"
+      - text: "Bake for 18–20 minutes, or until the internal temperature reaches at least 71°C (160°F)"
+        notes:
+          - "71°C (160°F) is the minimum safe internal temperature for ground beef"
+          - "For well-done, cook to 77°C (170°F)"
+          - "These instructions are untested for this recipe — use as a starting point"
+
+  - heading: Grilled
+    type: branch
+    branch_group: cooking-method
+    steps:
+      - text: "Preheat grill to 232°C (450°F)"
+      - text: "Place meatballs on the grill grates, spacing them so they are not touching"
+      - text: "Grill for approximately 12–15 minutes, or until the internal temperature reaches at least 71°C (160°F)"
+        notes:
+          - "71°C (160°F) is the minimum safe internal temperature for ground beef"
+          - "For well-done, cook to 77°C (170°F)"
+          - "For grate marks on both sides, flip the meatballs once halfway through cooking"
+          - "These instructions are untested for this recipe — use as a starting point"
+
+  - heading: Freezing
+    type: sequence
+    optional: true
+    steps:
+      - text: "Allow meatballs to cool fully after cooking"
+      - text: "Place uncovered on a baking sheet in the freezer, ensuring pieces are not touching"
+      - text: "Freeze until pieces no longer stick together (approximately 1–2 hours)"
+      - text: "Transfer to a sealed plastic freezer bag or vacuum-sealed bag"
+        notes:
+          - "Stores for up to 3 months without losing flavor"
+
+  - heading: Refrigerator Storage
+    type: sequence
+    optional: true
+    steps:
+      - text: "Allow meatballs to cool fully"
+      - text: "Store in an airtight container in the refrigerator"
+        notes:
+          - "Stores for up to 4 days"
+
+notes:
+  - "Oven and grilled cooking methods borrowed from Kebab Meatballs recipe — untested for this specific blend"
+  - "Recipe yields 605g total, divided into 12 meatballs at ~50g each (±2.5g)"
+  - "Scaled from test batch using 2% lowfat cottage cheese"
