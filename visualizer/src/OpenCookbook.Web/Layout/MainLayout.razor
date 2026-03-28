@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 @using System.Reflection
 
 <div class="app-layout">
@@ -11,11 +12,15 @@
     </main>
     <footer class="app-footer">
         <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · @_appVersion</p>
+        <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark ? "Switch to light mode" : "Switch to dark mode")">
+            @(_isDark ? "☀️ Light mode" : "🌙 Dark mode")
+        </button>
     </footer>
 </div>
 
 @code {
     private string _appVersion = "dev";
+    private bool _isDark;
 
     protected override void OnInitialized()
     {
@@ -37,6 +42,22 @@
         _appVersion = commitHash is not null
             ? $"v{version} ({commitHash[..Math.Min(7, commitHash.Length)]})"
             : $"v{version}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JS.InvokeAsync<string>("themeInterop.getTheme");
+            _isDark = theme == "dark";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        _isDark = !_isDark;
+        await JS.InvokeVoidAsync("themeInterop.setTheme", _isDark ? "dark" : "light");
     }
 }
 

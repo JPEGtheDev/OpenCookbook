@@ -30,6 +30,29 @@
     --max-width: 1100px;
 }
 
+/* --- Dark Mode --- */
+[data-theme="dark"] {
+    --color-bg: #1a1512;
+    --color-surface: #261f1b;
+    --color-text: #f0ebe6;
+    --color-text-muted: #a89d97;
+    --color-border: #3d3330;
+    --color-accent: #e07050;
+    --color-accent-hover: #c05c3c;
+    --color-link: #d0704a;
+    --color-stable: #66bb6a;
+    --color-stable-bg: #1a3a1c;
+    --color-beta: #ffa726;
+    --color-beta-bg: #3a2a00;
+    --color-draft: #ef5350;
+    --color-draft-bg: #3a1212;
+    --color-header-bg: #261f1b;
+    --color-header-text: #f0ebe6;
+    --color-card-shadow: rgba(0, 0, 0, 0.35);
+    --color-note-bg: #2a2018;
+    --color-note-border: #4a3828;
+}
+
 /* --- Reset & Base --- */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -122,6 +145,29 @@ ul, ol {
 
 .app-footer p {
     margin: 0;
+}
+
+/* --- Dark Mode Toggle --- */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.6rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    font-family: var(--font-body);
+}
+
+.theme-toggle:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
 }
 
 /* --- Loading & Error States --- */
@@ -758,7 +804,7 @@ ul, ol {
 }
 
 .ingredient-locked {
-    background: #fff8e1;
+    background: var(--color-beta-bg);
     border-radius: var(--radius-sm);
     margin: 0 -0.25rem;
     padding-left: 0.25rem;
@@ -779,7 +825,7 @@ ul, ol {
     padding: 0.15rem 0.3rem;
     border: 1px solid var(--color-beta);
     border-radius: var(--radius-sm);
-    background: #fff;
+    background: var(--color-surface);
     color: var(--color-text);
     text-align: right;
 }
