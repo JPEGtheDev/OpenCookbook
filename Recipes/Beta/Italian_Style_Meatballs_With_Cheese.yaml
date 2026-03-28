@@ -49,6 +49,7 @@ ingredients:
       - quantity: 4.5
         unit: g
         name: Fine Sea Salt
+        volume_alt: "3/4 tsp."
         nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 0.8
         unit: g
@@ -58,7 +59,7 @@ ingredients:
       - quantity: 0.2
         unit: g
         name: Red Pepper Flakes
-        volume_alt: "Pinch"
+        volume_alt: "1/8 tsp."
         nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
       - quantity: 20
         unit: g
@@ -84,7 +85,6 @@ utensils:
       - Mixing Bowl
       - Baking Sheet
       - Pan or Skillet
-      - Oil for cooking
 
 instructions:
   - heading: null
