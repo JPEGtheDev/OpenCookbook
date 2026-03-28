@@ -30,7 +30,7 @@ public class NutritionDbDeserializationTests
     }
 
     [Fact]
-    public async Task GetAllEntriesAsync_RealJson_DeserializesAllEntries()
+    public async Task GetAllEntriesAsync_RealJson_ContainsCoreEntriesAndIsNotEmpty()
     {
         // Arrange
         var repository = await CreateRepositoryFromRealJsonAsync();

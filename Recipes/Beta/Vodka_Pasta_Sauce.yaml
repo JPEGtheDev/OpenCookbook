@@ -3,7 +3,7 @@ version: "1.0"
 author: Jonathan Petz | JPEGtheDev
 description: >
   A classic red sauce featuring tomatoes, garlic, and a splash of vodka to bring
-  out the depth of flavor. This recipe yields enough sauce to pair with 1 lb of
+  out the depth of flavor. This recipe yields enough sauce to pair with 454g of
   spaghetti. Choose between a smooth blended sauce or rustic texture to your preference.
 status: beta
 tags:
@@ -46,7 +46,7 @@ ingredients:
         unit: g
         name: Crushed Tomatoes (canned)
         nutrition_id: "9d4c3f5e-2b7a-4a1f-8e3d-7c9b1f6a2e5d"
-        note: "One 28 oz can"
+        note: "Standard large can (~794g)"
       - quantity: 1.2
         unit: g
         name: Black Pepper
@@ -55,7 +55,7 @@ ingredients:
       - quantity: 0.3
         unit: g
         name: Red Pepper Flakes
-        volume_alt: "Pinch"
+        volume_alt: "1/8 tsp."
         nutrition_id: "17a51f74-e34e-5526-907b-a5438ac9163b"
       - quantity: 1
         unit: g
@@ -117,16 +117,16 @@ instructions:
     optional: true
     steps:
       - text: "Bring a large pot of salted water to a boil (salt until it tastes like seawater)"
-      - text: "Add 1 lb of spaghetti and cook according to package instructions until al dente"
+      - text: "Add 454g of spaghetti and cook according to package instructions until al dente"
         notes:
           - "Italian brands typically indicate al dente cooking time"
           - "Test at the lower end of the suggested range"
       - text: "Transfer hot spaghetti directly to the sauce using tongs (do not drain the pasta water)"
-      - text: "Add approximately 1 cup (6 oz ladle) of pasta water to the sauce and combine"
+      - text: "Add approximately 240 ml of pasta water to the sauce and combine"
         notes:
           - "The starchy water helps emulsify the sauce and coat the pasta"
           - "Add additional pasta water as needed to achieve desired sauce consistency"
-      - text: "Using a 6 oz ladle and tongs, twirl a portion of spaghetti into a nest"
+      - text: "Using a medium ladle (~180 ml) and tongs, twirl a portion of spaghetti into a nest"
       - text: "Plate the twirled spaghetti, holding the ladle underneath to catch sauce"
       - text: "Pour sauce over the top and serve immediately"
 
@@ -144,6 +144,6 @@ instructions:
           - "Thaw in refrigerator before reheating"
 
 notes:
-  - "This recipe yields approximately 1000g of sauce, designed to pair with 1 lb of spaghetti"
+  - "This recipe yields approximately 1000g of sauce, designed to pair with 454g of spaghetti"
   - "Branching paths for texture (smooth vs rustic) are optional — choose the style you prefer"
   - "See PASTA_COOKING.md reference guide for general pasta cooking techniques and al dente standards"
