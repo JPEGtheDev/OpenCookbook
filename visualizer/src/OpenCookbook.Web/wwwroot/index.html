@@ -10,6 +10,21 @@
     <title>OpenCookbook</title>
     <base href="/OpenCookbook/" />
     <link rel="stylesheet" href="css/app.css" />
+    <script>
+        // Apply OS colour-scheme immediately to avoid a flash of wrong theme.
+        // No cookies or localStorage — resets to OS preference on every page load.
+        (function () {
+            var prefersDark = false;
+            if (window.matchMedia && typeof window.matchMedia === 'function') {
+                try {
+                    prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                } catch (e) {
+                    prefersDark = false;
+                }
+            }
+            document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+        })();
+    </script>
 </head>
 
 <body>
@@ -31,6 +46,21 @@
     <!-- __CACHE_BUST__ is replaced with the app version during CI/CD deployment -->
     <script src="_framework/blazor.webassembly.js?v=__CACHE_BUST__" autostart="false"></script>
     <script>
+        // Theme interop — called from Blazor via IJSRuntime
+        window.themeInterop = {
+            getTheme: function () {
+                return document.documentElement.getAttribute('data-theme') || 'light';
+            },
+            setTheme: function (theme) {
+                var normalized = (theme == null ? '' : String(theme)).toLowerCase();
+                if (normalized !== 'dark' && normalized !== 'light') {
+                    var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    normalized = prefersDark ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', normalized);
+            }
+        };
+
         Blazor.start({
             loadBootResource: function (type, name, defaultUri, integrity) {
                 if (type === 'manifest') {

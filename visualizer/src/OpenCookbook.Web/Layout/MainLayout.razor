@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
 @inject NavigationManager Nav
+@inject IJSRuntime JS
 @using System.Reflection
 
 <div class="app-layout">
@@ -11,11 +12,18 @@
     </main>
     <footer class="app-footer">
         <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · @_appVersion</p>
+        @if (_isDark.HasValue)
+        {
+            <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark.Value ? "Switch to light mode" : "Switch to dark mode")">
+                @(_isDark.Value ? "☀️ Light mode" : "🌙 Dark mode")
+            </button>
+        }
     </footer>
 </div>
 
 @code {
     private string _appVersion = "dev";
+    private bool? _isDark;
 
     protected override void OnInitialized()
     {
@@ -37,6 +45,33 @@
         _appVersion = commitHash is not null
             ? $"v{version} ({commitHash[..Math.Min(7, commitHash.Length)]})"
             : $"v{version}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JS.InvokeAsync<string>("themeInterop.getTheme");
+            _isDark = theme == "dark";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleThemeAsync()
+    {
+        var desiredIsDark = !(_isDark ?? false);
+        var desiredTheme = desiredIsDark ? "dark" : "light";
+
+        try
+        {
+            await JS.InvokeVoidAsync("themeInterop.setTheme", desiredTheme);
+            _isDark = desiredIsDark;
+        }
+        catch
+        {
+            // If the JS interop call fails, leave _isDark unchanged so the UI
+            // remains consistent with the actual applied theme.
+        }
     }
 }
 
