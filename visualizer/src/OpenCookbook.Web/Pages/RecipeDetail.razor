@@ -1,4 +1,4 @@
-@page "/recipe/{Path}"
+@page "/recipe/{**Path}"
 @inject RecipeService RecipeService
 @inject RecipeComposer RecipeComposer
 @inject NutritionCalculator NutritionCalculator
@@ -110,7 +110,7 @@ else if (_recipe is not null)
                 <button class="export-btn export-btn-primary" @onclick="ShowExportModal">Export Ingredients</button>
             </div>
             <div class="share-url-section">
-                <p class="share-url-hint">To import into <strong>Lose It!</strong>, paste this URL into the app's "Import Recipe" feature:</p>
+                <p class="share-url-hint">Share this recipe with any app that can import from a website URL:</p>
                 <div class="share-url-row">
                     <code class="share-url-code">@ShareUrl</code>
                     <button class="export-btn export-btn-copy" @onclick="CopyShareUrl">

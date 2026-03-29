@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """generate-recipe-pages.py — Generate static HTML recipe share pages with Schema.org JSON-LD.
 
-Each generated page allows external apps (e.g. Lose It!) to import a recipe by URL.
-The page contains machine-readable Schema.org Recipe markup and redirects browsers to
-the full Blazor recipe view.
+Each generated page contains machine-readable Schema.org Recipe markup and redirects browsers
+to the full Blazor recipe view.
 
 Usage:
     python3 scripts/generate-recipe-pages.py <recipes_dir> <output_dir> <base_url>
@@ -137,12 +136,11 @@ def main():
         # Slug: recipe path without .yaml extension, used as the share/ subdirectory
         page_slug = rel_path[:-5] if rel_path.endswith(".yaml") else rel_path
 
-        # URL of the static share page (what Lose It! scrapes)
+        # URL of the static share page
         page_url = f"{base_url}/share/{page_slug}/"
 
-        # URL of the Blazor recipe view (where the meta refresh sends humans)
-        # Encode the full path including slashes so it matches the Blazor @page "/recipe/{Path}"
-        app_url = f"{base_url}/recipe/{quote(rel_path, safe='')}"
+        # URL of the Blazor recipe view (where the meta refresh sends browsers)
+        app_url = f"{base_url}/recipe/{quote(rel_path, safe='/')}"
 
         recipe_name = data.get("name", page_slug)
         schema = _build_schema(data, page_url)
