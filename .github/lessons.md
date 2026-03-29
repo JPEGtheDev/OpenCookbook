@@ -35,6 +35,11 @@ record; the skills and instructions are where rules live and get enforced.
 **What happened:** Recipe introduced new ingredients (Fresh Garlic, Crushed Tomatoes, Vodka) with `nutrition_id` fields pointing to entries that didn't exist in `docs/data/nutrition-db.json`. PR reviewer caught the gap.
 **Absorbed into:** recipe-validation skill → Consistency section; new checklist item added.
 
+### 2026-03-28 — Updating docs/data/nutrition-db.json requires a build to sync wwwroot
+
+**What happened:** PR #69 added new nutrition DB entries to `docs/data/nutrition-db.json` but did not rebuild, so the committed `wwwroot/data/nutrition-db.json` was left at the old entry count. The incremental `CopyNutritionDb` target (using `Inputs`/`Outputs`) skipped the copy in CI because both files had the same checkout timestamp. The deployed app showed 3 ingredients as missing nutrition data.
+**Absorbed into:** recipe-validation skill → Consistency section; validation checklist item updated to clarify the wwwroot copy is build-generated (not manually tracked).
+
 ### 2026-03-18 — Always pluralize units in rendered quantity strings
 
 **What happened:** The "Makes 24 Serving" yields display showed a singular unit regardless of quantity. The `Pluralize` helper existed in `NutritionPanel` but was not applied to the yields line in `IngredientList`.

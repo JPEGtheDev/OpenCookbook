@@ -4,7 +4,7 @@ description: Checklist for validating an OpenCookbook recipe. Use when reviewing
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.1"
+  version: "1.2"
 ---
 
 # Recipe Validation
@@ -104,7 +104,7 @@ Do not say "looks good" without checking each item. Fix what you can. Flag what 
 - [ ] `notes` field only present when status is `beta` or `draft`
 - [ ] **No imperial units in text fields** (description, step text, ingredient notes, top-level notes) — check for `lb`, `oz`, `cup`, `tbsp`, `tsp`, `°F` alone — any found must be converted or removed
 - [ ] All `nutrition_id` values reference actual entries in `docs/data/nutrition-db.json` — if a recipe introduces new ingredients, the DB entries must be added in the same PR
-
+    - [ ] If `docs/data/nutrition-db.json` was changed in this PR, run `dotnet build` and confirm the wwwroot copy is generated at `visualizer/src/OpenCookbook.Web/wwwroot/data/nutrition-db.json` (and is not tracked in git)
 ---
 
 ## How to Report Issues
