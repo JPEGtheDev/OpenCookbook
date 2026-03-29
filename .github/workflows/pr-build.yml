@@ -47,6 +47,13 @@ jobs:
           pip install pyyaml==6.0.2 --quiet
           python3 scripts/generate-recipe-index.py visualizer/output/wwwroot/recipes
 
+      - name: Generate recipe share pages
+        run: |
+          python3 scripts/generate-recipe-pages.py \
+            visualizer/output/wwwroot/recipes \
+            visualizer/output/wwwroot \
+            "http://localhost:8000"
+
       - name: Add .nojekyll and 404.html
         run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 

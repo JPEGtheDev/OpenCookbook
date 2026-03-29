@@ -602,6 +602,40 @@ ul, ol {
     flex-wrap: wrap;
 }
 
+/* --- Share URL section --- */
+.share-url-section {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.share-url-hint {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.share-url-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.share-url-code {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 0.82rem;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.3rem 0.6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: all;
+}
+
 .export-btn {
     display: inline-block;
     padding: 0.45rem 1rem;
