@@ -256,7 +256,7 @@ else if (_recipe is not null)
             ? resolved
             : $"{currentDir}/{resolved}";
 
-        return $"{Nav.BaseUri}recipe/{Uri.EscapeDataString(fullPath)}";
+        return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(fullPath)}";
     }
 
     private static string? GetRecipeDirectory(string path)

@@ -36,7 +36,7 @@
             <div class="recipe-grid">
                 @foreach (var recipe in _filteredRecipes)
                 {
-                    <a class="recipe-card" href="recipe/@Uri.EscapeDataString(recipe.Path)">
+                    <a class="recipe-card" href="recipe/@RecipeUrlHelper.EscapeRecipePath(recipe.Path)">
                         <h2 class="recipe-card-title">@recipe.Name</h2>
                         <p class="recipe-card-description">@recipe.Description</p>
                         <StatusBadge Status="@recipe.Status" />
