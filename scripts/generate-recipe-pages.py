@@ -138,7 +138,7 @@ def main():
         page_slug = rel_path[:-5] if rel_path.endswith(".yaml") else rel_path
 
         # URL of the static share page (what Lose It! scrapes)
-        page_url = f"{base_url}/share/{page_slug}"
+        page_url = f"{base_url}/share/{page_slug}/"
 
         # URL of the Blazor recipe view (where the meta refresh sends humans)
         # Encode the full path including slashes so it matches the Blazor @page "/recipe/{Path}"
@@ -148,10 +148,7 @@ def main():
         schema = _build_schema(data, page_url)
         html = _generate_html(recipe_name, schema, app_url)
 
-        page_dir = os.path.join(output_dir, "share", os.path.dirname(page_slug))
-        os.makedirs(page_dir, exist_ok=True)
         out_path = os.path.join(output_dir, "share", page_slug, "index.html")
-        # Ensure the leaf directory exists (page_slug may be a flat name with no subdirectory)
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(html)

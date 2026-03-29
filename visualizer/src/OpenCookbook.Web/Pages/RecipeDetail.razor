@@ -114,7 +114,7 @@ else if (_recipe is not null)
                 <div class="share-url-row">
                     <code class="share-url-code">@ShareUrl</code>
                     <button class="export-btn export-btn-copy" @onclick="CopyShareUrl">
-                        @(_shareUrlCopied ? "✓ Copied!" : "Copy URL")
+                        @(_shareUrlCopied ? "✓ Copied!" : "Share this link")
                     </button>
                 </div>
             </div>
@@ -273,7 +273,7 @@ else if (_recipe is not null)
             var slug = _decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
                 ? _decodedPath[..^5]
                 : _decodedPath;
-            return $"{Nav.BaseUri}share/{slug}";
+            return $"{Nav.BaseUri}share/{slug}/";
         }
     }
 
