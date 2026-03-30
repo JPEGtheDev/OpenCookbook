@@ -12,12 +12,18 @@
     </main>
     <footer class="app-footer">
         <p>OpenCookbook — CC0 1.0 Universal (Public Domain) · @_appVersion</p>
-        @if (_isDark.HasValue)
-        {
-            <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark.Value ? "Switch to light mode" : "Switch to dark mode")">
-                @(_isDark.Value ? "☀️ Light mode" : "🌙 Dark mode")
-            </button>
-        }
+        <div class="footer-controls">
+            @if (_isDark.HasValue)
+            {
+                <button class="theme-toggle" @onclick="ToggleThemeAsync" aria-label="@(_isDark.Value ? "Switch to light mode" : "Switch to dark mode")">
+                    @(_isDark.Value ? "☀️ Light mode" : "🌙 Dark mode")
+                </button>
+            }
+            <a href="https://github.com/JPEGtheDev/OpenCookbook" target="_blank" rel="noopener noreferrer">
+                <img src="https://img.shields.io/badge/GitHub-JPEGtheDev%2FOpenCookbook-181717?style=flat&logo=github&logoColor=white"
+                     alt="GitHub: JPEGtheDev/OpenCookbook" height="20" referrerpolicy="no-referrer" loading="lazy" />
+            </a>
+        </div>
     </footer>
 </div>
 

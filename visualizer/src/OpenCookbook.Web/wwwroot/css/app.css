@@ -160,7 +160,6 @@ ul, ol {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin-top: 0.6rem;
     padding: 0.3rem 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: 999px;
@@ -176,6 +175,23 @@ ul, ol {
     background: var(--color-bg);
     color: var(--color-text);
     border-color: var(--color-text-muted);
+}
+
+/* --- Footer Controls Row (theme toggle + GitHub badge) --- */
+.footer-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.footer-controls a {
+    display: inline-flex;
+}
+
+.footer-controls a:hover {
+    text-decoration: none;
 }
 
 /* --- Loading & Error States --- */
