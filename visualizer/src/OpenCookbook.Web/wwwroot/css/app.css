@@ -186,6 +186,14 @@ ul, ol {
     margin-top: 0.6rem;
 }
 
+.footer-controls a {
+    display: inline-flex;
+}
+
+.footer-controls a:hover {
+    text-decoration: none;
+}
+
 /* --- Loading & Error States --- */
 .loading-message {
     text-align: center;
