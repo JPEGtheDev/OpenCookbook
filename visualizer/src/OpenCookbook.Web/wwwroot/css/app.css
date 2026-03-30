@@ -178,6 +178,32 @@ ul, ol {
     border-color: var(--color-text-muted);
 }
 
+/* --- GitHub Repository Badge --- */
+.github-badge-wrapper {
+    margin-top: 0.6rem;
+}
+
+.github-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    font-family: var(--font-body);
+}
+
+.github-badge:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+}
+
 /* --- Loading & Error States --- */
 .loading-message {
     text-align: center;
