@@ -11,6 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddInfrastructure();
+builder.Services.AddSingleton<DietaryInferenceService>();
 builder.Services.AddScoped<RecipeService>();
 builder.Services.AddScoped<RecipeComposer>(sp =>
     new RecipeComposer(sp.GetRequiredService<IRecipeRepository>()));

@@ -10,7 +10,7 @@ public class RecipeServiceTests
     private static RecipeService CreateService(IReadOnlyList<RecipeIndex> index)
     {
         var repo = new StubIndexRepository(index);
-        return new RecipeService(repo);
+        return new RecipeService(repo, new DietaryInferenceService());
     }
 
     private static RecipeIndex MakeEntry(string name, string[] tags, string[] ingredients) =>

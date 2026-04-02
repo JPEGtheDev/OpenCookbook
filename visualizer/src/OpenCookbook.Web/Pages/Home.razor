@@ -23,13 +23,104 @@
                    class="search-input"
                    placeholder="Search by name, ingredient or tag…"
                    aria-label="Search recipes by name, ingredient or tag"
-                   value="@_searchQuery"
+                   value="@_filter.SearchQuery"
                    @oninput="OnSearchInput" />
+        </div>
+
+        <div class="filter-panel">
+            @* ── Dietary filters ── *@
+            <div class="filter-section">
+                <span class="filter-label">Dietary:</span>
+                <div class="filter-chips">
+                    <button class="filter-chip @(_filter.FilterDairyFree ? "filter-chip--active" : "")"
+                            @onclick="ToggleDairyFree"
+                            aria-pressed="@_filter.FilterDairyFree.ToString().ToLower()">
+                        🥛 Dairy Free
+                    </button>
+                    <button class="filter-chip @(_filter.FilterVegetarian ? "filter-chip--active" : "")"
+                            @onclick="ToggleVegetarian"
+                            aria-pressed="@_filter.FilterVegetarian.ToString().ToLower()">
+                        🥦 Vegetarian
+                    </button>
+                    <button class="filter-chip @(_filter.FilterVegan ? "filter-chip--active" : "")"
+                            @onclick="ToggleVegan"
+                            aria-pressed="@_filter.FilterVegan.ToString().ToLower()">
+                        🌱 Vegan
+                    </button>
+                </div>
+            </div>
+
+            @* ── Tag filters ── *@
+            @if (_availableTags.Count > 0)
+            {
+                <div class="filter-section">
+                    <span class="filter-label">Tags:</span>
+                    <div class="filter-chips">
+                        @foreach (var tag in _availableTags)
+                        {
+                            var isActive = _filter.SelectedTags.Contains(tag, StringComparer.OrdinalIgnoreCase);
+                            <button class="filter-chip @(isActive ? "filter-chip--active" : "")"
+                                    @onclick="() => ToggleTag(tag)"
+                                    aria-pressed="@isActive.ToString().ToLower()">
+                                @tag
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* ── Ingredient filter ── *@
+            <div class="filter-section">
+                <span class="filter-label">Ingredients:</span>
+                <div class="ingredient-filter">
+                    <div class="ingredient-search-wrap">
+                        <label for="ingredient-search" class="visually-hidden">Filter by ingredient</label>
+                        <input id="ingredient-search"
+                               type="search"
+                               class="search-input ingredient-search-input"
+                               placeholder="Type to filter ingredients…"
+                               aria-label="Filter by ingredient"
+                               value="@_ingredientSearch"
+                               @oninput="OnIngredientSearchInput" />
+                    </div>
+                    @if (_filter.SelectedIngredients.Count > 0)
+                    {
+                        <div class="filter-chips filter-chips--selected">
+                            @foreach (var ing in _filter.SelectedIngredients)
+                            {
+                                <button class="filter-chip filter-chip--active filter-chip--removable"
+                                        @onclick="() => RemoveIngredient(ing)"
+                                        title="Remove @ing">
+                                    @ing ✕
+                                </button>
+                            }
+                        </div>
+                    }
+                    @if (_ingredientSuggestions.Count > 0)
+                    {
+                        <ul class="ingredient-suggestions" role="listbox" aria-label="Ingredient suggestions">
+                            @foreach (var ing in _ingredientSuggestions)
+                            {
+                                <li class="ingredient-suggestion"
+                                    role="option"
+                                    @onclick="() => AddIngredient(ing)">
+                                    @ing
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+            @if (!_filter.IsEmpty)
+            {
+                <button class="filter-clear-btn" @onclick="ClearAllFilters">Clear all filters</button>
+            }
         </div>
 
         @if (_filteredRecipes.Count == 0)
         {
-            <p class="no-recipes-message">No recipes found for "<strong>@_searchQuery</strong>".</p>
+            <p class="no-recipes-message">No recipes found@(string.IsNullOrWhiteSpace(_filter.SearchQuery) ? "" : $" for \"{_filter.SearchQuery}\"").</p>
         }
         else
         {
@@ -52,23 +143,105 @@
     private List<RecipeIndex> _filteredRecipes = [];
     private bool _loading = true;
     private string? _error;
-    private string _searchQuery = string.Empty;
+
+    private RecipeFilter _filter = new();
+
+    private IReadOnlyList<string> _availableTags = [];
+    private IReadOnlyList<string> _availableIngredients = [];
+
+    private string _ingredientSearch = string.Empty;
+    private List<string> _ingredientSuggestions = [];
 
     private async Task OnSearchInput(ChangeEventArgs e)
     {
-        _searchQuery = e.Value?.ToString() ?? string.Empty;
+        _filter.SearchQuery = e.Value?.ToString() ?? string.Empty;
+        await ApplyFilterAsync();
+    }
+
+    private async Task ToggleTag(string tag)
+    {
+        if (_filter.SelectedTags.Contains(tag, StringComparer.OrdinalIgnoreCase))
+            _filter.SelectedTags.RemoveAll(t => t.Equals(tag, StringComparison.OrdinalIgnoreCase));
+        else
+            _filter.SelectedTags.Add(tag);
+        await ApplyFilterAsync();
+    }
+
+    private async Task ToggleDairyFree()
+    {
+        _filter.FilterDairyFree = !_filter.FilterDairyFree;
+        await ApplyFilterAsync();
+    }
+
+    private async Task ToggleVegetarian()
+    {
+        _filter.FilterVegetarian = !_filter.FilterVegetarian;
+        await ApplyFilterAsync();
+    }
+
+    private async Task ToggleVegan()
+    {
+        _filter.FilterVegan = !_filter.FilterVegan;
+        await ApplyFilterAsync();
+    }
+
+    private void OnIngredientSearchInput(ChangeEventArgs e)
+    {
+        _ingredientSearch = e.Value?.ToString() ?? string.Empty;
+        UpdateIngredientSuggestions();
+    }
+
+    private void UpdateIngredientSuggestions()
+    {
+        if (string.IsNullOrWhiteSpace(_ingredientSearch))
+        {
+            _ingredientSuggestions = [];
+            return;
+        }
+
+        var term = _ingredientSearch.Trim();
+        _ingredientSuggestions = _availableIngredients
+            .Where(i =>
+                i.Contains(term, StringComparison.OrdinalIgnoreCase) &&
+                !_filter.SelectedIngredients.Any(sel => sel.Equals(i, StringComparison.OrdinalIgnoreCase)))
+            .Take(10)
+            .ToList();
+    }
+
+    private async Task AddIngredient(string ingredient)
+    {
+        if (!_filter.SelectedIngredients.Any(i => i.Equals(ingredient, StringComparison.OrdinalIgnoreCase)))
+            _filter.SelectedIngredients.Add(ingredient);
+        _ingredientSearch = string.Empty;
+        _ingredientSuggestions = [];
+        await ApplyFilterAsync();
+    }
+
+    private async Task RemoveIngredient(string ingredient)
+    {
+        _filter.SelectedIngredients.RemoveAll(i => i.Equals(ingredient, StringComparison.OrdinalIgnoreCase));
+        await ApplyFilterAsync();
+    }
+
+    private async Task ClearAllFilters()
+    {
+        _filter = new RecipeFilter();
+        _ingredientSearch = string.Empty;
+        _ingredientSuggestions = [];
         await ApplyFilterAsync();
     }
 
     private async Task ApplyFilterAsync()
     {
-        _filteredRecipes = (await RecipeService.SearchRecipesAsync(_searchQuery)).ToList();
+        _filteredRecipes = (await RecipeService.FilterRecipesAsync(_filter)).ToList();
     }
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            _availableTags = await RecipeService.GetAvailableTagsAsync();
+            _availableIngredients = await RecipeService.GetAvailableIngredientsAsync();
             await ApplyFilterAsync();
             _loaded = true;
         }
