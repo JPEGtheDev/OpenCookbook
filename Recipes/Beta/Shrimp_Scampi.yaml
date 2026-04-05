@@ -25,6 +25,11 @@ ingredients:
         unit: ml
         name: Pasta Water (reserved)
         note: "Set aside from boiling water; amount is approximate — adjust as needed to achieve desired sauce consistency"
+      - quantity: 15
+        unit: g
+        name: Salt
+        volume_alt: "1 tbsp."
+        note: "For boiling water; additional salt to taste for final adjustment"
 
 utensils:
   - heading: null
@@ -40,11 +45,11 @@ instructions:
     steps:
       - text: Bring a large pot of water to a rolling boil. Add salt generously (approximately 10–15 g per liter of water to taste like sea water). Set aside the pasta water (you will reserve approximately 177 ml from this later).
       - text: Place the full batch of Lemon Butter Sauce in a large skillet or saucepan over medium-high heat until melted and shimmering.
-      - text: Add the peeled and deveined raw shrimp to the hot butter sauce. Start a 6-minute timer immediately.
+      - text: Add the peeled and deveined raw shrimp to the hot butter sauce. Start a 6-minute timer immediately to cook the shrimp.
       - text: At the 2-minute mark, add the dry angel hair pasta to the boiling salted water and stir immediately to prevent sticking. Start a 4-minute timer for the pasta.
-      - text: At the 3-minute mark (3 minutes remaining on shrimp timer), flip each shrimp using tongs so the other side cooks evenly.
-      - text: When the pasta timer expires (at the 6-minute shrimp mark), transfer the cooked al dente pasta directly to the skillet with the shrimp using tongs. Reserve any remaining pasta cooking water.
-      - text: Add approximately 177 ml of the reserved pasta water to the skillet and toss everything together using tongs for 1–2 minutes until the pasta is well coated and the sauce is silky.
+      - text: At the 3-minute mark (3 minutes remaining on shrimp timer), flip each shrimp using tongs so the other side cooks evenly. The shrimp should be turning opaque white with pink edges.
+      - text: When the pasta timer expires (at the 6-minute shrimp mark), the shrimp should be fully opaque and pink. Transfer the cooked al dente pasta directly to the skillet with the shrimp using tongs. Reserve any remaining pasta cooking water.
+      - text: Add approximately 177 ml of the reserved pasta water to the skillet and toss everything together using tongs for 1–2 minutes until the pasta is well coated and the sauce is silky. Adjust water amount based on desired sauce consistency — more for a thinner sauce, less for a thicker sauce.
       - text: Taste and adjust salt if needed — the pasta water and Lemon Butter Sauce provide most of the seasoning, but a pinch more may be desired.
       - text: Divide immediately into serving bowls and serve hot.
 
