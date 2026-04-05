@@ -16,5 +16,8 @@ obj/
 ## Build output
 publish/
 
+## Test results
+TestResults/
+
 ## Generated at build time — source-of-truth lives in docs/data/
 visualizer/src/OpenCookbook.Web/wwwroot/data/

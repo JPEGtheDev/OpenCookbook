@@ -1,4 +1,3 @@
-````skill
 ---
 name: execution
 description: Autonomous execution protocol for implementing tasks. Governs planning, iteration, subagent use, verification, and self-correction. Use when executing any non-trivial implementation work — recipe edits, code changes, CI/CD updates, or multi-step tasks.
@@ -239,5 +238,3 @@ Self-evaluate (per self-evaluation skill)
     ↓
 Ship it
 ```
-
-````

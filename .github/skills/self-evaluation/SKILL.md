@@ -1,4 +1,3 @@
-````skill
 ---
 name: self-evaluation
 description: End-of-session self-evaluation for continuous improvement. Run before finalizing any session to capture lessons learned, identify skill updates, and improve agent effectiveness. Use when completing a task, reviewing work quality, or improving project skills.
@@ -132,5 +131,3 @@ This ensures the behavior is habitual, not optional.
 ## Reference
 
 For examples of how lessons are captured and absorbed, see [lessons.md](../../lessons.md). Each entry shows the pattern: what happened → where the rule now lives.
-
-````
