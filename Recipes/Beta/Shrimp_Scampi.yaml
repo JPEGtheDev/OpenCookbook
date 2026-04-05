@@ -1,0 +1,59 @@
+name: Shrimp Scampi
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A quick and elegant dish of tender shrimp cooked in lemon butter sauce with
+  al dente pasta. Timing is critical — this comes together in just a few minutes
+  once components are ready. Best served immediately while the sauce coats the pasta.
+status: beta
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 453
+        unit: g
+        name: Large Shrimp
+        note: "Peeled, deveined, raw"
+      - quantity: 453
+        unit: g
+        name: Angel Hair Pasta (dry)
+      - quantity: 1
+        unit: whole
+        name: Lemon Butter Sauce (full batch)
+        doc_link: ./Lemon_Butter_Sauce.yaml
+      - quantity: 177
+        unit: ml
+        name: Pasta Water (reserved)
+        note: "Set aside from boiling water; amount is approximate — adjust as needed to achieve desired sauce consistency"
+
+utensils:
+  - heading: null
+    items:
+      - Large Skillet or Saucepan
+      - Pot for pasta
+      - Tongs
+      - Colander
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Bring a large pot of water to a rolling boil. Add salt generously (approximately 10–15 g per liter of water to taste like sea water). Set aside the pasta water (you will reserve approximately 177 ml from this later).
+      - text: Place the full batch of Lemon Butter Sauce in a large skillet or saucepan over medium-high heat until melted and shimmering.
+      - text: Add the peeled and deveined raw shrimp to the hot butter sauce. Start a 6-minute timer immediately.
+      - text: At the 2-minute mark, add the dry angel hair pasta to the boiling salted water and stir immediately to prevent sticking. Start a 4-minute timer for the pasta.
+      - text: At the 3-minute mark (3 minutes remaining on shrimp timer), flip each shrimp using tongs so the other side cooks evenly.
+      - text: When the pasta timer expires (at the 6-minute shrimp mark), transfer the cooked al dente pasta directly to the skillet with the shrimp using tongs. Reserve any remaining pasta cooking water.
+      - text: Add approximately 177 ml of the reserved pasta water to the skillet and toss everything together using tongs for 1–2 minutes until the pasta is well coated and the sauce is silky.
+      - text: Taste and adjust salt if needed — the pasta water and Lemon Butter Sauce provide most of the seasoning, but a pinch more may be desired.
+      - text: Divide immediately into serving bowls and serve hot.
+
+notes:
+  - "Timing is essential for this recipe. Have all components — boiling water, sauce, shrimp, and pasta — ready before you begin."
+  - "Pasta water amount is approximate. Add more or less to achieve your preferred sauce consistency — thicker or looser."
+  - "The shrimp will continue to cook slightly after being removed from direct heat, so do not overcook in the pan."
+  - "If the Lemon Butter Sauce has been frozen in cubes, thaw and warm it in the skillet while waiting for water to boil."
+
+related:
+  - label: Lemon Butter Sauce
+    path: ./Lemon_Butter_Sauce.yaml
