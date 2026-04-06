@@ -188,6 +188,7 @@ These are if-then rules. Follow them literally.
 | You finish editing a recipe | Run the validation checklist from the recipe-validation skill. Do not skip this. |
 | You finish editing any `.github/` file | Re-read the file and verify it against the rules in this document. Check if any lessons in [lessons.md](lessons.md) have not been absorbed into skills yet — if so, absorb them now. |
 | The user corrects you | Log a short entry in [lessons.md](lessons.md), then immediately absorb the rule into the correct skill file or this Working Principles table. Do not leave rules only in lessons. |
+| User clarifies a design decision | Accept it as final. Do not re-propose alternatives or suggest variations later. |
 | You start a new task from a todo list | Re-read the relevant skill file(s) before beginning. Do not rely on cached content from earlier in the session. |
 | You need a spice gram-to-volume conversion | Look it up in [SPICE_CONVERSIONS.md](references/SPICE_CONVERSIONS.md). Do not guess. |
 | A validation gap or new error pattern is found | Add a rule to [RULES.md](references/RULES.md) and a checklist item to the validation skill. |
@@ -199,5 +200,7 @@ These are if-then rules. Follow them literally.
 | You scale quantities from a test batch | Show per-serving math and final amount, then ask the user to confirm. Do not assume base vs. target. |
 | You're unsure about anything | Ask the user. Do not guess. Do not assume. |
 | You start a git task | Run `git branch` to verify current branch. Create a feature branch BEFORE making any commits. |
+| Before you `git commit` or `git push` | Verify current branch with `git branch`. Never commit/push from `main` without explicit user approval. |
+| User reports something is broken | Investigate first with grep/code search; do not theorize. Only explain after finding root cause. |
 | You write a git pre-commit hook | Use `git rev-parse --show-toplevel` for path resolution, never bash tricks like `dirname ${BASH_SOURCE[0]}`. |
 | You need to delete data (DB entry, file, code) | Verify nothing references it first with `grep` or code search. Do not assume deletion is safe. |
