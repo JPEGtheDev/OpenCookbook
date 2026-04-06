@@ -11,6 +11,13 @@ When recipes are created with `nutrition_id` fields, it's critical that:
 
 If names don't match, nutrition data won't display in the web app even though IDs are present.
 
+## Prerequisites
+
+- **Python 3.6+** and **PyYAML**: Install with:
+  ```bash
+  pip install pyyaml==6.0.2
+  ```
+
 ## Setup: Install the Pre-Commit Hook
 
 Run this **once** after cloning the repository:
@@ -29,7 +36,7 @@ When you try to commit, the hook will run and block the commit if validation fai
 ```bash
 $ git commit -m "Add new recipe"
 ❌ Recipe validation FAILED:
-  • MyRecipe.yaml (My Recipe), ingredient 'Salt': 
+  • Recipes/Beta/MyRecipe.yaml (My Recipe), ingredient 'Salt': 
     name does not match nutrition DB entry 'Fine Sea Salt' (nutrition_id: 5c00ccf3...)
 ```
 
@@ -99,3 +106,4 @@ To re-enable it later:
 ```bash
 ln -s ../../scripts/pre-commit-validate.sh .git/hooks/pre-commit
 ```
+

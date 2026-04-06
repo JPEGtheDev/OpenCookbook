@@ -14,9 +14,13 @@ Exit codes:
   0: All validations passed
   1: Validation errors found (details printed to stderr)
   2: Script error (file not found, invalid JSON, etc.)
+
+Prerequisites:
+  - PyYAML: Install with `pip install pyyaml==6.0.2`
 """
 
 import json
+import subprocess
 import sys
 import yaml
 from pathlib import Path
@@ -100,7 +104,8 @@ def load_recipes(repo_root):
             try:
                 with open(yaml_file) as f:
                     recipe = yaml.safe_load(f)
-                recipes.append((yaml_file, recipe))
+                rel_path = yaml_file.relative_to(repo_root)
+                recipes.append((rel_path, recipe))
             except Exception as e:
                 print(f"ERROR: Failed to load {yaml_file}: {e}", file=sys.stderr)
                 return None
@@ -117,13 +122,13 @@ def validate_recipes(recipes, nutrition_db):
     """
     errors = []
     
-    for yaml_file, recipe in recipes:
+    for rel_path, recipe in recipes:
         if not recipe or "ingredients" not in recipe:
             continue
         
-        recipe_name = recipe.get("name", yaml_file.name)
+        recipe_name = recipe.get("name", rel_path.name)
         
-        for group_idx, group in enumerate(recipe.get("ingredients", [])):
+        for group in recipe.get("ingredients", []):
             for item_idx, item in enumerate(group.get("items", [])):
                 ingredient_name = item.get("name", f"[Unknown at index {item_idx}]")
                 nutrition_id = item.get("nutrition_id")
@@ -135,7 +140,7 @@ def validate_recipes(recipes, nutrition_db):
                 # Check that nutrition_id exists in DB
                 if nutrition_id not in nutrition_db:
                     errors.append(
-                        f"{yaml_file.name} ({recipe_name}), "
+                        f"{rel_path} ({recipe_name}), "
                         f"ingredient '{ingredient_name}': "
                         f"nutrition_id '{nutrition_id}' not found in nutrition database"
                     )
@@ -145,7 +150,7 @@ def validate_recipes(recipes, nutrition_db):
                 db_name = nutrition_db[nutrition_id]
                 if ingredient_name != db_name:
                     errors.append(
-                        f"{yaml_file.name} ({recipe_name}), "
+                        f"{rel_path} ({recipe_name}), "
                         f"ingredient '{ingredient_name}': "
                         f"name does not match nutrition DB entry '{db_name}' "
                         f"(nutrition_id: {nutrition_id})"

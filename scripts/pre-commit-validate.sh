@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Pre-commit hook to validate recipe nutrition IDs
 # Install with: ln -s ../../scripts/pre-commit-validate.sh .git/hooks/pre-commit
 
@@ -9,7 +9,7 @@ REPO_ROOT=$(git rev-parse --show-toplevel)
 python3 "$REPO_ROOT/scripts/validate-recipe-nutrition.py"
 EXIT_CODE=$?
 
-if [ $EXIT_CODE -eq 0 ]; then
+if [ "$EXIT_CODE" -eq 0 ]; then
     exit 0
 else
     echo ""
@@ -17,3 +17,4 @@ else
     echo "Run 'python3 scripts/validate-recipe-nutrition.py' for details"
     exit 1
 fi
+
