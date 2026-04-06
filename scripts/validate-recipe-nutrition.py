@@ -3,6 +3,13 @@
 Validate that all recipe ingredients with nutrition_id match the nutrition database.
 This script is intended to run as a pre-commit hook.
 
+Checks performed:
+  1. All nutrition_id entries exist in the database
+  2. Ingredient names match database entries exactly
+  3. No duplicate IDs in the nutrition database
+  4. No duplicate names in the nutrition database
+  5. Every ingredient with nutrition_id references valid entries
+
 Exit codes:
   0: All validations passed
   1: Validation errors found (details printed to stderr)
@@ -35,7 +42,52 @@ def load_nutrition_db(repo_root):
         entries = json.load(f)
     
     # Create lookup: id -> name
-    return {entry["id"]: entry["name"] for entry in entries}
+    return {entry["id"]: entry["name"] for entry in entries}, entries
+
+
+def validate_nutrition_db(db_entries):
+    """
+    Validate the nutrition database itself for internal consistency.
+    
+    Returns:
+      (is_valid, error_messages) tuple
+    """
+    errors = []
+    
+    # Check for duplicate IDs
+    ids = [entry["id"] for entry in db_entries]
+    id_set = set(ids)
+    if len(ids) != len(id_set):
+        from collections import Counter
+        duplicates = [id for id, count in Counter(ids).items() if count > 1]
+        for dup_id in duplicates:
+            names = [e["name"] for e in db_entries if e["id"] == dup_id]
+            errors.append(
+                f"nutrition-db.json: Duplicate ID '{dup_id}' found in entries: {names}"
+            )
+    
+    # Check for duplicate names
+    names = [entry["name"] for entry in db_entries]
+    name_set = set(names)
+    if len(names) != len(name_set):
+        from collections import Counter
+        duplicates = [name for name, count in Counter(names).items() if count > 1]
+        for dup_name in duplicates:
+            ids = [e["id"] for e in db_entries if e["name"] == dup_name]
+            errors.append(
+                f"nutrition-db.json: Duplicate name '{dup_name}' found in IDs: {ids}"
+            )
+    
+    # Check that all entries have complete nutrition data (per_100g with at least calories)
+    for entry in db_entries:
+        nutrition = entry.get("per_100g", {})
+        if not isinstance(nutrition, dict) or "calories_kcal" not in nutrition:
+            errors.append(
+                f"nutrition-db.json: Entry '{entry['name']}' ({entry['id']}) "
+                f"missing calories_kcal in per_100g nutrition data"
+            )
+    
+    return len(errors) == 0, errors
 
 
 def load_recipes(repo_root):
@@ -111,10 +163,22 @@ def main():
         return 2
     
     try:
-        nutrition_db = load_nutrition_db(repo_root)
+        nutrition_db, db_entries = load_nutrition_db(repo_root)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         return 2
+    
+    # Validate the nutrition DB itself
+    db_valid, db_errors = validate_nutrition_db(db_entries)
+    if not db_valid:
+        print("❌ Nutrition database validation FAILED:", file=sys.stderr)
+        for error in db_errors:
+            print(f"  • {error}", file=sys.stderr)
+        print(
+            "\nℹ️  Fix duplicate IDs and names in docs/data/nutrition-db.json",
+            file=sys.stderr
+        )
+        return 1
     
     try:
         recipes = load_recipes(repo_root)
@@ -125,11 +189,12 @@ def main():
     if recipes is None:
         return 2
     
-    is_valid, errors = validate_recipes(recipes, nutrition_db)
+    # Validate recipes against DB
+    recipes_valid, recipe_errors = validate_recipes(recipes, nutrition_db)
     
-    if not is_valid:
+    if not recipes_valid:
         print("❌ Recipe validation FAILED:", file=sys.stderr)
-        for error in errors:
+        for error in recipe_errors:
             print(f"  • {error}", file=sys.stderr)
         print(
             "\nℹ️  Ensure ingredient names match exactly with the nutrition database.",
@@ -137,7 +202,7 @@ def main():
         )
         return 1
     
-    print(f"✓ Recipe validation passed ({len(recipes)} recipes checked)", file=sys.stderr)
+    print(f"✓ All validations passed ({len(recipes)} recipes, {len(db_entries)} DB entries)", file=sys.stderr)
     return 0
 
 
