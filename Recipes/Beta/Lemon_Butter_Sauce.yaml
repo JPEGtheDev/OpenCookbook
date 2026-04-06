@@ -1,0 +1,76 @@
+name: Lemon Butter Sauce
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A classic French-style butter sauce with caramelized onions, garlic, and
+  white wine. Perfect for pasta, seafood, or as a finishing sauce. Freezes
+  beautifully in cubes for convenient portioning.
+status: beta
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 226
+        unit: g
+        name: Unsalted Butter
+        nutrition_id: "cdbcd21f-80e1-549e-b6c9-bd23ade428df"
+        volume_alt: "1 cup"
+      - quantity: 164
+        unit: g
+        name: Yellow Onion
+        nutrition_id: "62a41ce3-b227-4a59-a51f-d7e9e64388bb"
+        weight_alt: "1 whole"
+      - quantity: 15
+        unit: g
+        name: Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+        volume_alt: "1 tbsp."
+      - quantity: 3
+        unit: cloves
+        name: Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        note: "Minced"
+      - quantity: 235
+        unit: ml
+        name: Dry White Wine
+        nutrition_id: "0e808ed4-e68d-4d4a-869c-a7d79ddd9025"
+        volume_alt: "1 cup"
+      - quantity: 7.5
+        unit: g
+        name: Fresh Parsley
+        nutrition_id: "5dcd3736-953b-5bfe-adf0-bc6990e27abe"
+        volume_alt: "2 tbsp."
+      - quantity: 0.5
+        unit: whole
+        name: Lemon
+        nutrition_id: "a65310ae-6b42-58b5-86a1-31baa3d80854"
+        note: "Juiced"
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: Melt the unsalted butter in a large skillet or saucepan over medium heat.
+      - text: Grate the yellow onion finely and add to the melted butter along with the salt.
+      - text: Reduce heat to low and sauté slowly, stirring occasionally, for 8–10 minutes until the onions begin to brown at the edges.
+      - text: Mince the garlic cloves finely and add to the pan when the onions start to brown.
+      - text: Cook for 2 minutes, stirring frequently to prevent burning.
+      - text: Pour in the dry white wine and increase heat to medium to bring to a simmer.
+      - text: Reduce the wine by half, approximately 3–5 minutes, until the liquid is noticeably thickened.
+      - text: Once the wine has reduced, remove from heat and squeeze the juice from the lemon half into the pan.
+      - text: Chop the fresh parsley finely and add to the sauce, stirring to combine.
+      - text: Use immediately in a pasta dish or allow to cool and store.
+
+  - heading: Storage
+    type: sequence
+    optional: true
+    steps:
+      - text: Allow the sauce to cool to room temperature.
+      - text: Pour into ice cube trays or small freezer containers for portioning.
+      - text: Freeze for up to 3 months.
+      - text: Thaw and reheat gently before using.
+
+notes:
+  - "Final yield weight needs to be measured. Start with this recipe and weigh the finished sauce to establish the total quantity."
+  - "Salt amount can be adjusted to taste before freezing or after reheating."
+  - "For a lighter sauce, use more wine or less butter. For richness, use more butter."
