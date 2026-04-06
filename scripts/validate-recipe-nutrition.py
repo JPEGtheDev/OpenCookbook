@@ -131,12 +131,13 @@ def validate_recipes(recipes, nutrition_db):
             for item_idx, item in enumerate(group.get("items", [])):
                 ingredient_name = item.get("name", f"[Unknown at index {item_idx}]")
                 nutrition_id = item.get("nutrition_id")
+                unit = item.get("unit", "")
                 
                 if not nutrition_id:
                     # No nutrition_id: that's fine (some ingredients might not have data)
                     continue
                 
-                # Check that nutrition_id exists in DB
+                # Check that ingredient name matches DB name
                 if nutrition_id not in nutrition_db:
                     errors.append(
                         f"{rel_path} ({recipe_name}), "
@@ -145,7 +146,6 @@ def validate_recipes(recipes, nutrition_db):
                     )
                     continue
                 
-                # Check that ingredient name matches DB name
                 db_name = nutrition_db[nutrition_id]
                 if ingredient_name != db_name:
                     errors.append(
@@ -153,6 +153,15 @@ def validate_recipes(recipes, nutrition_db):
                         f"ingredient '{ingredient_name}': "
                         f"name does not match nutrition DB entry '{db_name}' "
                         f"(nutrition_id: {nutrition_id})"
+                    )
+                
+                # Check that unit is g or ml (NutritionCalculator only recognizes these)
+                if unit.lower() not in ["g", "ml"]:
+                    errors.append(
+                        f"{rel_path} ({recipe_name}), "
+                        f"ingredient '{ingredient_name}': "
+                        f"unit '{unit}' is not supported for nutrition calculation "
+                        f"(must be 'g' or 'ml'; use weight_alt or volume_alt for display)"
                     )
     
     return len(errors) == 0, errors
