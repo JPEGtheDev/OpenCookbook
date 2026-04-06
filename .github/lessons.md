@@ -25,6 +25,21 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-04-06 — Check git branch before committing; create branch as part of startup
+
+**What happened:** Made commit f80015b directly on `main` branch, violating git workflow rules. Did not verify current branch before committing after pulling. Then repeated the error by checking out main and committing lessons directly without creating a feature branch first.
+**Absorbed into:** copilot-instructions → Before You Start (step 1 now includes `git branch` verification as first action after pull); Working Principles (new rules added).
+
+### 2026-04-06 — Use git built-ins for path resolution in pre-commit hooks, never bash tricks
+
+**What happened:** Pre-commit hook used `dirname ${BASH_SOURCE[0]}` for path resolution. When installed as `.git/hooks/pre-commit` via symlink, resolved to `.git/hooks/` directory instead of repo root, and hook couldn't find validation script.
+**Absorbed into:** copilot-instructions → Working Principles (new rule: use `git rev-parse --show-toplevel`).
+
+### 2026-04-06 — Always verify data dependencies before deletion; use grep to check
+
+**What happened:** Attempted to remove duplicate Yellow Onion from nutrition DB without checking which ID was referenced by recipes; almost deleted the wrong entry that recipes actually use.
+**Absorbed into:** copilot-instructions → Working Principles (new rule: verify with grep before deleting data).
+
 ### 2026-04-01 — Imperial units must be checked in ALL text fields, not just ingredient units
 
 **What happened:** PR review flagged imperial units (`1 lb`, `6 oz`) in description, step text, and top-level notes. Validation only checked the ingredients section units.
