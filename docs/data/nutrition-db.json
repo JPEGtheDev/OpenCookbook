@@ -135,21 +135,6 @@
     }
   },
   {
-    "id": "05cb5535-ae69-5cbc-8ba8-b37a0ed0a522",
-    "fdc_id": 170000,
-    "name": "Yellow Onion",
-    "aliases": [
-      "onion",
-      "onions"
-    ],
-    "per_100g": {
-      "calories_kcal": 40,
-      "protein_g": 1.1,
-      "fat_g": 0.1,
-      "carbs_g": 9.3
-    }
-  },
-  {
     "id": "5c00ccf3-0bd6-5da0-8f97-a107d381609b",
     "fdc_id": 173468,
     "name": "Fine Sea Salt",
@@ -654,6 +639,53 @@
       "protein_g": 0.0,
       "fat_g": 0.0,
       "carbs_g": 0.0
+    }
+  },
+  {
+    "id": "0e808ed4-e68d-4d4a-869c-a7d79ddd9025",
+    "fdc_id": 171253,
+    "name": "Dry White Wine",
+    "aliases": [
+      "white wine",
+      "dry wine"
+    ],
+    "per_100g": {
+      "calories_kcal": 83,
+      "protein_g": 0.1,
+      "fat_g": 0.0,
+      "carbs_g": 2.6
+    }
+  },
+  {
+    "id": "a93354d0-3e96-4cc9-9618-1429559f8532",
+    "fdc_id": 175126,
+    "name": "Large Shrimp",
+    "aliases": [
+      "shrimp",
+      "prawns",
+      "large shrimp"
+    ],
+    "per_100g": {
+      "calories_kcal": 99,
+      "protein_g": 24.0,
+      "fat_g": 0.3,
+      "carbs_g": 0.0
+    }
+  },
+  {
+    "id": "1f0bbba4-7052-4a1a-ae7c-f97a786ea530",
+    "fdc_id": 167554,
+    "name": "Angel Hair Pasta",
+    "aliases": [
+      "angel hair",
+      "capellini",
+      "pasta"
+    ],
+    "per_100g": {
+      "calories_kcal": 131,
+      "protein_g": 5.0,
+      "fat_g": 1.1,
+      "carbs_g": 25.0
     }
   }
 ]

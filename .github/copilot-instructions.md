@@ -198,3 +198,6 @@ These are if-then rules. Follow them literally.
 | You convert imperial to metric | Show the converted value and ask the user to confirm before writing. |
 | You scale quantities from a test batch | Show per-serving math and final amount, then ask the user to confirm. Do not assume base vs. target. |
 | You're unsure about anything | Ask the user. Do not guess. Do not assume. |
+| You start a git task | Run `git branch` to verify current branch. Create a feature branch BEFORE making any commits. |
+| You write a git pre-commit hook | Use `git rev-parse --show-toplevel` for path resolution, never bash tricks like `dirname ${BASH_SOURCE[0]}`. |
+| You need to delete data (DB entry, file, code) | Verify nothing references it first with `grep` or code search. Do not assume deletion is safe. |
