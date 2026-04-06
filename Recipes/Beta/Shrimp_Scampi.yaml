@@ -13,23 +13,27 @@ ingredients:
       - quantity: 453
         unit: g
         name: Large Shrimp
+        nutrition_id: "a93354d0-3e96-4cc9-9618-1429559f8532"
         note: "Peeled, deveined, raw"
       - quantity: 453
         unit: g
         name: Angel Hair Pasta (dry)
+        nutrition_id: "1f0bbba4-7052-4a1a-ae7c-f97a786ea530"
       - quantity: 1
         unit: whole
         name: Lemon Butter Sauce (full batch)
         doc_link: ./Lemon_Butter_Sauce.yaml
-      - quantity: 177
+      - quantity: 4000
         unit: ml
-        name: Pasta Water (reserved)
-        note: "Set aside from boiling water; amount is approximate — adjust as needed to achieve desired sauce consistency"
-      - quantity: 15
+        name: Water
+        nutrition_id: "5c8950b5-a700-54eb-93d9-b25665f4846e"
+        note: "For cooking pasta (approximately 4 liters; scale based on pot size)"
+      - quantity: 50
         unit: g
         name: Salt
-        volume_alt: "1 tbsp."
-        note: "For boiling water; additional salt to taste for final adjustment"
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+        volume_alt: "3 tbsp."
+        note: "For pasta water (12.5 g per liter); adjust to taste"
 
 utensils:
   - heading: null
@@ -43,7 +47,7 @@ instructions:
   - heading: null
     type: sequence
     steps:
-      - text: Bring a large pot of water to a rolling boil. Add salt generously (approximately 10–15 g per liter of water to taste like sea water). Set aside the pasta water (you will reserve approximately 177 ml from this later).
+      - text: "Bring 4000 ml of water to a rolling boil in a large pot. Add the 50 g of salt (salt until it tastes like seawater)."
       - text: Place the full batch of Lemon Butter Sauce in a large skillet or saucepan over medium-high heat until melted and shimmering.
       - text: Add the peeled and deveined raw shrimp to the hot butter sauce. Start a 6-minute timer immediately to cook the shrimp.
       - text: At the 2-minute mark, add the dry angel hair pasta to the boiling salted water and stir immediately to prevent sticking. Start a 4-minute timer for the pasta.

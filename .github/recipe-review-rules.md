@@ -23,7 +23,7 @@ A recipe review is **mandatory** when:
 ### When to Skip Review
 - Minor typo fixes (no logic/yield changes)
 - Metadata updates (tags, notes only)
-- Version bump within same minor version (1.0 → 1.1)
+- Patch-only version bump within same minor version (1.0.0 → 1.0.1)
 
 ## Review Checklist
 
@@ -47,7 +47,7 @@ Recipe: Shrimp_Scampi.yaml
 Status: ❌ NEEDS REVISION
 
 Blocking Issues:
-  - Ingredient "Pasta Water" uses ml unit but has no weight_alt for consistency
+  - Ingredient "Pasta Water" uses cups as the unit; convert to g or ml per the validation checklist
   - Step 5 refers to "timer" without clarifying how many minutes total
 
 Minor Issues:
@@ -63,12 +63,18 @@ Reviewer: RecipeReviewAgent | Timestamp: 2026-04-05T22:28:00Z
 
 ## Dispatch Mechanism
 
-The review agent is invoked via:
-1. **Manual trigger**: `copilot exec recipe-review <recipe-file-path>`
-2. **PR hook**: Runs automatically on PR review
-3. **Pre-commit**: Runs locally before pushing (optional)
+There is currently **no repository-managed workflow, script, or pre-commit configuration** that dispatches recipe review automatically.
 
-Output is posted as a PR comment or returned to stdout with exit code:
-- `0`: Pass
-- `1`: Fail (needs revision)
-- `2`: Error (agent failure)
+Until an implementation is added, treat recipe review as a **manual maintainer or agent process** performed before merge when the trigger conditions above apply.
+
+Possible future integration points include:
+1. **Manual CLI entry point**: `copilot exec recipe-review <recipe-file-path>`
+2. **PR automation**: A workflow that runs review during pull request validation
+3. **Pre-commit integration**: A local hook that runs review before pushing (optional)
+
+If and when one of these mechanisms is implemented, this section should link to the corresponding workflow, script, or configuration location in the repository.
+
+Expected output conventions for a review tool or agent run:
+- Exit code `0`: Pass
+- Exit code `1`: Fail (needs revision)
+- Exit code `2`: Error (agent failure)
