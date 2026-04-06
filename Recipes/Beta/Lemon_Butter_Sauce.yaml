@@ -25,10 +25,11 @@ ingredients:
         name: Fine Sea Salt
         nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
         volume_alt: "1 tbsp."
-      - quantity: 3
-        unit: cloves
+      - quantity: 12
+        unit: g
         name: Fresh Garlic
         nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        weight_alt: "3 pcs"
         note: "Minced"
       - quantity: 235
         unit: ml
