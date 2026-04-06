@@ -308,6 +308,7 @@ related:
 
 - [STRUCTURED_FORMAT.md](../../references/STRUCTURED_FORMAT.md) — Full YAML schema with complete examples
 - [SPICE_CONVERSIONS.md](../../references/SPICE_CONVERSIONS.md) — Gram-to-volume conversion table for all spices
+- [PASTA_COOKING.md](../../references/PASTA_COOKING.md) — Pasta cooking guidelines, water/salt ratios, doneness, and sauce combining techniques
 
 ---
 
