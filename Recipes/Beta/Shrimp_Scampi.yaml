@@ -17,7 +17,7 @@ ingredients:
         note: "Peeled, deveined, raw"
       - quantity: 453
         unit: g
-        name: Angel Hair Pasta (dry)
+        name: Angel Hair Pasta
         nutrition_id: "1f0bbba4-7052-4a1a-ae7c-f97a786ea530"
       - quantity: 1
         unit: whole
@@ -30,7 +30,7 @@ ingredients:
         note: "For cooking pasta (approximately 4 liters; scale based on pot size)"
       - quantity: 50
         unit: g
-        name: Salt
+        name: Fine Sea Salt
         nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
         volume_alt: "3 tbsp."
         note: "For pasta water (12.5 g per liter); adjust to taste"

@@ -22,12 +22,12 @@ ingredients:
         weight_alt: "1 whole"
       - quantity: 15
         unit: g
-        name: Salt
+        name: Fine Sea Salt
         nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
         volume_alt: "1 tbsp."
       - quantity: 3
         unit: cloves
-        name: Garlic
+        name: Fresh Garlic
         nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
         note: "Minced"
       - quantity: 235
@@ -40,11 +40,11 @@ ingredients:
         name: Fresh Parsley
         nutrition_id: "5dcd3736-953b-5bfe-adf0-bc6990e27abe"
         volume_alt: "2 tbsp."
-      - quantity: 0.5
-        unit: whole
-        name: Lemon
+      - quantity: 20
+        unit: ml
+        name: Lemon Juice
         nutrition_id: "a65310ae-6b42-58b5-86a1-31baa3d80854"
-        note: "Juiced"
+        weight_alt: "0.5 whole"
 
 instructions:
   - heading: null
