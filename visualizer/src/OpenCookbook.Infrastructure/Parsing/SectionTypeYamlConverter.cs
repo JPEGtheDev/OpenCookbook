@@ -20,7 +20,7 @@ internal sealed class SectionTypeYamlConverter : IYamlTypeConverter
 
         throw new YamlException(
             scalar.Start, scalar.End,
-            $"Invalid section type '{scalar.Value}'. Expected one of: sequence, branch.");
+            $"Invalid section type '{scalar.Value}'. Expected one of: sequence, branch, storage.");
     }
 
     public void WriteYaml(IEmitter emitter, object? value, Type type, ObjectSerializer serializer)

@@ -130,7 +130,7 @@ public class RecipeComposer
                 // is consumed immediately by a parent recipe.
                 foreach (var instrSection in subRecipe.Instructions)
                 {
-                    if (instrSection.SectionType == SectionCategory.Storage)
+                    if (instrSection.Type == SectionType.Storage)
                         continue;
 
                     prependedInstructions.Add(new Section
@@ -139,7 +139,6 @@ public class RecipeComposer
                         Type = instrSection.Type,
                         BranchGroup = instrSection.BranchGroup,
                         Optional = instrSection.Optional,
-                        SectionType = instrSection.SectionType,
                         Steps = instrSection.Steps
                     });
                 }
@@ -206,7 +205,7 @@ public class RecipeComposer
                         // Skip storage sections — they are irrelevant when composed.
                         foreach (var subInstr in linkedRecipe.Instructions)
                         {
-                            if (subInstr.SectionType == SectionCategory.Storage)
+                            if (subInstr.Type == SectionType.Storage)
                                 continue;
 
                             composedInstructions.Add(new Section
@@ -215,7 +214,6 @@ public class RecipeComposer
                                 Type = subInstr.Type,
                                 BranchGroup = subInstr.BranchGroup,
                                 Optional = subInstr.Optional,
-                                SectionType = subInstr.SectionType,
                                 Steps = subInstr.Steps
                             });
                         }
@@ -245,7 +243,6 @@ public class RecipeComposer
                     Type = instrSection.Type,
                     BranchGroup = instrSection.BranchGroup,
                     Optional = instrSection.Optional,
-                    SectionType = instrSection.SectionType,
                     Steps = instrSection.Steps
                 });
                 hasSubRecipeInstructions = false; // Reset: only the first null-headed section after sub-recipe instructions gets labeled

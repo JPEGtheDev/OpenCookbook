@@ -15,7 +15,6 @@ public sealed class YamlRecipeParser : IRecipeParser
             .WithNamingConvention(UnderscoredNamingConvention.Instance)
             .WithTypeConverter(new RecipeStatusYamlConverter())
             .WithTypeConverter(new SectionTypeYamlConverter())
-            .WithTypeConverter(new SectionCategoryYamlConverter())
             .IgnoreUnmatchedProperties()
             .Build();
     }

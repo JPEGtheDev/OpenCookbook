@@ -20,7 +20,7 @@ public class InstructionListTests : BunitContext
             new()
             {
                 Heading = "Storage",
-                SectionType = SectionCategory.Storage,
+                Type = SectionType.Storage,
                 Optional = true,
                 Steps = [new Step { Text = "Freeze for 3 months" }]
             }
@@ -52,7 +52,7 @@ public class InstructionListTests : BunitContext
             new()
             {
                 Heading = "Storage",
-                SectionType = SectionCategory.Storage,
+                Type = SectionType.Storage,
                 Optional = true,
                 Steps = [new Step { Text = "Freeze for 3 months" }]
             }
@@ -106,7 +106,7 @@ public class InstructionListTests : BunitContext
             new()
             {
                 Heading = "Storage",
-                SectionType = SectionCategory.Storage,
+                Type = SectionType.Storage,
                 Steps = [new Step { Text = "Freeze" }]
             }
         };

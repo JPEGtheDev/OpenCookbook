@@ -1102,7 +1102,7 @@ public class RecipeComposerTests
                 new Section
                 {
                     Heading = "Storage",
-                    SectionType = SectionCategory.Storage,
+                    Type = SectionType.Storage,
                     Optional = true,
                     Steps = [new Step { Text = "Freeze for up to 3 months" }]
                 }
@@ -1120,7 +1120,7 @@ public class RecipeComposerTests
 
         // Assert — storage section from sub-recipe is NOT in composed instructions
         Assert.DoesNotContain(composed.Instructions,
-            s => s.SectionType == SectionCategory.Storage);
+            s => s.Type == SectionType.Storage);
         Assert.DoesNotContain(composed.Instructions,
             s => s.Steps.Any(step => step.Text.Contains("Freeze")));
     }
@@ -1149,7 +1149,7 @@ public class RecipeComposerTests
                 new Section
                 {
                     Heading = "Storage",
-                    SectionType = SectionCategory.Storage,
+                    Type = SectionType.Storage,
                     Optional = true,
                     Steps = [new Step { Text = "Freeze" }]
                 }
@@ -1198,7 +1198,7 @@ public class RecipeComposerTests
                 new Section
                 {
                     Heading = "Storage",
-                    SectionType = SectionCategory.Storage,
+                    Type = SectionType.Storage,
                     Optional = true,
                     Steps = [new Step { Text = "Refrigerate leftovers" }]
                 }
@@ -1215,14 +1215,14 @@ public class RecipeComposerTests
 
         // Assert — parent's own storage section is still present
         Assert.Contains(composed.Instructions,
-            s => s.SectionType == SectionCategory.Storage
+            s => s.Type == SectionType.Storage
                  && s.Steps.Any(step => step.Text.Contains("Refrigerate")));
     }
 
     [Fact]
-    public async Task ComposeAsync_CopiesSectionTypeFromSubRecipe()
+    public async Task ComposeAsync_SubRecipeSectionTypePreserved()
     {
-        // Arrange — sub-recipe has a section with no SectionType (normal)
+        // Arrange — sub-recipe has a normal sequence section
         var subRecipe = BuildSubRecipe();
         var parent = BuildParentRecipe();
         var repo = new FakeRecipeRepository(new()
@@ -1234,9 +1234,9 @@ public class RecipeComposerTests
         // Act
         var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
 
-        // Assert — sub-recipe normal sections have null SectionType preserved
+        // Assert — sub-recipe normal sections have Sequence type preserved
         var subSection = composed.Instructions.First(s => s.Heading == "Sub-Recipe");
-        Assert.Null(subSection.SectionType);
+        Assert.Equal(SectionType.Sequence, subSection.Type);
     }
 
     [Fact]
@@ -1263,7 +1263,7 @@ public class RecipeComposerTests
                 new Section
                 {
                     Heading = "Storage",
-                    SectionType = SectionCategory.Storage,
+                    Type = SectionType.Storage,
                     Steps = [new Step { Text = "Store in a cool place" }]
                 }
             ]
@@ -1302,7 +1302,7 @@ public class RecipeComposerTests
 
         // Assert — storage section from linked recipe is filtered out
         Assert.DoesNotContain(composed.Instructions,
-            s => s.SectionType == SectionCategory.Storage);
+            s => s.Type == SectionType.Storage);
         Assert.Contains(composed.Instructions,
             s => s.Steps.Any(step => step.Text.Contains("Heat olive oil")));
     }

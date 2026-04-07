@@ -106,7 +106,7 @@
     public List<Section> Sections { get; set; } = [];
 
     /// <summary>
-    /// When <c>true</c>, sections classified as <see cref="SectionCategory.Storage"/>
+    /// When <c>true</c>, sections with <see cref="SectionType.Storage"/>
     /// are excluded from rendering. Used on composed recipe pages where sub-recipe
     /// storage instructions are irrelevant.
     /// </summary>
@@ -128,10 +128,10 @@
 
         foreach (var section in sections)
         {
-            if (suppressStorage && section.SectionType == SectionCategory.Storage)
+            if (suppressStorage && section.Type == SectionType.Storage)
                 continue;
 
-            if (section.Type == SectionType.Sequence)
+            if (section.Type == SectionType.Sequence || section.Type == SectionType.Storage)
             {
                 items.Add(new RenderItem { IsSequence = true, Section = section });
             }
