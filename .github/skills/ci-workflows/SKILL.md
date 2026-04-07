@@ -4,7 +4,7 @@ description: How to read, write, and extend GitHub Actions workflows in OpenCook
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.0"
+  version: "1.1"
 ---
 
 # CI Workflows
@@ -55,6 +55,7 @@ Both `deploy-pages.yml` and `pr-build.yml` call these scripts instead of duplica
 |---|---|
 | `scripts/copy-recipes.sh <output_dir>` | Copies `Recipes/**/*.yaml` into `<output_dir>/recipes/` preserving folder structure |
 | `scripts/generate-recipe-index.py <recipes_dir>` | Generates `recipe-index.json` from YAML metadata (name, path, status, description) |
+| `scripts/generate-recipe-pages.py <recipes_dir> <output_dir> <base_url>` | Generates two static pages per recipe: (1) `recipe/{slug}/index.html` — canonical page that injects Schema.org JSON-LD into a copy of the Blazor `index.html` so crawlers see JSON-LD at a 200 OK URL; (2) `share/{slug}/index.html` — legacy redirect page for backward compatibility |
 | `scripts/prepare-spa.sh <output_dir>` | Adds `.nojekyll` and copies `index.html` → `404.html` for SPA routing |
 | `scripts/serve.py [port]` | Bundled in artifact. Python SPA server for local preview (handles `.wasm` MIME type, falls back unknown paths to `index.html`) |
 

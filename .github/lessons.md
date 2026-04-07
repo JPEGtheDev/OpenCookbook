@@ -25,6 +25,11 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-04-07 — Canonical SPA pages: inject JSON-LD into index.html copy per recipe
+
+**What happened:** Discovered that the cleanest way to produce a canonical static recipe page for GitHub Pages (200 OK for crawlers + full Blazor SPA for browsers, no meta-refresh) is to copy the published `index.html` and inject `<script type="application/ld+json">` before `</head>` for each recipe. This avoids the redirect chain that the old `share/{slug}/index.html` approach required.
+**Absorbed into:** `ci-workflows` SKILL.md — added `generate-recipe-pages.py` to the Shared Scripts table with a description of both output types.
+
 ### 2026-04-06 — Accept user decisions without re-proposing alternatives
 
 **What happened:** User clarified "keep validating all recipes" but I repeatedly suggested implementing `--all` flag approach after copilot reviewer suggested it. When user said "ignore the all suggestions", I continued pushing doc/code changes I thought were helpful. Pattern: treating user's decision as negotiable rather than final.
