@@ -7,7 +7,8 @@ namespace OpenCookbook.Infrastructure.Parsing;
 
 internal sealed class SectionCategoryYamlConverter : IYamlTypeConverter
 {
-    public bool Accepts(Type type) => type == typeof(SectionCategory);
+    public bool Accepts(Type type) =>
+        type == typeof(SectionCategory) || type == typeof(SectionCategory?);
 
     public object? ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
     {

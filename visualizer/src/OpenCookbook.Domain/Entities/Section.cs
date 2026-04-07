@@ -3,6 +3,8 @@ namespace OpenCookbook.Domain.Entities;
 public class Section
 {
     public string? Heading { get; set; }
+    // Default is SectionType.Sequence (enum value 0).
+    // Explicit initializer omitted to avoid shadowing by the SectionType property below.
     public SectionType Type { get; set; }
     public string? BranchGroup { get; set; }
     public bool Optional { get; set; }
