@@ -161,6 +161,16 @@ else if (_recipe is not null)
         try
         {
             _decodedPath = Uri.UnescapeDataString(Path);
+
+            // Redirect legacy .yaml URLs to the canonical URL (no extension).
+            if (_decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
+            {
+                var canonical = _decodedPath[..^5];
+                Nav.NavigateTo($"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(canonical)}", replace: true);
+                _loading = false;
+                return;
+            }
+
             _recipe = await RecipeService.GetRecipeByPathAsync(_decodedPath);
         }
         catch (Exception ex)
@@ -270,10 +280,12 @@ else if (_recipe is not null)
         get
         {
             if (_decodedPath is null) return string.Empty;
+            // _decodedPath is already the canonical slug (no .yaml) after the redirect guard above,
+            // but strip the extension defensively in case it's still present.
             var slug = _decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
                 ? _decodedPath[..^5]
                 : _decodedPath;
-            return $"{Nav.BaseUri}share/{slug}/";
+            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(slug)}";
         }
     }
 
