@@ -105,21 +105,32 @@
     [Parameter, EditorRequired]
     public List<Section> Sections { get; set; } = [];
 
+    /// <summary>
+    /// When <c>true</c>, sections classified as <see cref="SectionCategory.Storage"/>
+    /// are excluded from rendering. Used on composed recipe pages where sub-recipe
+    /// storage instructions are irrelevant.
+    /// </summary>
+    [Parameter]
+    public bool SuppressStorage { get; set; }
+
     private List<RenderItem> _renderItems = [];
     private readonly Dictionary<string, string> _activeTabs = new();
 
     protected override void OnParametersSet()
     {
-        _renderItems = BuildRenderItems(Sections);
+        _renderItems = BuildRenderItems(Sections, SuppressStorage);
     }
 
-    private static List<RenderItem> BuildRenderItems(List<Section> sections)
+    private static List<RenderItem> BuildRenderItems(List<Section> sections, bool suppressStorage)
     {
         var items = new List<RenderItem>();
         var renderedBranchGroups = new HashSet<string>();
 
         foreach (var section in sections)
         {
+            if (suppressStorage && section.SectionType == SectionCategory.Storage)
+                continue;
+
             if (section.Type == SectionType.Sequence)
             {
                 items.Add(new RenderItem { IsSequence = true, Section = section });

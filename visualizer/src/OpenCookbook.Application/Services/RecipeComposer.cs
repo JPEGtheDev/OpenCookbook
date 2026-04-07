@@ -125,15 +125,21 @@ public class RecipeComposer
                     });
                 }
 
-                // Prepend sub-recipe instructions (they must be done first)
+                // Prepend sub-recipe instructions (they must be done first).
+                // Skip storage sections — they are irrelevant when the sub-recipe
+                // is consumed immediately by a parent recipe.
                 foreach (var instrSection in subRecipe.Instructions)
                 {
+                    if (instrSection.SectionType == SectionCategory.Storage)
+                        continue;
+
                     prependedInstructions.Add(new Section
                     {
                         Heading = instrSection.Heading ?? subRecipe.Name,
                         Type = instrSection.Type,
                         BranchGroup = instrSection.BranchGroup,
                         Optional = instrSection.Optional,
+                        SectionType = instrSection.SectionType,
                         Steps = instrSection.Steps
                     });
                 }
@@ -196,15 +202,20 @@ public class RecipeComposer
                             });
                         }
 
-                        // Insert the sub-recipe instructions at this position
+                        // Insert the sub-recipe instructions at this position.
+                        // Skip storage sections — they are irrelevant when composed.
                         foreach (var subInstr in linkedRecipe.Instructions)
                         {
+                            if (subInstr.SectionType == SectionCategory.Storage)
+                                continue;
+
                             composedInstructions.Add(new Section
                             {
                                 Heading = subInstr.Heading ?? linkedRecipe.Name,
                                 Type = subInstr.Type,
                                 BranchGroup = subInstr.BranchGroup,
                                 Optional = subInstr.Optional,
+                                SectionType = subInstr.SectionType,
                                 Steps = subInstr.Steps
                             });
                         }
@@ -234,6 +245,7 @@ public class RecipeComposer
                     Type = instrSection.Type,
                     BranchGroup = instrSection.BranchGroup,
                     Optional = instrSection.Optional,
+                    SectionType = instrSection.SectionType,
                     Steps = instrSection.Steps
                 });
                 hasSubRecipeInstructions = false; // Reset: only the first null-headed section after sub-recipe instructions gets labeled

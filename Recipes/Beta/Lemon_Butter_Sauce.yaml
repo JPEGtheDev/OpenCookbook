@@ -64,6 +64,7 @@ instructions:
 
   - heading: Storage
     type: sequence
+    section_type: storage
     optional: true
     steps:
       - text: Allow the sauce to cool to room temperature.
