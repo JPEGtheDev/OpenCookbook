@@ -280,12 +280,7 @@ else if (_recipe is not null)
         get
         {
             if (_decodedPath is null) return string.Empty;
-            // _decodedPath is already the canonical slug (no .yaml) after the redirect guard above,
-            // but strip the extension defensively in case it's still present.
-            var slug = _decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
-                ? _decodedPath[..^5]
-                : _decodedPath;
-            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(slug)}";
+            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(_decodedPath)}";
         }
     }
 

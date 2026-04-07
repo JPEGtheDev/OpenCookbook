@@ -23,6 +23,7 @@ import glob
 import html
 import json
 import os
+import re
 import sys
 from urllib.parse import quote
 
@@ -98,7 +99,6 @@ def _build_schema(data, page_url):
 
 def _generate_redirect_html(recipe_name, schema, canonical_url):
     """Generate a legacy share page that redirects browsers to the canonical URL."""
-    import re
     json_ld = json.dumps(schema, indent=2, ensure_ascii=False)
     json_ld = re.sub(r"</", r"<\\/", json_ld)
     safe_name = html.escape(recipe_name)
@@ -123,7 +123,6 @@ def _generate_redirect_html(recipe_name, schema, canonical_url):
 
 def _inject_json_ld_into_spa(spa_html, recipe_name, schema):
     """Return a copy of the Blazor SPA index.html with JSON-LD and a recipe title injected."""
-    import re
     json_ld = json.dumps(schema, indent=2, ensure_ascii=False)
     json_ld = re.sub(r"</", r"<\\/", json_ld)
     safe_name = html.escape(recipe_name)
