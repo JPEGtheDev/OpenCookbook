@@ -6,7 +6,7 @@
         if (item.IsSequence)
         {
             var seq = item.Section!;
-            <div class="instruction-section @(seq.Optional ? "instruction-optional" : "")">
+            <div class="instruction-section @(seq.Optional && seq.Type != SectionType.Storage ? "instruction-optional" : "")">
                 @if (seq.Heading is not null)
                 {
                     <h3 class="section-heading">

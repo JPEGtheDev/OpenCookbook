@@ -107,7 +107,7 @@ instructions:
       - text: Using a potato masher or handheld electric mixer / hand blender, mash until you reach the consistency you are looking for
 
   - heading: Freezing
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: Portion into desired serving sizes and freeze individually

@@ -7,7 +7,7 @@ public enum SectionType
 
     /// <summary>
     /// Storage, freezing, or make-ahead instructions.
-    /// Suppressed when a sub-recipe is composed into a parent recipe.
+    /// Suppressed for sub-recipe sections when composed into a parent recipe.
     /// </summary>
     Storage
 }
