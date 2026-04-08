@@ -61,7 +61,11 @@ public sealed class HttpRecipeRepository : IRecipeRepository
                 nameof(path));
         }
 
-        // Normalize and check for directory traversal via resolved path
+        // Normalize separators to URL-style forward slashes before returning so callers
+        // passing decoded route values with backslashes get a valid HTTP path segment.
+        path = path.Replace('\\', '/');
+
+        // Check for directory traversal via resolved path
         var normalized = System.IO.Path.GetFullPath(System.IO.Path.Combine("recipes", path));
         var basePath = System.IO.Path.GetFullPath("recipes");
         if (!normalized.StartsWith(basePath + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal)

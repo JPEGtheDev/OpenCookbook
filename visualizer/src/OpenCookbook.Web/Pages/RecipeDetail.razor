@@ -160,7 +160,7 @@ else if (_recipe is not null)
 
         try
         {
-            _decodedPath = Uri.UnescapeDataString(Path).TrimEnd('/', '\\');
+            _decodedPath = Uri.UnescapeDataString(Path).TrimEnd('/', '\\').Replace('\\', '/');
             _recipe = await RecipeService.GetRecipeByPathAsync(_decodedPath);
         }
         catch (Exception ex)

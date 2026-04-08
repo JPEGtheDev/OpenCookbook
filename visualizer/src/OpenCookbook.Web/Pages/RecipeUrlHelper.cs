@@ -9,9 +9,10 @@ internal static class RecipeUrlHelper
     /// </summary>
     public static string EscapeRecipePath(string path)
     {
-        var canonical = path.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
-            ? path[..^5]
-            : path;
+        var normalizedPath = path.Replace('\\', '/').TrimEnd('/');
+        var canonical = normalizedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
+            ? normalizedPath[..^5]
+            : normalizedPath;
         return string.Join("/", canonical.Split('/').Select(Uri.EscapeDataString));
     }
 }

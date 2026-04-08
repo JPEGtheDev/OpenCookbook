@@ -102,15 +102,30 @@ def _inject_json_ld_into_spa(spa_html, recipe_name, schema):
     json_ld_tag = f'  <script type="application/ld+json">\n{json_ld}\n  </script>\n'
 
     # Replace the generic <title> with the recipe name
-    result = re.sub(
+    result, title_replacements = re.subn(
         r"<title>[^<]*</title>",
         f"<title>{safe_name} — OpenCookbook</title>",
         spa_html,
         count=1,
     )
+    if title_replacements != 1:
+        raise ValueError(
+            "Failed to inject recipe title into SPA template: expected exactly one "
+            "simple <title>...</title> element."
+        )
 
-    # Inject the JSON-LD script immediately before </head>
-    result = result.replace("</head>", json_ld_tag + "</head>", 1)
+    # Inject the JSON-LD script immediately before the closing </head> tag.
+    # Match case-insensitively so harmless HTML formatting/casing differences
+    # do not silently produce canonical pages without Schema.org data.
+    head_close_match = re.search(r"</head\s*>", result, flags=re.IGNORECASE)
+    if head_close_match is None:
+        raise ValueError("Unable to inject JSON-LD: closing </head> tag not found in SPA HTML.")
+
+    result = (
+        result[: head_close_match.start()]
+        + json_ld_tag
+        + result[head_close_match.start():]
+    )
     return result
 
 
