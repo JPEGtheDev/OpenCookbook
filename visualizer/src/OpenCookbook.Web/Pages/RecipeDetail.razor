@@ -161,16 +161,6 @@ else if (_recipe is not null)
         try
         {
             _decodedPath = Uri.UnescapeDataString(Path).TrimEnd('/', '\\');
-
-            // Redirect legacy .yaml URLs to the canonical URL (no extension).
-            if (_decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
-            {
-                var canonical = _decodedPath[..^5];
-                Nav.NavigateTo($"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(canonical)}", replace: true);
-                _loading = false;
-                return;
-            }
-
             _recipe = await RecipeService.GetRecipeByPathAsync(_decodedPath);
         }
         catch (Exception ex)

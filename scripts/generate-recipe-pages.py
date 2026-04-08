@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 """generate-recipe-pages.py — Generate static HTML recipe pages with Schema.org JSON-LD.
 
-For each recipe YAML file this script produces two outputs:
+For each recipe YAML file this script produces:
 
-1. recipe/{slug}/index.html — canonical page (200 OK from GitHub Pages).
-   Contains Schema.org Recipe JSON-LD in the <head> and otherwise serves the
-   full Blazor SPA so browsers get the interactive UI at the canonical URL.
-
-2. share/{slug}/index.html — legacy redirect page.
-   A thin page that redirects browsers and older crawlers to the canonical URL.
-   Retained for backward compatibility with existing bookmarks and integrations.
+  recipe/{slug}/index.html — canonical page (200 OK from GitHub Pages).
+    Contains Schema.org Recipe JSON-LD in the <head> and otherwise serves the
+    full Blazor SPA so browsers get the interactive UI at the canonical URL.
 
 Usage:
     python3 scripts/generate-recipe-pages.py <recipes_dir> <output_dir> <base_url>
@@ -97,30 +93,6 @@ def _build_schema(data, page_url):
     return schema
 
 
-def _generate_redirect_html(recipe_name, schema, canonical_url):
-    """Generate a legacy share page that redirects browsers to the canonical URL."""
-    json_ld = json.dumps(schema, indent=2, ensure_ascii=False)
-    json_ld = re.sub(r"</", r"<\\/", json_ld)
-    safe_name = html.escape(recipe_name)
-    safe_url = html.escape(canonical_url)
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>{safe_name} — OpenCookbook</title>
-  <meta http-equiv="refresh" content="0; url={safe_url}" />
-  <link rel="canonical" href="{safe_url}" />
-  <script type="application/ld+json">
-{json_ld}
-  </script>
-</head>
-<body>
-  <p>Redirecting to <a href="{safe_url}">{safe_name}</a>&#8230;</p>
-</body>
-</html>
-"""
-
-
 def _inject_json_ld_into_spa(spa_html, recipe_name, schema):
     """Return a copy of the Blazor SPA index.html with JSON-LD and a recipe title injected."""
     json_ld = json.dumps(schema, indent=2, ensure_ascii=False)
@@ -176,9 +148,9 @@ def main():
         recipe_name = data.get("name", page_slug)
         schema = _build_schema(data, canonical_url)
 
-        # ── 1. Canonical page: recipe/{slug}/index.html ─────────────────────────
-        # Copy of the Blazor SPA with JSON-LD in the <head>.  GitHub Pages serves
-        # this as a 200 response, so crawlers see JSON-LD and browsers load the app.
+        # Canonical page: recipe/{slug}/index.html — copy of the Blazor SPA with
+        # JSON-LD injected in the <head>.  GitHub Pages serves this as a 200 OK so
+        # crawlers see JSON-LD and browsers get the interactive UI.
         canonical_html = _inject_json_ld_into_spa(spa_html, recipe_name, schema)
         canonical_out = os.path.join(output_dir, "recipe", page_slug, "index.html")
         os.makedirs(os.path.dirname(canonical_out), exist_ok=True)
@@ -186,19 +158,9 @@ def main():
             f.write(canonical_html)
         print(f"Generated: recipe/{page_slug}/index.html")
 
-        # ── 2. Legacy share page: share/{slug}/index.html ───────────────────────
-        # Thin redirect page kept for backward compatibility with existing bookmarks
-        # and external integrations that used the old /share/{slug}/ URLs.
-        redirect_html = _generate_redirect_html(recipe_name, schema, canonical_url)
-        share_out = os.path.join(output_dir, "share", page_slug, "index.html")
-        os.makedirs(os.path.dirname(share_out), exist_ok=True)
-        with open(share_out, "w", encoding="utf-8") as f:
-            f.write(redirect_html)
-        print(f"Generated: share/{page_slug}/index.html")
-
         count += 1
 
-    print(f"Done. {count} recipe page(s) generated.")
+    print(f"Done. {count} canonical recipe page(s) generated.")
 
 
 if __name__ == "__main__":
