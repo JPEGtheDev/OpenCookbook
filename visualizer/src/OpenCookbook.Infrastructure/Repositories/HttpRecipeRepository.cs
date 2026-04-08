@@ -48,8 +48,18 @@ public sealed class HttpRecipeRepository : IRecipeRepository
             throw new ArgumentException("Recipe path must not start with a slash.", nameof(path));
 
         // Normalise: append .yaml extension if the caller omitted it (canonical slug support).
-        if (!path.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
+        // Only add it when the path has no extension at all; reject paths with a different extension.
+        var ext = System.IO.Path.GetExtension(path);
+        if (string.IsNullOrEmpty(ext))
+        {
             path += ".yaml";
+        }
+        else if (!ext.Equals(".yaml", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                $"Recipe path has an unsupported extension '{ext}'. Only .yaml is accepted.",
+                nameof(path));
+        }
 
         // Normalize and check for directory traversal via resolved path
         var normalized = System.IO.Path.GetFullPath(System.IO.Path.Combine("recipes", path));

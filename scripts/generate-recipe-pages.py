@@ -169,8 +169,9 @@ def main():
         # Slug: recipe path without .yaml extension
         page_slug = rel_path[:-5] if rel_path.endswith(".yaml") else rel_path
 
-        # Canonical URL for this recipe (no .yaml, no /share/ prefix)
-        canonical_url = f"{base_url}/recipe/{quote(page_slug, safe='/')}"
+        # Canonical URL for this recipe — uses trailing slash so the URL resolves to
+        # the directory-served index.html without an extra redirect on static hosts.
+        canonical_url = f"{base_url}/recipe/{quote(page_slug, safe='/')}/"
 
         recipe_name = data.get("name", page_slug)
         schema = _build_schema(data, canonical_url)

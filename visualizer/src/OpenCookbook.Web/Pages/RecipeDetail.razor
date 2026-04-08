@@ -160,7 +160,7 @@ else if (_recipe is not null)
 
         try
         {
-            _decodedPath = Uri.UnescapeDataString(Path);
+            _decodedPath = Uri.UnescapeDataString(Path).TrimEnd('/', '\\');
 
             // Redirect legacy .yaml URLs to the canonical URL (no extension).
             if (_decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase))
@@ -280,7 +280,7 @@ else if (_recipe is not null)
         get
         {
             if (_decodedPath is null) return string.Empty;
-            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(_decodedPath)}";
+            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(_decodedPath)}/";
         }
     }
 
