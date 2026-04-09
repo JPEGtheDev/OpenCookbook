@@ -106,9 +106,9 @@
     public List<Section> Sections { get; set; } = [];
 
     /// <summary>
-    /// When <c>true</c>, sections with <see cref="SectionType.Storage"/>
-    /// are excluded from rendering. Used on composed recipe pages where sub-recipe
-    /// storage instructions are irrelevant.
+    /// When <c>true</c>, all sections with <see cref="SectionType.Storage"/>
+    /// are excluded from rendering, including any storage or freezing instructions
+    /// belonging to the parent recipe.
     /// </summary>
     [Parameter]
     public bool SuppressStorage { get; set; }
