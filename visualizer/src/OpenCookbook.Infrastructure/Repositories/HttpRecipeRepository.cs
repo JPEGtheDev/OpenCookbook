@@ -47,6 +47,10 @@ public sealed class HttpRecipeRepository : IRecipeRepository
         if (path.StartsWith('/') || path.StartsWith('\\'))
             throw new ArgumentException("Recipe path must not start with a slash.", nameof(path));
 
+        // Trim trailing separators before computing the extension so that paths like
+        // "Recipes/Beta/Shrimp_Scampi/" don't become "Recipes/Beta/Shrimp_Scampi/.yaml".
+        path = path.TrimEnd('/', '\\');
+
         // Normalise: append .yaml extension if the caller omitted it (canonical slug support).
         // Only add it when the path has no extension at all; reject paths with a different extension.
         var ext = System.IO.Path.GetExtension(path);
