@@ -930,7 +930,7 @@ public class YamlRecipeParserTests
     }
 
     [Fact]
-    public void Parse_BranchRecipe_FreezingSectionIsSequenceType()
+    public void Parse_BranchRecipe_LegacyFreezingHeadingWithSequenceType_ParsesAsSequence()
     {
         var yaml = BranchRecipeYaml;
 
