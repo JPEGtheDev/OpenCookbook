@@ -63,7 +63,7 @@ instructions:
       - text: Use immediately in a pasta dish or allow to cool and store.
 
   - heading: Storage
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: Allow the sauce to cool to room temperature.

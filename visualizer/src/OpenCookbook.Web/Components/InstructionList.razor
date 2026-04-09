@@ -6,7 +6,7 @@
         if (item.IsSequence)
         {
             var seq = item.Section!;
-            <div class="instruction-section @(seq.Optional ? "instruction-optional" : "")">
+            <div class="instruction-section @(seq.Optional && seq.Type != SectionType.Storage ? "instruction-optional" : "")">
                 @if (seq.Heading is not null)
                 {
                     <h3 class="section-heading">
@@ -105,22 +105,33 @@
     [Parameter, EditorRequired]
     public List<Section> Sections { get; set; } = [];
 
+    /// <summary>
+    /// When <c>true</c>, all sections with <see cref="SectionType.Storage"/>
+    /// are excluded from rendering, including any storage or freezing instructions
+    /// belonging to the parent recipe.
+    /// </summary>
+    [Parameter]
+    public bool SuppressStorage { get; set; }
+
     private List<RenderItem> _renderItems = [];
     private readonly Dictionary<string, string> _activeTabs = new();
 
     protected override void OnParametersSet()
     {
-        _renderItems = BuildRenderItems(Sections);
+        _renderItems = BuildRenderItems(Sections, SuppressStorage);
     }
 
-    private static List<RenderItem> BuildRenderItems(List<Section> sections)
+    private static List<RenderItem> BuildRenderItems(List<Section> sections, bool suppressStorage)
     {
         var items = new List<RenderItem>();
         var renderedBranchGroups = new HashSet<string>();
 
         foreach (var section in sections)
         {
-            if (section.Type == SectionType.Sequence)
+            if (suppressStorage && section.Type == SectionType.Storage)
+                continue;
+
+            if (section.Type == SectionType.Sequence || section.Type == SectionType.Storage)
             {
                 items.Add(new RenderItem { IsSequence = true, Section = section });
             }

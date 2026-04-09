@@ -70,7 +70,7 @@ instructions:
           - For grate marks on both sides, flip the meatballs once halfway through cooking.
 
   - heading: Freezing
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: Allow meatballs to cool fully after cooking
