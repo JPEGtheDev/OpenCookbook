@@ -98,6 +98,38 @@ public class InstructionListTests : BunitContext
     }
 
     [Fact]
+    public void InstructionList_OptionalStorageSection_DoesNotGetInstructionOptionalClass()
+    {
+        // Arrange — optional storage section should NOT get the indented styling
+        var sections = new List<Section>
+        {
+            new()
+            {
+                Heading = "Prep",
+                Optional = true,
+                Steps = [new Step { Text = "Mix ingredients" }]
+            },
+            new()
+            {
+                Heading = "Freezing",
+                Type = SectionType.Storage,
+                Optional = true,
+                Steps = [new Step { Text = "Freeze for 3 months" }]
+            }
+        };
+
+        // Act
+        var cut = Render<InstructionList>(p => p
+            .Add(x => x.Sections, sections));
+
+        // Assert — Prep (optional, non-storage) gets instruction-optional; Freezing (optional, storage) does not
+        var instructionSections = cut.FindAll(".instruction-section");
+        Assert.Equal(2, instructionSections.Count);
+        Assert.Contains("instruction-optional", instructionSections[0].ClassList);
+        Assert.DoesNotContain("instruction-optional", instructionSections[1].ClassList);
+    }
+
+    [Fact]
     public void InstructionList_DefaultSuppressStorage_IsFalse()
     {
         // Arrange — section with storage should render by default
