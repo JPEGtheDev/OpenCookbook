@@ -49,4 +49,27 @@ public class RecipeUrlHelperTests
         var result = RecipeUrlHelper.EscapeRecipePath("Kebab_Meat.yaml");
         Assert.Equal("Kebab_Meat", result);
     }
+
+    // ── EscapeRecipePath — separator normalization ─────────────────────────────
+
+    [Fact]
+    public void EscapeRecipePath_WindowsBackslashSeparators_AreNormalized()
+    {
+        var result = RecipeUrlHelper.EscapeRecipePath("Recipes\\Beta\\Shrimp_Scampi.yaml");
+        Assert.Equal("Recipes/Beta/Shrimp_Scampi", result);
+    }
+
+    [Fact]
+    public void EscapeRecipePath_TrailingForwardSlash_IsTrimmed()
+    {
+        var result = RecipeUrlHelper.EscapeRecipePath("Recipes/Beta/Shrimp_Scampi/");
+        Assert.Equal("Recipes/Beta/Shrimp_Scampi", result);
+    }
+
+    [Fact]
+    public void EscapeRecipePath_TrailingBackslash_IsTrimmed()
+    {
+        var result = RecipeUrlHelper.EscapeRecipePath("Recipes\\Beta\\Shrimp_Scampi\\");
+        Assert.Equal("Recipes/Beta/Shrimp_Scampi", result);
+    }
 }

@@ -101,10 +101,12 @@ def _inject_json_ld_into_spa(spa_html, recipe_name, schema):
 
     json_ld_tag = f'  <script type="application/ld+json">\n{json_ld}\n  </script>\n'
 
-    # Replace the generic <title> with the recipe name
+    # Replace the generic <title> with the recipe name.
+    # Use a replacement function so backslashes in the recipe name are treated
+    # literally instead of as regex replacement escapes/group references.
     result, title_replacements = re.subn(
         r"<title>[^<]*</title>",
-        f"<title>{safe_name} — OpenCookbook</title>",
+        lambda _match: f"<title>{safe_name} — OpenCookbook</title>",
         spa_html,
         count=1,
     )
