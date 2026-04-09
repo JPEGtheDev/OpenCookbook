@@ -142,7 +142,7 @@ instructions:
       - text: Slice into roughly 2cm (3/4 inch) cubes and serve
 
   - heading: Freezing
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: Flash freeze individual cubes on a baking sheet, ensuring pieces do not touch

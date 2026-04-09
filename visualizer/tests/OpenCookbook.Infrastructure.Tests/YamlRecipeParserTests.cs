@@ -811,4 +811,132 @@ public class YamlRecipeParserTests
 
         Assert.Null(recipe.Ingredients[0].Items[0].Alternates);
     }
+
+    // ── Storage Type Parsing ──────────────────────────
+
+    [Fact]
+    public void Parse_SectionWithStorageType_ParsesCorrectly()
+    {
+        var yaml = """
+            name: Test
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions:
+              - heading: Storage
+                type: storage
+                optional: true
+                steps:
+                  - text: Allow to cool and freeze
+            """;
+
+        var recipe = _parser.Parse(yaml);
+
+        Assert.Single(recipe.Instructions);
+        Assert.Equal(SectionType.Storage, recipe.Instructions[0].Type);
+    }
+
+    [Fact]
+    public void Parse_SectionWithoutType_DefaultsToSequence()
+    {
+        var yaml = """
+            name: Test
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions:
+              - heading: null
+                steps:
+                  - text: Step one
+            """;
+
+        var recipe = _parser.Parse(yaml);
+
+        Assert.Equal(SectionType.Sequence, recipe.Instructions[0].Type);
+    }
+
+    [Fact]
+    public void Parse_StorageTypeCaseInsensitive_ParsesCorrectly()
+    {
+        var yaml = """
+            name: Test
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions:
+              - heading: Storage
+                type: Storage
+                steps:
+                  - text: Freeze for up to 3 months
+            """;
+
+        var recipe = _parser.Parse(yaml);
+
+        Assert.Equal(SectionType.Storage, recipe.Instructions[0].Type);
+    }
+
+    [Fact]
+    public void Parse_InvalidType_ThrowsInvalidOperationException()
+    {
+        var yaml = """
+            name: Test
+            version: "1.0"
+            author: Test
+            description: Test
+            status: stable
+
+            ingredients:
+              - heading: null
+                items:
+                  - quantity: 100
+                    unit: g
+                    name: Ground Beef
+
+            instructions:
+              - heading: null
+                type: invalid
+                steps:
+                  - text: Step
+            """;
+
+        Assert.Throws<InvalidOperationException>(() => _parser.Parse(yaml));
+    }
+
+    [Fact]
+    public void Parse_BranchRecipe_LegacyFreezingHeadingWithSequenceType_ParsesAsSequence()
+    {
+        var yaml = BranchRecipeYaml;
+
+        var recipe = _parser.Parse(yaml);
+
+        var freezing = recipe.Instructions.First(s => s.Heading == "Freezing");
+        Assert.Equal(SectionType.Sequence, freezing.Type);
+    }
 }

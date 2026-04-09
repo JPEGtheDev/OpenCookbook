@@ -1075,4 +1075,235 @@ public class RecipeComposerTests
         Assert.NotNull(item.Alternates);
         Assert.Equal(300, item.Alternates![0].Quantity); // 150 * 2
     }
+
+    // ── Storage Section Filtering ──────────────────────────
+
+    [Fact]
+    public async Task ComposeAsync_SkipsStorageSectionsFromSubRecipe()
+    {
+        // Arrange — sub-recipe has a storage section
+        var subRecipe = new Recipe
+        {
+            Name = "Sauce",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 100, Unit = "g", Name = "Butter" }]
+                }
+            ],
+            Instructions =
+            [
+                new Section
+                {
+                    Heading = null,
+                    Steps = [new Step { Text = "Melt butter" }]
+                },
+                new Section
+                {
+                    Heading = "Storage",
+                    Type = SectionType.Storage,
+                    Optional = true,
+                    Steps = [new Step { Text = "Freeze for up to 3 months" }]
+                }
+            ]
+        };
+        var parent = BuildParentRecipe();
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — storage section from sub-recipe is NOT in composed instructions
+        Assert.DoesNotContain(composed.Instructions,
+            s => s.Type == SectionType.Storage);
+        Assert.DoesNotContain(composed.Instructions,
+            s => s.Steps.Any(step => step.Text.Contains("Freeze")));
+    }
+
+    [Fact]
+    public async Task ComposeAsync_PreservesNonStorageSectionsFromSubRecipe()
+    {
+        // Arrange — sub-recipe has both normal and storage sections
+        var subRecipe = new Recipe
+        {
+            Name = "Sauce",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 100, Unit = "g", Name = "Butter" }]
+                }
+            ],
+            Instructions =
+            [
+                new Section
+                {
+                    Heading = null,
+                    Steps = [new Step { Text = "Melt butter" }]
+                },
+                new Section
+                {
+                    Heading = "Storage",
+                    Type = SectionType.Storage,
+                    Optional = true,
+                    Steps = [new Step { Text = "Freeze" }]
+                }
+            ]
+        };
+        var parent = BuildParentRecipe();
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — non-storage instructions from sub-recipe are present
+        Assert.Contains(composed.Instructions,
+            s => s.Steps.Any(step => step.Text.Contains("Melt butter")));
+    }
+
+    [Fact]
+    public async Task ComposeAsync_ParentStorageSectionsPreserved()
+    {
+        // Arrange — parent recipe itself has a storage section
+        var subRecipe = BuildSubRecipe();
+        var parent = new Recipe
+        {
+            Name = "Parent Recipe",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items =
+                    [
+                        new Ingredient { Quantity = 1, Unit = "whole", Name = "Sub-Recipe", DocLink = "./Sub.yaml" },
+                    ]
+                }
+            ],
+            Instructions =
+            [
+                new Section
+                {
+                    Heading = null,
+                    Steps = [new Step { Text = "Combine everything" }]
+                },
+                new Section
+                {
+                    Heading = "Storage",
+                    Type = SectionType.Storage,
+                    Optional = true,
+                    Steps = [new Step { Text = "Refrigerate leftovers" }]
+                }
+            ]
+        };
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — parent's own storage section is still present
+        Assert.Contains(composed.Instructions,
+            s => s.Type == SectionType.Storage
+                 && s.Steps.Any(step => step.Text.Contains("Refrigerate")));
+    }
+
+    [Fact]
+    public async Task ComposeAsync_SubRecipeSectionTypePreserved()
+    {
+        // Arrange — sub-recipe has a normal sequence section
+        var subRecipe = BuildSubRecipe();
+        var parent = BuildParentRecipe();
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["Grilling/Sub.yaml"] = subRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "Grilling/Parent.yaml");
+
+        // Assert — sub-recipe normal sections have Sequence type preserved
+        var subSection = composed.Instructions.First(s => s.Heading == "Sub-Recipe");
+        Assert.Equal(SectionType.Sequence, subSection.Type);
+    }
+
+    [Fact]
+    public async Task ComposeAsync_InstructionDocLink_SkipsStorageSections()
+    {
+        // Arrange — linked recipe (via instruction doc_link) has a storage section
+        var linkedRecipe = new Recipe
+        {
+            Name = "Linked Sauce",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 50, Unit = "g", Name = "Olive Oil" }]
+                }
+            ],
+            Instructions =
+            [
+                new Section
+                {
+                    Heading = null,
+                    Steps = [new Step { Text = "Heat olive oil" }]
+                },
+                new Section
+                {
+                    Heading = "Storage",
+                    Type = SectionType.Storage,
+                    Steps = [new Step { Text = "Store in a cool place" }]
+                }
+            ]
+        };
+        var parent = new Recipe
+        {
+            Name = "Parent",
+            Ingredients =
+            [
+                new IngredientGroup
+                {
+                    Items = [new Ingredient { Quantity = 100, Unit = "g", Name = "Pasta" }]
+                }
+            ],
+            Instructions =
+            [
+                new Section
+                {
+                    DocLink = "./Linked.yaml"
+                },
+                new Section
+                {
+                    Heading = null,
+                    Steps = [new Step { Text = "Toss pasta with sauce" }]
+                }
+            ]
+        };
+        var repo = new FakeRecipeRepository(new()
+        {
+            ["dir/Linked.yaml"] = linkedRecipe
+        });
+        var composer = new RecipeComposer(repo);
+
+        // Act
+        var composed = await composer.ComposeAsync(parent, "dir/Parent.yaml");
+
+        // Assert — storage section from linked recipe is filtered out
+        Assert.DoesNotContain(composed.Instructions,
+            s => s.Type == SectionType.Storage);
+        Assert.Contains(composed.Instructions,
+            s => s.Steps.Any(step => step.Text.Contains("Heat olive oil")));
+    }
 }

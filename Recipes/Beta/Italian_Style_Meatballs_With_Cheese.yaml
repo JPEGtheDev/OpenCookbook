@@ -140,7 +140,7 @@ instructions:
           - "These instructions are untested for this recipe — use as a starting point"
 
   - heading: Freezing
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: "Allow meatballs to cool fully after cooking"
@@ -151,7 +151,7 @@ instructions:
           - "Stores for up to 3 months without losing flavor"
 
   - heading: Refrigerator Storage
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: "Allow meatballs to cool fully"

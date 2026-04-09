@@ -131,7 +131,7 @@ instructions:
       - text: "Pour sauce over the top and serve immediately"
 
   - heading: Storage
-    type: sequence
+    type: storage
     optional: true
     steps:
       - text: "Allow sauce to cool to room temperature"
