@@ -25,6 +25,11 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-04-11 — PR preview: generate static recipe pages AFTER base href patch, not before
+
+**What happened:** `pr-build.yml` ran "Generate recipe share pages" before "Patch base href for local serving". Generated `recipe/{slug}/index.html` pages retained `<base href="/OpenCookbook/" />`, while the root `index.html` was patched to `<base href="/" />`. On local serving, Blazor tried to load `_framework/blazor.webassembly.js` from `/OpenCookbook/_framework/...` (nonexistent), got HTML back, and threw `Uncaught SyntaxError: Unexpected token '<'`, triggering the "An unhandled error has occurred" overlay. Fix: reorder steps in `pr-build.yml` so recipe pages are generated from the already-patched `index.html`.
+**Absorbed into:** `lessons.md` only — CI workflow ordering concern specific to this project's base-href-patching pattern.
+
 ### 2026-04-11 — Blazor WASM: all lifecycle methods need exception guards; add ErrorBoundary to App.razor
 
 **What happened:** Recipe page reload showed "An unhandled error has occurred" even after wrapping `GenerateExportAsync` in try/catch. Root cause investigation revealed two additional unguarded paths: (1) `JS.InvokeAsync` in `MainLayout.OnAfterRenderAsync` had no try/catch — exceptions from any lifecycle method including `OnAfterRenderAsync` trigger the Blazor overlay; (2) rendering-time exceptions from any child component in the tree were not covered. Applied three fixes: outer try/catch on `RecalculateNutritionAndExport` call, guarded JS interop in `MainLayout`, and `ErrorBoundary` in `App.razor`.
