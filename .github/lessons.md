@@ -25,6 +25,11 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
+### 2026-04-11 — Blazor WASM: all lifecycle methods need exception guards; add ErrorBoundary to App.razor
+
+**What happened:** Recipe page reload showed "An unhandled error has occurred" even after wrapping `GenerateExportAsync` in try/catch. Root cause investigation revealed two additional unguarded paths: (1) `JS.InvokeAsync` in `MainLayout.OnAfterRenderAsync` had no try/catch — exceptions from any lifecycle method including `OnAfterRenderAsync` trigger the Blazor overlay; (2) rendering-time exceptions from any child component in the tree were not covered. Applied three fixes: outer try/catch on `RecalculateNutritionAndExport` call, guarded JS interop in `MainLayout`, and `ErrorBoundary` in `App.razor`.
+**Absorbed into:** `lessons.md` only — Blazor WASM-specific pattern; no existing skill covers C# component error handling.
+
 ### 2026-04-07 — Canonical SPA pages: inject JSON-LD into index.html copy per recipe
 
 **What happened:** Discovered that the cleanest way to produce a canonical static recipe page for GitHub Pages (200 OK for crawlers + full Blazor SPA for browsers, no meta-refresh) is to copy the published `index.html` and inject `<script type="application/ld+json">` before `</head>` for each recipe. This avoids the redirect chain that the old `share/{slug}/index.html` approach required.
