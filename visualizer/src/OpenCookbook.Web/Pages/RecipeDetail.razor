@@ -212,9 +212,16 @@ else if (_recipe is not null)
 
         if (_recipe is not null && _decodedPath is not null)
         {
-            var exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
-            if (requiredVersion is null || requiredVersion == _recalcVersion)
-                _exportText = exportText;
+            try
+            {
+                var exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+                if (requiredVersion is null || requiredVersion == _recalcVersion)
+                    _exportText = exportText;
+            }
+            catch
+            {
+                // Export is optional — don't block the page if generation fails
+            }
         }
     }
 
