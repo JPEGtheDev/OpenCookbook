@@ -160,7 +160,7 @@ else if (_recipe is not null)
 
         try
         {
-            _decodedPath = Uri.UnescapeDataString(Path);
+            _decodedPath = Uri.UnescapeDataString(Path).TrimEnd('/', '\\').Replace('\\', '/');
             _recipe = await RecipeService.GetRecipeByPathAsync(_decodedPath);
         }
         catch (Exception ex)
@@ -189,7 +189,17 @@ else if (_recipe is not null)
             }
         }
 
-        await RecalculateNutritionAndExport();
+        try
+        {
+            await RecalculateNutritionAndExport();
+        }
+        catch (Exception ex)
+        {
+            // Belt-and-suspenders: RecalculateNutritionAndExport guards each operation
+            // internally, but this outer catch ensures no unexpected exception escapes
+            // OnParametersSetAsync and triggers the Blazor unhandled-error overlay.
+            Console.Error.WriteLine($"[RecipeDetail] Unexpected error during RecalculateNutritionAndExport for '{_decodedPath}': {ex}");
+        }
     }
 
     private async Task RecalculateNutritionAndExport(int? requiredVersion = null)
@@ -212,9 +222,16 @@ else if (_recipe is not null)
 
         if (_recipe is not null && _decodedPath is not null)
         {
-            var exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
-            if (requiredVersion is null || requiredVersion == _recalcVersion)
-                _exportText = exportText;
+            try
+            {
+                var exportText = await ExportService.GenerateExportAsync(_recipe, basePath: GetRecipeDirectory(_decodedPath));
+                if (requiredVersion is null || requiredVersion == _recalcVersion)
+                    _exportText = exportText;
+            }
+            catch
+            {
+                // Export is optional — don't block the page if generation fails
+            }
         }
     }
 
@@ -270,10 +287,7 @@ else if (_recipe is not null)
         get
         {
             if (_decodedPath is null) return string.Empty;
-            var slug = _decodedPath.EndsWith(".yaml", StringComparison.OrdinalIgnoreCase)
-                ? _decodedPath[..^5]
-                : _decodedPath;
-            return $"{Nav.BaseUri}share/{slug}/";
+            return $"{Nav.BaseUri}recipe/{RecipeUrlHelper.EscapeRecipePath(_decodedPath)}/";
         }
     }
 

@@ -47,13 +47,6 @@ jobs:
           pip install pyyaml==6.0.2 --quiet
           python3 scripts/generate-recipe-index.py visualizer/output/wwwroot/recipes
 
-      - name: Generate recipe share pages
-        run: |
-          python3 scripts/generate-recipe-pages.py \
-            visualizer/output/wwwroot/recipes \
-            visualizer/output/wwwroot \
-            "http://localhost:8000"
-
       - name: Add .nojekyll and 404.html
         run: ./scripts/prepare-spa.sh visualizer/output/wwwroot
 
@@ -62,6 +55,13 @@ jobs:
           sed -i 's|<base href="/OpenCookbook/" />|<base href="/" />|g' \
             visualizer/output/wwwroot/index.html \
             visualizer/output/wwwroot/404.html
+
+      - name: Generate recipe share pages
+        run: |
+          python3 scripts/generate-recipe-pages.py \
+            visualizer/output/wwwroot/recipes \
+            visualizer/output/wwwroot \
+            "http://localhost:8000"
 
       - name: Bundle local preview server
         run: cp scripts/serve.py visualizer/output/wwwroot/serve.py

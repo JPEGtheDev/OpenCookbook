@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""generate-recipe-pages.py — Generate static HTML recipe share pages with Schema.org JSON-LD.
+"""generate-recipe-pages.py — Generate static HTML recipe pages with Schema.org JSON-LD.
 
-Each generated page contains machine-readable Schema.org Recipe markup and redirects browsers
-to the full Blazor recipe view.
+For each recipe YAML file this script produces:
+
+  recipe/{slug}/index.html — canonical page (200 OK from GitHub Pages).
+    Contains Schema.org Recipe JSON-LD in the <head> and otherwise serves the
+    full Blazor SPA so browsers get the interactive UI at the canonical URL.
 
 Usage:
     python3 scripts/generate-recipe-pages.py <recipes_dir> <output_dir> <base_url>
@@ -16,6 +19,7 @@ import glob
 import html
 import json
 import os
+import re
 import sys
 from urllib.parse import quote
 
@@ -89,29 +93,42 @@ def _build_schema(data, page_url):
     return schema
 
 
-def _generate_html(recipe_name, schema, app_url):
+def _inject_json_ld_into_spa(spa_html, recipe_name, schema):
+    """Return a copy of the Blazor SPA index.html with JSON-LD and a recipe title injected."""
     json_ld = json.dumps(schema, indent=2, ensure_ascii=False)
-    # Prevent the JSON-LD from accidentally closing the surrounding <script> tag.
-    # Replace all occurrences of "</" (case-insensitive in HTML) with the JSON escape.
-    import re
     json_ld = re.sub(r"</", r"<\\/", json_ld)
     safe_name = html.escape(recipe_name)
-    safe_app_url = html.escape(app_url)
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <title>{safe_name} — OpenCookbook</title>
-  <meta http-equiv="refresh" content="0; url={safe_app_url}" />
-  <script type="application/ld+json">
-{json_ld}
-  </script>
-</head>
-<body>
-  <p>Redirecting to <a href="{safe_app_url}">{safe_name}</a>&#8230;</p>
-</body>
-</html>
-"""
+
+    json_ld_tag = f'  <script type="application/ld+json">\n{json_ld}\n  </script>\n'
+
+    # Replace the generic <title> with the recipe name.
+    # Use a replacement function so backslashes in the recipe name are treated
+    # literally instead of as regex replacement escapes/group references.
+    result, title_replacements = re.subn(
+        r"<title>[^<]*</title>",
+        lambda _match: f"<title>{safe_name} — OpenCookbook</title>",
+        spa_html,
+        count=1,
+    )
+    if title_replacements != 1:
+        raise ValueError(
+            "Failed to inject recipe title into SPA template: expected exactly one "
+            "simple <title>...</title> element."
+        )
+
+    # Inject the JSON-LD script immediately before the closing </head> tag.
+    # Match case-insensitively so harmless HTML formatting/casing differences
+    # do not silently produce canonical pages without Schema.org data.
+    head_close_match = re.search(r"</head\s*>", result, flags=re.IGNORECASE)
+    if head_close_match is None:
+        raise ValueError("Unable to inject JSON-LD: closing </head> tag not found in SPA HTML.")
+
+    result = (
+        result[: head_close_match.start()]
+        + json_ld_tag
+        + result[head_close_match.start():]
+    )
+    return result
 
 
 def main():
@@ -126,6 +143,11 @@ def main():
     output_dir = sys.argv[2]
     base_url = sys.argv[3].rstrip("/")
 
+    # Read the Blazor SPA entrypoint once — used for every canonical recipe page.
+    spa_index_path = os.path.join(output_dir, "index.html")
+    with open(spa_index_path, encoding="utf-8") as f:
+        spa_html = f.read()
+
     count = 0
     for filepath in sorted(glob.glob(os.path.join(recipes_dir, "**/*.yaml"), recursive=True)):
         with open(filepath, encoding="utf-8") as f:
@@ -133,28 +155,29 @@ def main():
 
         rel_path = os.path.relpath(filepath, recipes_dir).replace("\\", "/")
 
-        # Slug: recipe path without .yaml extension, used as the share/ subdirectory
+        # Slug: recipe path without .yaml extension
         page_slug = rel_path[:-5] if rel_path.endswith(".yaml") else rel_path
 
-        # URL of the static share page
-        page_url = f"{base_url}/share/{page_slug}/"
-
-        # URL of the Blazor recipe view (where the meta refresh sends browsers)
-        app_url = f"{base_url}/recipe/{quote(rel_path, safe='/')}"
+        # Canonical URL for this recipe — uses trailing slash so the URL resolves to
+        # the directory-served index.html without an extra redirect on static hosts.
+        canonical_url = f"{base_url}/recipe/{quote(page_slug, safe='/')}/"
 
         recipe_name = data.get("name", page_slug)
-        schema = _build_schema(data, page_url)
-        html = _generate_html(recipe_name, schema, app_url)
+        schema = _build_schema(data, canonical_url)
 
-        out_path = os.path.join(output_dir, "share", page_slug, "index.html")
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
-        with open(out_path, "w", encoding="utf-8") as f:
-            f.write(html)
+        # Canonical page: recipe/{slug}/index.html — copy of the Blazor SPA with
+        # JSON-LD injected in the <head>.  GitHub Pages serves this as a 200 OK so
+        # crawlers see JSON-LD and browsers get the interactive UI.
+        canonical_html = _inject_json_ld_into_spa(spa_html, recipe_name, schema)
+        canonical_out = os.path.join(output_dir, "recipe", page_slug, "index.html")
+        os.makedirs(os.path.dirname(canonical_out), exist_ok=True)
+        with open(canonical_out, "w", encoding="utf-8") as f:
+            f.write(canonical_html)
+        print(f"Generated: recipe/{page_slug}/index.html")
 
         count += 1
-        print(f"Generated: share/{page_slug}/index.html")
 
-    print(f"Done. {count} share page(s) generated.")
+    print(f"Done. {count} canonical recipe page(s) generated.")
 
 
 if __name__ == "__main__":
