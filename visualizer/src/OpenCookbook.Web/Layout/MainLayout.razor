@@ -57,9 +57,19 @@
     {
         if (firstRender)
         {
-            var theme = await JS.InvokeAsync<string>("themeInterop.getTheme");
-            _isDark = theme == "dark";
-            StateHasChanged();
+            try
+            {
+                var theme = await JS.InvokeAsync<string>("themeInterop.getTheme");
+                _isDark = theme == "dark";
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                // JS interop can fail during pre-rendering or if the JS bundle
+                // hasn't fully loaded yet — leave the theme toggle hidden rather
+                // than crashing the layout.
+                Console.Error.WriteLine($"[MainLayout] Failed to read theme preference: {ex.Message}");
+            }
         }
     }
 

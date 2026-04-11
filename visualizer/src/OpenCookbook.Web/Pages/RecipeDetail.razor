@@ -189,7 +189,17 @@ else if (_recipe is not null)
             }
         }
 
-        await RecalculateNutritionAndExport();
+        try
+        {
+            await RecalculateNutritionAndExport();
+        }
+        catch (Exception ex)
+        {
+            // Belt-and-suspenders: RecalculateNutritionAndExport guards each operation
+            // internally, but this outer catch ensures no unexpected exception escapes
+            // OnParametersSetAsync and triggers the Blazor unhandled-error overlay.
+            Console.Error.WriteLine($"[RecipeDetail] Unexpected error during RecalculateNutritionAndExport for '{_decodedPath}': {ex}");
+        }
     }
 
     private async Task RecalculateNutritionAndExport(int? requiredVersion = null)
