@@ -100,3 +100,5 @@ instructions:
 related:
   - label: Kebab Meatballs
     path: ./Kebab_Meatballs.yaml
+  - label: Zhoug
+    path: ../Zhoug.yaml

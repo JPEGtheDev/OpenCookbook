@@ -1,0 +1,101 @@
+name: Zhoug
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A Yemeni-Israeli green hot sauce made from fresh jalapeños, cilantro, and warm
+  whole spices. Fiery and herbaceous — serve straight as a condiment or fold into
+  Greek yogurt or sour cream to temper the heat. Pairs well with shawarma, kebab,
+  and Mediterranean dishes.
+status: stable
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 3
+        unit: g
+        name: Black Peppercorns
+        nutrition_id: "de21ba84-93f9-53e7-b961-aa1f6f04fe58"
+        volume_alt: "1 tsp."
+      - quantity: 4
+        unit: g
+        name: Whole Coriander Seeds
+        nutrition_id: "d607cd8d-0a12-557c-84ca-d0123f64236b"
+        volume_alt: "2 tsp."
+      - quantity: 4
+        unit: g
+        name: Cumin Seeds
+        nutrition_id: "4cee9687-0345-5c5c-bf34-0bc7cd916e13"
+        volume_alt: "2 tsp."
+      - quantity: 1.1
+        unit: g
+        name: Ground Cardamom
+        nutrition_id: "5c99e02f-1f34-42f5-ab18-61ee2988cc18"
+        volume_alt: "1/2 tsp."
+      - quantity: 160
+        unit: g
+        name: Fresh Cilantro
+        nutrition_id: "928352b3-344e-4a47-82c7-893e1b5a51ba"
+      - quantity: 15
+        unit: g
+        name: Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        weight_alt: "3 cloves"
+      - quantity: 230
+        unit: g
+        name: Jalapeños
+        nutrition_id: "7d027563-59e7-4276-b99b-7cbd4a67ba28"
+      - quantity: 7.5
+        unit: g
+        name: Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+        volume_alt: "1 1/4 tsp."
+      - quantity: 30
+        unit: g
+        name: Extra Virgin Olive Oil
+        nutrition_id: "7e25f40e-eeb2-4285-a491-78f9e8f012f8"
+
+utensils:
+  - heading: null
+    items:
+      - Spice Grinder (or Mortar and Pestle)
+      - Food Processor or Blender
+
+instructions:
+  - heading: Grinding
+    type: sequence
+    steps:
+      - text: "Add the black peppercorns, whole coriander seeds, and cumin seeds to a spice grinder."
+      - text: "Grind until the spices become a uniform powder."
+      - text: "Add the pre-ground cardamom to the freshly ground spices and mix briefly to combine. Set aside."
+
+  - heading: Blending
+    type: sequence
+    steps:
+      - text: "Add the garlic and jalapeños to a food processor or blender."
+      - text: "Pulse until the garlic and jalapeños are roughly chopped."
+      - text: "Rinse the cilantro thoroughly under cold running water and shake off excess water."
+      - text: "Add the cilantro, salt, and ground spice mixture to the food processor or blender."
+      - text: "Blend until smooth, adding water one tablespoon at a time as needed to keep the mixture moving."
+      - text: "Transfer the blended sauce to a bowl. Add the extra virgin olive oil and stir to combine."
+
+  - heading: Serving — As a Condiment
+    type: branch
+    branch_group: serving-style
+    optional: true
+    steps:
+      - text: "Serve the zhoug directly alongside shawarma, kebab, or other Mediterranean dishes."
+
+  - heading: Serving — Dairy-Blended
+    type: branch
+    branch_group: serving-style
+    optional: true
+    steps:
+      - text: "Combine the zhoug with Greek yogurt or sour cream to taste. This reduces the heat intensity and produces a creamy, milder sauce."
+
+related:
+  - label: Shawarma Like Chicken
+    path: ./Shawarma_Like_Chicken.yaml
+  - label: Kebab Meat
+    path: ./Grilling/Kebab_Meat.yaml
+  - label: Kebab Meatballs
+    path: ./Grilling/Kebab_Meatballs.yaml
