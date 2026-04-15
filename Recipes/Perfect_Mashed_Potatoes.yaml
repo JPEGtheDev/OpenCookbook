@@ -45,15 +45,21 @@ ingredients:
 
   - heading: Fancy Additions
     items:
-      - quantity: 2
-        unit: cloves
+      - quantity: 10
+        unit: g
         name: Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        weight_alt: "2 cloves"
       - quantity: 3
-        unit: sprigs
+        unit: g
         name: Fresh Thyme
-      - quantity: 0.5
-        unit: sprig
+        nutrition_id: "6ba678f3-4b52-4203-b194-f39e96300066"
+        weight_alt: "3 sprigs"
+      - quantity: 1
+        unit: g
         name: Fresh Rosemary
+        nutrition_id: "ac13aa5f-43c5-4adc-a9a4-fd1b14244eb7"
+        weight_alt: "1/2 sprig"
 
 utensils:
   - heading: null

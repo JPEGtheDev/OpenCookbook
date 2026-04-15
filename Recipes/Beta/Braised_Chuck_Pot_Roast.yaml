@@ -21,22 +21,28 @@ ingredients:
       - quantity: 80
         unit: g
         name: Avocado Oil
+        nutrition_id: "d5dbc1f0-570a-41da-9d5f-1118ad1370f0"
       - quantity: 3030
         unit: g
         name: Chuck Pot Roast
+        nutrition_id: "009bfa88-39cb-42d3-81b9-05487efa3060"
       - quantity: 220
         unit: g
         name: Yellow Onion
+        nutrition_id: "62a41ce3-b227-4a59-a51f-d7e9e64388bb"
         weight_alt: "2 whole"
       - quantity: 30
         unit: g
         name: Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
       - quantity: 475
         unit: ml
         name: Red Wine
+        nutrition_id: "6eb7a685-7502-4b43-9964-cceee2fa86a6"
       - quantity: 15
         unit: g
         name: Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
         weight_alt: "3 cloves"
 
 utensils:
@@ -66,6 +72,24 @@ instructions:
       - text: "Remove the chuck roast from the pot and set aside. This yields approximately 1850g of braised meat."
       - text: "Strain the remaining liquid through a fine mesh strainer, discarding the solids. This yields approximately 3300ml of braising broth."
 
+  - heading: Freezing
+    type: storage
+    optional: true
+    steps:
+      - text: "Allow the braised chuck to cool until safe to handle."
+      - text: "Shred the chuck using two forks or a stand mixer with a paddle attachment. Pull into bite-sized pieces — do not overmix or the texture will become mushy."
+      - text: "Portion the shredded chuck into 80–85g balls (approximately 1/2 cup each) using a muffin tin."
+      - text: "Place the muffin tin in the freezer and freeze until the portions are solid."
+      - text: "Transfer the frozen portions to a sealed freezer bag or vacuum-sealed bag."
+        notes:
+          - Stores for up to 3 months.
+
 notes:
   - "Storage instructions for braised meat and broth are TBD."
   - "The yields field is a forward-looking schema addition — a user story tracking schema support for multiple outputs is pending."
+
+related:
+  - label: Beef Stroganoff Gravy Base
+    path: ./Beef_Stroganoff_Gravy_Base.yaml
+  - label: Beef Stroganoff
+    path: ./Beef_Stroganoff.yaml

@@ -1,0 +1,60 @@
+name: Beef Stroganoff Gravy Base
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A simple roux-based gravy made from the braising broth of the Braised Chuck Pot
+  Roast. Serves as the sauce component for Beef Stroganoff. Can be portioned and
+  frozen in muffin tins for single-serving use.
+status: draft
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 56
+        unit: g
+        name: Unsalted Butter
+      - quantity: 32
+        unit: g
+        name: All-Purpose Flour
+      - quantity: 600
+        unit: ml
+        name: Braising Broth
+        doc_link: ./Braised_Chuck_Pot_Roast.yaml
+        note: "from the braising liquid yield of Braised Chuck Pot Roast"
+
+utensils:
+  - heading: null
+    items:
+      - Saucepan or Skillet
+      - Whisk or Wooden Spoon
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Melt the butter in a saucepan or skillet over medium heat."
+      - text: "Add the flour all at once. Stir continuously until the mixture forms a uniform wet-sand consistency. This is a roux — the ratio is 1:1 by volume (not weight)."
+      - text: "Gradually pour in the warmed braising broth, stirring constantly to prevent lumps."
+      - text: "Continue cooking and stirring until the gravy thickens to a pourable sauce consistency."
+      - text: "Season with black pepper to taste. Quantity not yet measured — see notes."
+
+  - heading: Freezing
+    type: storage
+    optional: true
+    steps:
+      - text: "Allow the gravy to cool fully before portioning."
+      - text: "Pour the gravy into muffin tin cavities. Freeze until solid."
+      - text: "Transfer frozen portions to a sealed freezer bag or vacuum-sealed bag."
+        notes:
+          - Stores for up to 3 months.
+
+notes:
+  - "Black pepper quantity TBD — not measured during initial testing."
+  - "Roux ratio is 1:1 by volume (not weight): 4 tbsp butter to 4 tbsp flour."
+  - "Yield per muffin tin portion TBD — to be measured on next batch."
+
+related:
+  - label: Braised Chuck Pot Roast
+    path: ./Braised_Chuck_Pot_Roast.yaml
+  - label: Beef Stroganoff
+    path: ./Beef_Stroganoff.yaml

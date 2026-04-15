@@ -8,6 +8,8 @@ Checks performed:
   2. No duplicate IDs in the nutrition database
   3. No duplicate names in the nutrition database
   4. Every ingredient with nutrition_id references valid entries
+  5. stable and beta recipes: every ingredient must have a nutrition_id (hard fail)
+     draft recipes: missing nutrition_id is allowed
 
 Exit codes:
   0: All validations passed
@@ -125,6 +127,8 @@ def validate_recipes(recipes, nutrition_db):
             continue
         
         recipe_name = recipe.get("name", rel_path.name)
+        status = recipe.get("status", "").lower()
+        require_nutrition_id = status != "draft"
         
         for group in recipe.get("ingredients", []):
             for item_idx, item in enumerate(group.get("items", [])):
@@ -133,10 +137,15 @@ def validate_recipes(recipes, nutrition_db):
                 unit = item.get("unit", "")
                 
                 if not nutrition_id:
-                    # No nutrition_id: that's fine (some ingredients might not have data)
+                    doc_link = item.get("doc_link")
+                    if require_nutrition_id and not doc_link:
+                        errors.append(
+                            f"{rel_path} ({recipe_name}), "
+                            f"ingredient '{ingredient_name}': "
+                            f"missing nutrition_id (required for stable and beta recipes)"
+                        )
                     continue
                 
-                # Check that ingredient name matches DB name
                 if nutrition_id not in nutrition_db:
                     errors.append(
                         f"{rel_path} ({recipe_name}), "
