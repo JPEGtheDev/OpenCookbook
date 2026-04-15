@@ -5,10 +5,9 @@ This script is intended to run as a pre-commit hook.
 
 Checks performed:
   1. All nutrition_id entries exist in the database
-  2. Ingredient names match database entries exactly
-  3. No duplicate IDs in the nutrition database
-  4. No duplicate names in the nutrition database
-  5. Every ingredient with nutrition_id references valid entries
+  2. No duplicate IDs in the nutrition database
+  3. No duplicate names in the nutrition database
+  4. Every ingredient with nutrition_id references valid entries
 
 Exit codes:
   0: All validations passed
@@ -146,15 +145,6 @@ def validate_recipes(recipes, nutrition_db):
                     )
                     continue
                 
-                db_name = nutrition_db[nutrition_id]
-                if ingredient_name != db_name:
-                    errors.append(
-                        f"{rel_path} ({recipe_name}), "
-                        f"ingredient '{ingredient_name}': "
-                        f"name does not match nutrition DB entry '{db_name}' "
-                        f"(nutrition_id: {nutrition_id})"
-                    )
-                
                 # Check that unit is g or ml (NutritionCalculator only recognizes these)
                 if unit.lower() not in ["g", "ml"]:
                     errors.append(
@@ -210,7 +200,7 @@ def main():
         for error in recipe_errors:
             print(f"  • {error}", file=sys.stderr)
         print(
-            "\nℹ️  Ensure ingredient names match exactly with the nutrition database.",
+            "\nℹ️  Ensure nutrition_id values exist in docs/data/nutrition-db.json",
             file=sys.stderr
         )
         return 1

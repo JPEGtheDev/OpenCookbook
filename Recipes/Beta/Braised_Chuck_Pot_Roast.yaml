@@ -1,0 +1,71 @@
+name: Braised Chuck Pot Roast
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A low-and-slow braised chuck pot roast cooked in red wine and aromatics.
+  Produces two distinct outputs: fork-tender braised meat and a rich braising
+  broth, both of which can serve as the base for other recipes.
+status: beta
+
+yields:
+  - quantity: 1850
+    unit: g
+    name: Braised Chuck Pot Roast
+  - quantity: 3300
+    unit: ml
+    name: Braising Broth
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 80
+        unit: g
+        name: Avocado Oil
+      - quantity: 3030
+        unit: g
+        name: Chuck Pot Roast
+      - quantity: 220
+        unit: g
+        name: Yellow Onion
+        weight_alt: "2 whole"
+      - quantity: 30
+        unit: g
+        name: Salt
+      - quantity: 475
+        unit: ml
+        name: Red Wine
+      - quantity: 15
+        unit: g
+        name: Garlic
+        weight_alt: "3 cloves"
+
+utensils:
+  - heading: null
+    items:
+      - Large Oven-Safe Pot or Dutch Oven
+      - Fine Mesh Strainer
+      - Tongs
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Preheat oven to 107°C (225°F)."
+      - text: "Rough chop the yellow onion into ~2–3 cm irregular pieces. Roughly chop the garlic into ~1 cm pieces."
+      - text: "Add avocado oil to a large oven-safe pot or Dutch oven. Set heat to medium-high and heat until the oil is hot and shimmering."
+      - text: "Place the chuck roast in the pot and sear on all sides until a brown crust forms on the outside. Remove the roast from the pot and set aside."
+      - text: "Add the rough-chopped onion and salt to the pot. Cook, stirring occasionally, until the onions have softened and cooked down."
+      - text: "Add the roughly chopped garlic to the pot and cook for 90 seconds, stirring frequently."
+      - text: "Pour in the red wine. Stir to scrape up any browned bits from the bottom of the pot. Cook until the wine has reduced by half."
+      - text: "Return the chuck roast to the pot. Add enough water to fully submerge the roast."
+      - text: "Bring the liquid to a simmer over medium heat."
+      - text: "Cover the pot and transfer to the preheated 107°C (225°F) oven."
+      - text: "Cook at 107°C (225°F) for approximately 4 hours."
+      - text: "Raise the oven temperature to 149°C (300°F) and continue cooking for 1 additional hour."
+      - text: "Remove the pot from the oven. The meat is done when it is fork-tender and has reached a minimum internal temperature of 63°C (145°F)."
+      - text: "Remove the chuck roast from the pot and set aside. This yields approximately 1850g of braised meat."
+      - text: "Strain the remaining liquid through a fine mesh strainer, discarding the solids. This yields approximately 3300ml of braising broth."
+
+notes:
+  - "Storage instructions for braised meat and broth are TBD."
+  - "The yields field is a forward-looking schema addition — a user story tracking schema support for multiple outputs is pending."
