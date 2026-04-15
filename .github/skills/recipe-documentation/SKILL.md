@@ -4,7 +4,7 @@ description: How to format and structure a recipe YAML file in the OpenCookbook 
 license: CC0-1.0
 metadata:
   author: JPEGtheDev
-  version: "1.2"
+  version: "1.3"
 ---
 
 # Recipe Documentation
@@ -212,6 +212,7 @@ Every instruction section MUST have a `type` field:
 |---|---|---|
 | `sequence` | Steps always run in order | Default for most sections |
 | `branch` | One of several options — cook picks one | For variations (Grilled vs. Baked) |
+| `storage` | Freezing, refrigerating, or storing the output | For optional storage/freezing sections |
 
 ### Branching Paths
 

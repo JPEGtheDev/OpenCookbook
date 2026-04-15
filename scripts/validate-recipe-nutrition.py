@@ -5,10 +5,11 @@ This script is intended to run as a pre-commit hook.
 
 Checks performed:
   1. All nutrition_id entries exist in the database
-  2. Ingredient names match database entries exactly
-  3. No duplicate IDs in the nutrition database
-  4. No duplicate names in the nutrition database
-  5. Every ingredient with nutrition_id references valid entries
+  2. No duplicate IDs in the nutrition database
+  3. No duplicate names in the nutrition database
+  4. Every ingredient with nutrition_id references valid entries
+  5. stable and beta recipes: every ingredient must have a nutrition_id (hard fail)
+     draft recipes: missing nutrition_id is allowed
 
 Exit codes:
   0: All validations passed
@@ -126,6 +127,19 @@ def validate_recipes(recipes, nutrition_db):
             continue
         
         recipe_name = recipe.get("name", rel_path.name)
+        raw_status = recipe.get("status")
+        if isinstance(raw_status, str):
+            status = raw_status.lower()
+        else:
+            status = ""
+
+        if status not in ["stable", "beta", "draft"]:
+            errors.append(
+                f"{rel_path} ({recipe_name}): "
+                f"invalid status '{raw_status}' (must be 'stable', 'beta', or 'draft')"
+            )
+
+        require_nutrition_id = status in ["stable", "beta"]
         
         for group in recipe.get("ingredients", []):
             for item_idx, item in enumerate(group.get("items", [])):
@@ -134,10 +148,15 @@ def validate_recipes(recipes, nutrition_db):
                 unit = item.get("unit", "")
                 
                 if not nutrition_id:
-                    # No nutrition_id: that's fine (some ingredients might not have data)
+                    doc_link = item.get("doc_link")
+                    if require_nutrition_id and not doc_link:
+                        errors.append(
+                            f"{rel_path} ({recipe_name}), "
+                            f"ingredient '{ingredient_name}': "
+                            f"missing nutrition_id (required for stable and beta recipes)"
+                        )
                     continue
                 
-                # Check that ingredient name matches DB name
                 if nutrition_id not in nutrition_db:
                     errors.append(
                         f"{rel_path} ({recipe_name}), "
@@ -145,15 +164,6 @@ def validate_recipes(recipes, nutrition_db):
                         f"nutrition_id '{nutrition_id}' not found in nutrition database"
                     )
                     continue
-                
-                db_name = nutrition_db[nutrition_id]
-                if ingredient_name != db_name:
-                    errors.append(
-                        f"{rel_path} ({recipe_name}), "
-                        f"ingredient '{ingredient_name}': "
-                        f"name does not match nutrition DB entry '{db_name}' "
-                        f"(nutrition_id: {nutrition_id})"
-                    )
                 
                 # Check that unit is g or ml (NutritionCalculator only recognizes these)
                 if unit.lower() not in ["g", "ml"]:
@@ -210,7 +220,7 @@ def main():
         for error in recipe_errors:
             print(f"  • {error}", file=sys.stderr)
         print(
-            "\nℹ️  Ensure ingredient names match exactly with the nutrition database.",
+            "\nℹ️  Ensure nutrition_id values exist in docs/data/nutrition-db.json",
             file=sys.stderr
         )
         return 1

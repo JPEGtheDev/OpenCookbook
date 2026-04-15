@@ -1,0 +1,51 @@
+name: Beef Stroganoff
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A meal-prep beef stroganoff combining shredded braised chuck pot roast with wide
+  egg noodles and a roux-based beef gravy. Designed to be portioned and frozen as
+  single-serving to-go meals. Mushrooms are planned for a future update.
+status: draft
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 205
+        unit: g
+        name: Braised Chuck Pot Roast
+        doc_link: ./Braised_Chuck_Pot_Roast.yaml
+        note: "shredded"
+      - quantity: 295
+        unit: g
+        name: Cooked Wide Egg Noodles
+      - quantity: 1
+        unit: whole
+        name: Beef Stroganoff Gravy Base
+        doc_link: ./Beef_Stroganoff_Gravy_Base.yaml
+        note: "amount per serving TBD — see notes"
+
+utensils:
+  - heading: null
+    items:
+      - Large Mixing Bowl or Pot
+      - Two Forks (for shredding)
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Shred the braised chuck using two forks or a stand mixer with a paddle attachment. Pull into bite-sized pieces — do not overmix or the texture will become mushy."
+      - text: "Cook the wide egg noodles according to package directions. Drain and weigh out 295g of cooked noodles."
+      - text: "Combine the shredded chuck and cooked noodles in a large bowl or pot."
+      - text: "Add the Beef Stroganoff Gravy Base and mix to combine. Gravy amount per serving TBD — see notes."
+
+notes:
+  - "Gravy base amount per serving TBD — to be determined based on muffin tin portion yield."
+  - "Mushrooms are planned for a future update."
+  - "Chuck may be pre-portioned into 80–85g balls (approx. 1/2 cup) and frozen in muffin tins as single servings before assembly."
+
+related:
+  - label: Braised Chuck Pot Roast
+    path: ./Braised_Chuck_Pot_Roast.yaml
+  - label: Beef Stroganoff Gravy Base
+    path: ./Beef_Stroganoff_Gravy_Base.yaml

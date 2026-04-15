@@ -1,0 +1,93 @@
+name: Braised Chuck Pot Roast
+version: "1.0"
+author: Jonathan Petz | JPEGtheDev
+description: >
+  A low-and-slow braised chuck pot roast cooked in red wine and aromatics.
+  Produces two distinct outputs: fork-tender braised meat and a rich braising
+  broth, both of which can serve as the base for other recipes.
+status: beta
+
+yields:
+  quantity: 1850
+  unit: g
+  name: Braised Chuck Pot Roast
+# Secondary yield (schema pending): 3300ml Braising Broth
+
+ingredients:
+  - heading: null
+    items:
+      - quantity: 80
+        unit: g
+        name: Avocado Oil
+        nutrition_id: "d5dbc1f0-570a-41da-9d5f-1118ad1370f0"
+      - quantity: 3030
+        unit: g
+        name: Chuck Pot Roast
+        nutrition_id: "009bfa88-39cb-42d3-81b9-05487efa3060"
+      - quantity: 220
+        unit: g
+        name: Yellow Onion
+        nutrition_id: "62a41ce3-b227-4a59-a51f-d7e9e64388bb"
+        weight_alt: "2 whole"
+      - quantity: 30
+        unit: g
+        name: Salt
+        nutrition_id: "5c00ccf3-0bd6-5da0-8f97-a107d381609b"
+      - quantity: 475
+        unit: ml
+        name: Red Wine
+        nutrition_id: "6eb7a685-7502-4b43-9964-cceee2fa86a6"
+      - quantity: 15
+        unit: g
+        name: Garlic
+        nutrition_id: "3b7e2f4a-1c5d-4e2a-9b3f-6c8a1d5e7f2b"
+        weight_alt: "3 cloves"
+
+utensils:
+  - heading: null
+    items:
+      - Large Oven-Safe Pot or Dutch Oven
+      - Fine Mesh Strainer
+      - Tongs
+
+instructions:
+  - heading: null
+    type: sequence
+    steps:
+      - text: "Preheat oven to 107°C (225°F)."
+      - text: "Rough chop the yellow onion into ~2–3 cm irregular pieces. Roughly chop the garlic into ~1 cm pieces."
+      - text: "Add avocado oil to a large oven-safe pot or Dutch oven. Set heat to medium-high and heat until the oil is hot and shimmering."
+      - text: "Place the chuck roast in the pot and sear on all sides until a brown crust forms on the outside. Remove the roast from the pot and set aside."
+      - text: "Add the rough-chopped onion and salt to the pot. Cook, stirring occasionally, until the onions have softened and cooked down."
+      - text: "Add the roughly chopped garlic to the pot and cook for 90 seconds, stirring frequently."
+      - text: "Pour in the red wine. Stir to scrape up any browned bits from the bottom of the pot. Cook until the wine has reduced by half."
+      - text: "Return the chuck roast to the pot. Add enough water to fully submerge the roast."
+      - text: "Bring the liquid to a simmer over medium heat."
+      - text: "Cover the pot and transfer to the preheated 107°C (225°F) oven."
+      - text: "Cook at 107°C (225°F) for approximately 4 hours."
+      - text: "Raise the oven temperature to 149°C (300°F) and continue cooking for 1 additional hour."
+      - text: "Remove the pot from the oven. The meat is done when it is fork-tender and has reached a minimum internal temperature of 63°C (145°F)."
+      - text: "Remove the chuck roast from the pot and set aside. This yields approximately 1850g of braised meat."
+      - text: "Strain the remaining liquid through a fine mesh strainer, discarding the solids. This yields approximately 3300ml of braising broth."
+
+  - heading: Freezing
+    type: storage
+    optional: true
+    steps:
+      - text: "Allow the braised chuck to cool until safe to handle."
+      - text: "Shred the chuck using two forks or a stand mixer with a paddle attachment. Pull into bite-sized pieces — do not overmix or the texture will become mushy."
+      - text: "Portion the shredded chuck into 80–85g balls (approximately 1/2 cup each) using a muffin tin."
+      - text: "Place the muffin tin in the freezer and freeze until the portions are solid."
+      - text: "Transfer the frozen portions to a sealed freezer bag or vacuum-sealed bag."
+        notes:
+          - Stores for up to 3 months.
+
+notes:
+  - "Storage instructions for braised meat and broth are TBD."
+  - "The yields field is a forward-looking schema addition — a user story tracking schema support for multiple outputs is pending."
+
+related:
+  - label: Beef Stroganoff Gravy Base
+    path: ./Beef_Stroganoff_Gravy_Base.yaml
+  - label: Beef Stroganoff
+    path: ./Beef_Stroganoff.yaml
