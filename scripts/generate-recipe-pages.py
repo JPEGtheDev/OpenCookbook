@@ -41,8 +41,106 @@ def _format_ingredient(item):
     return " ".join(parts)
 
 
-def _build_schema(data, page_url):
-    """Build a Schema.org Recipe JSON-LD dict from parsed YAML data."""
+def _collect_ingredients(data, recipe_dir, visited):
+    """Recursively collect all ingredient strings, following doc_link references.
+
+    Args:
+        data: Parsed YAML dict for the recipe.
+        recipe_dir: Absolute directory of the recipe file being processed.
+        visited: Set of absolute file paths already on the recursion stack
+                 (used for cycle detection).
+
+    Returns:
+        List of human-readable ingredient strings.
+    """
+    results = []
+    for group in (data.get("ingredients") or []):
+        for item in (group.get("items") or []):
+            doc_link = item.get("doc_link")
+            if not doc_link:
+                results.append(_format_ingredient(item))
+                continue
+
+            # Resolve the linked recipe path relative to the current recipe's directory.
+            linked_path = os.path.normpath(os.path.join(recipe_dir, doc_link))
+
+            # Cycle detection: skip if this path is already being processed.
+            if linked_path in visited:
+                continue
+
+            try:
+                with open(linked_path, encoding="utf-8") as f:
+                    linked_data = yaml.safe_load(f)
+            except OSError:
+                # If the linked file cannot be read, skip it gracefully.
+                continue
+
+            visited.add(linked_path)
+            linked_dir = os.path.dirname(linked_path)
+            qty = item.get("quantity")
+            scale = qty if qty is not None else 1
+
+            if scale != 1:
+                # Re-format scaled sub-ingredients by scaling numeric quantities.
+                # volume_alt values are no longer accurate after scaling, so they
+                # are dropped inside _collect_scaled_ingredients.
+                results.extend(_collect_scaled_ingredients(linked_data, linked_dir, visited, scale))
+            else:
+                results.extend(_collect_ingredients(linked_data, linked_dir, visited))
+
+            visited.discard(linked_path)
+    return results
+
+
+def _collect_scaled_ingredients(data, recipe_dir, visited, scale):
+    """Collect ingredient strings from *data*, scaling quantities by *scale*.
+
+    This mirrors _collect_ingredients but applies a numeric scale factor to
+    each ingredient's quantity before formatting it.
+    """
+    results = []
+    for group in (data.get("ingredients") or []):
+        for item in (group.get("items") or []):
+            doc_link = item.get("doc_link")
+            if not doc_link:
+                scaled_item = dict(item)
+                qty = scaled_item.get("quantity")
+                if isinstance(qty, (int, float)):
+                    scaled_item["quantity"] = qty * scale
+                    # volume_alt is no longer accurate after scaling, so drop it.
+                    scaled_item.pop("volume_alt", None)
+                results.append(_format_ingredient(scaled_item))
+                continue
+
+            linked_path = os.path.normpath(os.path.join(recipe_dir, doc_link))
+            if linked_path in visited:
+                continue
+
+            try:
+                with open(linked_path, encoding="utf-8") as f:
+                    linked_data = yaml.safe_load(f)
+            except OSError:
+                continue
+
+            visited.add(linked_path)
+            linked_dir = os.path.dirname(linked_path)
+            item_qty = item.get("quantity")
+            nested_scale = (item_qty if item_qty is not None else 1) * scale
+            results.extend(_collect_scaled_ingredients(linked_data, linked_dir, visited, nested_scale))
+            visited.discard(linked_path)
+    return results
+
+
+def _build_schema(data, page_url, recipe_dir=None):
+    """Build a Schema.org Recipe JSON-LD dict from parsed YAML data.
+
+    Args:
+        data: Parsed YAML dict for the recipe.
+        page_url: Canonical URL for the recipe page.
+        recipe_dir: Absolute directory containing the recipe file.  When
+            provided, ``doc_link`` references in the ingredient list are
+            resolved and their ingredients are included in ``recipeIngredient``.
+    """
     schema = {
         "@context": "https://schema.org",
         "@type": "Recipe",
@@ -63,11 +161,15 @@ def _build_schema(data, page_url):
     if tags:
         schema["keywords"] = ", ".join(tags)
 
-    ingredients = []
-    for group in (data.get("ingredients") or []):
-        for item in (group.get("items") or []):
-            if not item.get("doc_link"):
-                ingredients.append(_format_ingredient(item))
+    if recipe_dir is not None:
+        visited: set[str] = set()
+        ingredients = _collect_ingredients(data, recipe_dir, visited)
+    else:
+        ingredients = []
+        for group in (data.get("ingredients") or []):
+            for item in (group.get("items") or []):
+                if not item.get("doc_link"):
+                    ingredients.append(_format_ingredient(item))
     schema["recipeIngredient"] = ingredients
 
     instructions = []
@@ -163,7 +265,8 @@ def main():
         canonical_url = f"{base_url}/recipe/{quote(page_slug, safe='/')}/"
 
         recipe_name = data.get("name", page_slug)
-        schema = _build_schema(data, canonical_url)
+        recipe_dir = os.path.dirname(os.path.abspath(filepath))
+        schema = _build_schema(data, canonical_url, recipe_dir)
 
         # Canonical page: recipe/{slug}/index.html — copy of the Blazor SPA with
         # JSON-LD injected in the <head>.  GitHub Pages serves this as a 200 OK so
