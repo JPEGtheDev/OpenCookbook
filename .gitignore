@@ -21,3 +21,8 @@ TestResults/
 
 ## Generated at build time — source-of-truth lives in docs/data/
 visualizer/src/OpenCookbook.Web/wwwroot/data/
+
+## Python bytecode
+__pycache__/
+*.pyc
+*.pyo

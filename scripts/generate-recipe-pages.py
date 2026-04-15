@@ -41,8 +41,120 @@ def _format_ingredient(item):
     return " ".join(parts)
 
 
-def _build_schema(data, page_url):
-    """Build a Schema.org Recipe JSON-LD dict from parsed YAML data."""
+# Units that indicate the doc_link quantity is a batch multiplier
+# (e.g., "1 whole Kebab Meat Recipe" = 1 full batch of that recipe).
+# For all other units (g, ml, etc.) the quantity is an amount of finished
+# sub-recipe product and cannot be safely used to scale individual ingredients.
+_BATCH_UNITS = frozenset({"whole", "batch"})
+
+
+def _collect_ingredients(data, recipe_dir, recipes_root, visited, scale=1.0):
+    """Recursively collect all ingredient strings, following doc_link references.
+
+    Args:
+        data: Parsed YAML dict for the recipe.
+        recipe_dir: Absolute directory of the recipe file being processed.
+        recipes_root: Absolute path to the recipes root directory.  doc_link
+            paths that resolve outside this tree are rejected.
+        visited: Set of absolute file paths already on the recursion stack
+            (used for cycle detection).  The caller must seed this set with
+            the root recipe's own path before the first call.
+        scale: Multiplicative factor applied to ingredient quantities (default
+            1.0 = no scaling).  Scaling is propagated from a parent doc_link
+            item whose unit is a known batch-count type (e.g. "whole").
+
+    Returns:
+        List of human-readable ingredient strings.
+    """
+    results = []
+    for group in (data.get("ingredients") or []):
+        for item in (group.get("items") or []):
+            doc_link = item.get("doc_link")
+            if not doc_link:
+                if scale != 1.0:
+                    scaled_item = dict(item)
+                    qty = scaled_item.get("quantity")
+                    if isinstance(qty, (int, float)):
+                        scaled_item["quantity"] = qty * scale
+                        # volume_alt is no longer accurate after scaling, so drop it.
+                        scaled_item.pop("volume_alt", None)
+                    results.append(_format_ingredient(scaled_item))
+                else:
+                    results.append(_format_ingredient(item))
+                continue
+
+            # Resolve to an absolute, normalised path.
+            linked_path = os.path.normpath(os.path.join(recipe_dir, doc_link))
+
+            # Security: keep resolution within the recipes tree and require .yaml.
+            # Use commonpath (not startswith) for cross-platform correctness.
+            try:
+                within_root = os.path.commonpath([linked_path, recipes_root]) == recipes_root
+            except ValueError:
+                within_root = False
+            if not within_root or not linked_path.lower().endswith(".yaml"):
+                print(
+                    f"Warning: ignoring out-of-tree doc_link '{doc_link}'",
+                    file=sys.stderr,
+                )
+                continue
+
+            # Cycle detection: skip if this path is already on the recursion stack.
+            if linked_path in visited:
+                continue
+
+            try:
+                with open(linked_path, encoding="utf-8") as f:
+                    linked_data = yaml.safe_load(f)
+            except (OSError, yaml.YAMLError) as exc:
+                print(
+                    f"Warning: skipping linked recipe '{linked_path}': {exc}",
+                    file=sys.stderr,
+                )
+                continue
+
+            if not isinstance(linked_data, dict):
+                print(
+                    f"Warning: skipping linked recipe '{linked_path}': expected YAML mapping",
+                    file=sys.stderr,
+                )
+                continue
+
+            visited.add(linked_path)
+            linked_dir = os.path.dirname(linked_path)
+
+            # Only treat the item quantity as a batch multiplier when the unit is a
+            # known count type (e.g. "1 whole" = 1 full batch). For g/ml amounts the
+            # quantity represents an amount of finished product, which cannot be safely
+            # used to scale individual sub-recipe ingredients.
+            unit = str(item.get("unit") or "").lower().strip()
+            if unit in _BATCH_UNITS:
+                item_qty = item.get("quantity")
+                child_scale = (item_qty if item_qty is not None else 1) * scale
+            else:
+                child_scale = scale
+
+            results.extend(
+                _collect_ingredients(linked_data, linked_dir, recipes_root, visited, child_scale)
+            )
+            visited.discard(linked_path)
+
+    return results
+
+
+def _build_schema(data, page_url, recipe_filepath=None, recipes_root=None):
+    """Build a Schema.org Recipe JSON-LD dict from parsed YAML data.
+
+    Args:
+        data: Parsed YAML dict for the recipe.
+        page_url: Canonical URL for the recipe page.
+        recipe_filepath: Absolute path to the recipe YAML file.  Must be
+            provided together with ``recipes_root`` for doc_link resolution
+            to be active; if either is omitted doc_link items are skipped.
+        recipes_root: Absolute path to the recipes root directory used to
+            constrain doc_link resolution to the recipes tree.  Must be
+            provided together with ``recipe_filepath``.
+    """
     schema = {
         "@context": "https://schema.org",
         "@type": "Recipe",
@@ -63,11 +175,18 @@ def _build_schema(data, page_url):
     if tags:
         schema["keywords"] = ", ".join(tags)
 
-    ingredients = []
-    for group in (data.get("ingredients") or []):
-        for item in (group.get("items") or []):
-            if not item.get("doc_link"):
-                ingredients.append(_format_ingredient(item))
+    if recipe_filepath is not None and recipes_root is not None:
+        # Seed visited with the root recipe path so a cycle A → B → A is caught
+        # before re-entering A, not after.
+        visited: set[str] = {recipe_filepath}
+        recipe_dir = os.path.dirname(recipe_filepath)
+        ingredients = _collect_ingredients(data, recipe_dir, recipes_root, visited)
+    else:
+        ingredients = []
+        for group in (data.get("ingredients") or []):
+            for item in (group.get("items") or []):
+                if not item.get("doc_link"):
+                    ingredients.append(_format_ingredient(item))
     schema["recipeIngredient"] = ingredients
 
     instructions = []
@@ -143,6 +262,8 @@ def main():
     output_dir = sys.argv[2]
     base_url = sys.argv[3].rstrip("/")
 
+    recipes_root = os.path.abspath(recipes_dir)
+
     # Read the Blazor SPA entrypoint once — used for every canonical recipe page.
     spa_index_path = os.path.join(output_dir, "index.html")
     with open(spa_index_path, encoding="utf-8") as f:
@@ -163,7 +284,8 @@ def main():
         canonical_url = f"{base_url}/recipe/{quote(page_slug, safe='/')}/"
 
         recipe_name = data.get("name", page_slug)
-        schema = _build_schema(data, canonical_url)
+        recipe_filepath = os.path.abspath(filepath)
+        schema = _build_schema(data, canonical_url, recipe_filepath, recipes_root)
 
         # Canonical page: recipe/{slug}/index.html — copy of the Blazor SPA with
         # JSON-LD injected in the <head>.  GitHub Pages serves this as a 200 OK so
