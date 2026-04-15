@@ -127,8 +127,19 @@ def validate_recipes(recipes, nutrition_db):
             continue
         
         recipe_name = recipe.get("name", rel_path.name)
-        status = recipe.get("status", "").lower()
-        require_nutrition_id = status != "draft"
+        raw_status = recipe.get("status")
+        if isinstance(raw_status, str):
+            status = raw_status.lower()
+        else:
+            status = ""
+
+        if status not in ["stable", "beta", "draft"]:
+            errors.append(
+                f"{rel_path} ({recipe_name}): "
+                f"invalid status '{raw_status}' (must be 'stable', 'beta', or 'draft')"
+            )
+
+        require_nutrition_id = status in ["stable", "beta"]
         
         for group in recipe.get("ingredients", []):
             for item_idx, item in enumerate(group.get("items", [])):

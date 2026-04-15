@@ -55,11 +55,13 @@ ingredients:
         name: Fresh Thyme
         nutrition_id: "6ba678f3-4b52-4203-b194-f39e96300066"
         weight_alt: "3 sprigs"
+        volume_alt: "1 tbsp."
       - quantity: 1
         unit: g
         name: Fresh Rosemary
         nutrition_id: "ac13aa5f-43c5-4adc-a9a4-fd1b14244eb7"
         weight_alt: "1/2 sprig"
+        volume_alt: "1 tsp."
 
 utensils:
   - heading: null
