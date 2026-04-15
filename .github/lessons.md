@@ -25,7 +25,16 @@ record; the skills and instructions are where rules live and get enforced.
 
 ## Log
 
-### 2026-04-11 — PR preview: generate static recipe pages AFTER base href patch, not before
+### 2026-04-15 — Python `__pycache__` was accidentally committed before .gitignore included it
+
+**What happened:** Running `python3` in the repo directory caused `scripts/__pycache__/` to be created. Because `__pycache__/` and `*.pyc` were not in `.gitignore`, `git add .` picked them up and they were committed. Caught on the next `report_progress` review; fixed by adding entries to `.gitignore` and removing the cached files with `git rm --cached`.
+**Absorbed into:** `.gitignore` (added `__pycache__/`, `*.pyc`, `*.pyo`). Lesson: whenever Python scripts are added to the repo, make sure `.gitignore` covers bytecode artifacts before running them.
+
+### 2026-04-15 — Use explicit `None` check instead of `or default` when 0 is a valid value
+
+**What happened:** Used `item.get("quantity") or 1` to default a missing quantity to 1. Code review correctly flagged that this treats a quantity of `0` as falsy (equivalent to `None`), producing incorrect scaling. Fix: use `qty if qty is not None else 1`.
+**Absorbed into:** `lessons.md` only — general Python correctness pattern, not OpenCookbook-specific. Prevention: whenever defaulting a numeric field that could legitimately be 0, always check `is not None` explicitly.
+
 
 **What happened:** `pr-build.yml` ran "Generate recipe share pages" before "Patch base href for local serving". Generated `recipe/{slug}/index.html` pages retained `<base href="/OpenCookbook/" />`, while the root `index.html` was patched to `<base href="/" />`. On local serving, Blazor tried to load `_framework/blazor.webassembly.js` from `/OpenCookbook/_framework/...` (nonexistent), got HTML back, and threw `Uncaught SyntaxError: Unexpected token '<'`, triggering the "An unhandled error has occurred" overlay. Fix: reorder steps in `pr-build.yml` so recipe pages are generated from the already-patched `index.html`.
 **Absorbed into:** `lessons.md` only — CI workflow ordering concern specific to this project's base-href-patching pattern.
