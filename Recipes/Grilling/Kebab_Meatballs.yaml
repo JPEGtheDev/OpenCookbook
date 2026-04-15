@@ -83,3 +83,5 @@ instructions:
 related:
   - label: Kebab Meat Recipe
     path: ./Kebab_Meat.yaml
+  - label: Zhoug
+    path: ../Zhoug.yaml

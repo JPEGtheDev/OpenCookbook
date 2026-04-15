@@ -150,3 +150,7 @@ instructions:
       - text: Transfer to a sealed freezer bag or vacuum-sealed bag
         notes:
           - Stores up to 3 months in a standard freezer bag; longer in a vacuum-sealed bag.
+
+related:
+  - label: Zhoug
+    path: ./Zhoug.yaml
