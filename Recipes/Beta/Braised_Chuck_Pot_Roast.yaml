@@ -8,12 +8,10 @@ description: >
 status: beta
 
 yields:
-  - quantity: 1850
-    unit: g
-    name: Braised Chuck Pot Roast
-  - quantity: 3300
-    unit: ml
-    name: Braising Broth
+  quantity: 1850
+  unit: g
+  name: Braised Chuck Pot Roast
+# Secondary yield (schema pending): 3300ml Braising Broth
 
 ingredients:
   - heading: null
