@@ -43,6 +43,7 @@ notes:
   - "Gravy base amount per serving TBD — to be determined based on muffin tin portion yield."
   - "Mushrooms are planned for a future update."
   - "Chuck may be pre-portioned into 80–85g balls (approx. 1/2 cup) and frozen in muffin tins as single servings before assembly."
+  - "Both doc_link ingredients (Braised Chuck Pot Roast and Gravy Base) are pre-made frozen components — once issue #91 is implemented, mark both with the finished-product flag so the assembly view does not inline their full ingredient and instruction trees."
 
 related:
   - label: Braised Chuck Pot Roast
